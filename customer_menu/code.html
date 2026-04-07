@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-variant": "#e2e2e2",
+                    "secondary-fixed-dim": "#b0cfad",
+                    "primary-fixed-dim": "#eabda0",
+                    "primary-fixed": "#ffdcc6",
+                    "surface-container": "#eeeeed",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#eec1a4",
+                    "outline": "#82746d",
+                    "surface-container-low": "#f4f4f3",
+                    "on-tertiary-fixed-variant": "#4c4542",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e8e8e7",
+                    "on-primary": "#ffffff",
+                    "background": "#f9f9f8",
+                    "on-secondary-container": "#506b4f",
+                    "secondary-fixed": "#ccebc7",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ece0dc",
+                    "secondary-container": "#ccebc7",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#d4c3ba",
+                    "primary-container": "#6f4e37",
+                    "tertiary": "#443d3a",
+                    "inverse-on-surface": "#f1f1f0",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#d3c8c5",
+                    "on-secondary-fixed": "#07200b",
+                    "on-surface-variant": "#50453e",
+                    "inverse-primary": "#eabda0",
+                    "on-secondary-fixed-variant": "#334d33",
+                    "on-primary-fixed-variant": "#5f402a",
+                    "on-tertiary-fixed": "#201a18",
+                    "primary": "#553722",
+                    "on-background": "#1a1c1c",
+                    "secondary": "#4a6549",
+                    "surface": "#f9f9f8",
+                    "surface-dim": "#dadad9",
+                    "on-surface": "#1a1c1c",
+                    "tertiary-container": "#5b5451",
+                    "inverse-surface": "#2f3130",
+                    "on-primary-fixed": "#2d1604",
+                    "tertiary-fixed-dim": "#cfc4c0",
+                    "surface-bright": "#f9f9f8",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#79573f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-fixed-dim">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-[#f9f9f8] dark:bg-[#1a1c1c] flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#f4f4f3]" data-icon="coffee">coffee</span>
+<h1 class="text-[#553722] dark:text-[#f4f4f3] font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3] font-black italic">The Artisanal</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-[#a1a1a1] hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-2 text-[#a1a1a1] hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="pb-32">
+<!-- Hero Section -->
+<section class="px-6 pt-4 pb-8">
+<div class="relative h-48 rounded-xl overflow-hidden group">
+<img alt="Artisan coffee bar" class="w-full h-full object-cover" data-alt="Close-up of a rustic wooden coffee bar with an espresso machine and fresh pastries in warm morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZCyAZLzL9AuuceokSBEgtzftO1DXM5Z9nYqLzAPF9kcynP-NqonGMgjFdFFBnRt74w1wNH1NyvNLXHEXPuI8ndtXK9m23Wg44PhAIsEwp3-SCGZ0jKaq8XITeZqhcDE7qgDg81Jr8IbPMrJOoJFbatWlXkfewRpVyb6zc1MzZshJR-E-FJj0rvKGq41FQSYkWOCqyvTvZ87-SamUcvs77rO6KXFho_74UP7-XvDEzc5Q4BDk7QYSmhIllDK3vj79A7zFetr-SGUP1"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-6">
+<div>
+<span class="inline-block px-3 py-1 bg-secondary text-on-secondary rounded-full text-[10px] font-bold tracking-widest uppercase mb-2">Featured</span>
+<h2 class="text-white font-headline text-2xl font-bold">Morning Rituals</h2>
+</div>
+</div>
+</div>
+</section>
+<!-- Category Scroll -->
+<nav class="sticky top-[72px] z-40 bg-surface/80 backdrop-blur-md px-6 py-4 overflow-x-auto hide-scrollbar flex gap-3">
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-secondary text-on-secondary font-bold text-sm transition-all shadow-sm">CAFÉ</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-all">NƯỚC ÉP</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-all">TRÀ TRÁI CÂY</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-all">TRÀ SỮA</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-all">SINH TỐ</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-all">SỮA TƯƠI</button>
+<button class="whitespace-nowrap px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-sm hover:bg-surface-container-high transition-all">ĐÁ XAY</button>
+</nav>
+<!-- Menu Content -->
+<div class="px-6 mt-6 space-y-12">
+<!-- Category: CAFÉ -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-extrabold tracking-tight text-primary">CAFÉ</h3>
+<div class="h-[1px] flex-grow ml-4 bg-outline-variant/30"></div>
+</div>
+<div class="space-y-4">
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg group transition-all hover:shadow-lg hover:-translate-y-1">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Glass of Vietnamese salt coffee with creamy foam top on a marble table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbYLH2pKgwHIY7Dv9TNq98tCILrAvAt-5owxR1D7oDbkzHaEdHZJ17GLnJnoNKi5hZRdo950-QfBpuq7JTn6BbBwp2oLlAfWxjRTkzXY1CM7KmMc1JD7pz-iCWNJbhj5L_h1RHDpnkBP9oCmo546h-ViRhUJmowGU9bxX2OtQ85OsO4Qct-wrTAsSsZJz05Zbksntv4Gx44Fbizc57Z5sdj44fCMzV_-JFLa227zzEIJcY4E_9qDO17mWJEZJdhXt_yasHhEjFwmxn"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-lg">CAFÉ MUỐI</h4>
+<span class="font-bold text-primary">32</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Authentic salt-cream coffee</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg group transition-all hover:shadow-lg hover:-translate-y-1">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Traditional Vietnamese iced coffee with condensed milk layers" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp7mclCzdhXpkCwnf-vC01TcpDIhdTq-9pW6wE9SmhaeMmvCwGaRSrfDlyIwfNyswR9V7q8pqOtWctLIqZbx1VUIWPhxJHJVgHz0xynt1vN-H1pbg5HJ9lWRt1KsyWkkzF2O6c-P13rcjwFgl4GlnSbDlXHYBpQ4jwxP6oHp-B_sFi6NB-b4sEJDBvft8cZvDDswUZoAj3vGOWpnGepKNTVHdnNNF-ezNi_r9cGGqGHuOPdSc6mnRhUYHMGhYkIE-LpseBfHEIi6nj"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-lg">CAFÉ SỮA</h4>
+<span class="font-bold text-primary">28</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Classic Vietnamese style</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<!-- Item -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg group transition-all hover:shadow-lg hover:-translate-y-1">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Rich black coffee in a clear glass with ice cubes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcshctkXUV6B5zL9VPbd8cLx6vTxHIqjZFOY0n03S95NhQHRofb0ijYkvmS_Xrtr2QE8H1vYla8-hOrYfbxIDCWGgni-7d8MV321CiCQ5P7LUWkQjKk_yMmCguJyn2JFpupuDd_bBmjESAw-G_UalKmcKgRacN8V0GUT4h7el_MKPZN3NiWpg7qICdLp_PSiX6jEZeeMNA3liSXcUHwsEBk2zzoZfs6DezekgpbB6x0ij7yXl6rGR5MUrGMEAYsQHu8DME_eYi431y"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-lg">CAFÉ ĐEN</h4>
+<span class="font-bold text-primary">25</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1">Bold traditional roast</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Category: NƯỚC ÉP (Green Accent) -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-extrabold tracking-tight text-secondary">NƯỚC ÉP</h3>
+<div class="h-[1px] flex-grow ml-4 bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div class="flex items-center gap-4 p-4 bg-secondary-container/20 rounded-lg border border-secondary-container/30">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Fresh orange juice in a glass with a citrus slice" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB7DMz_AIiyiy5tz72PKUfFJ-o84w6PpY2ST-6nREeOx6ZMVfg9NQ7Tj256qDU7dgFrLyo-iKlRLqO6AN8UhyoUpohOUnh3XSNmSfFG9mMJbW7FfhUqPEoV6W6ktZMyFg5X2ZXxcdEPkgY1f5E83ZeN7EjXJhH632piZAIuzFd7v4NEw5boSuqJrRQC_kS6CXFrobAOeyEN0TiULN2IaFfJJ4pPyhJ_cshM3NcJHWPFudDSgfIgtyBFc-OUUUkGchymKIgXJ5cmEo1"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-lg">CAM VẮT</h4>
+<span class="font-bold text-secondary">35</span>
+</div>
+<p class="text-xs text-on-secondary-fixed-variant mt-1">Freshly squeezed daily</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+<div class="flex items-center gap-4 p-4 bg-secondary-container/20 rounded-lg border border-secondary-container/30">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Chilled watermelon juice with a green mint leaf" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXM9BjDMNFsCXdtFjigwtLJKTZ4HdVWUMnR6_MyY-tcLYz8Jg9AR6yvFVKO1LulllOzM8pA_j1BlAjaqibiD7BK4IDANlQDYXVQfWHbJ29qZcRoc4Qsgfw7jqLSvx8bZvNIWYk_8JOzrQQ7hH0xF9lWC6VZPS0y-zacXjKbf5z88sas-YTV4huvlb8T1nI02-ID5ElSDzmlnhnre2sLnlN5J4UyZhkkei8Zx_RkhijmuMWecQoe-wzBWqPRZwdKGu4nU6C7DoDb6C3"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-lg">ÉP DƯA HẤU</h4>
+<span class="font-bold text-secondary">35</span>
+</div>
+<p class="text-xs text-on-secondary-fixed-variant mt-1">Refreshing summer choice</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Category: TRÀ TRÁI CÂY (Editorial Grid) -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-headline text-xl font-extrabold tracking-tight text-primary">TRÀ TRÁI CÂY</h3>
+<div class="h-[1px] flex-grow ml-4 bg-outline-variant/30"></div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col items-center text-center">
+<div class="w-full aspect-square rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover" data-alt="Peach iced tea with large peach slices and ice" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADXN-Oax3uKsNY6rNwI9MxPm03xWXQKNjTmXDaXVa_-vYW3FSo28yOFBatWpBiAv8OVewQOpu8qeWL5yy8H7mD-kxL4Zh5NQWuYb1ndYEYZhNJDI2XWDEOsozCodRJo4v-2-1-Bx5150j0tSV7J6S8A4Uid3_U1kzKou_XldWB8c17mVnbC0YEUGYeDJZRrL5utQ794-jt17UYqqxM-Jj3QsOhnNWldUcgiZpf7apvcAcB152_Nj3KP5coXlz8IFlShTcD8G6uytlB"/>
+</div>
+<h4 class="font-bold text-sm">TRÀ ĐÀO</h4>
+<span class="text-primary font-extrabold my-1">40</span>
+<button class="mt-2 w-full py-2 bg-primary rounded-full text-white text-xs font-bold uppercase tracking-wider">Add</button>
+</div>
+<div class="bg-surface-container-low rounded-xl p-4 flex flex-col items-center text-center">
+<div class="w-full aspect-square rounded-lg overflow-hidden mb-3">
+<img class="w-full h-full object-cover" data-alt="Lychee tea with whole lychee fruits in a tall glass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVcty0pv4ZPJ4tqAVC_3qilZyOZl8P-mS76zuVq8ELG9lSzIcqYpxVQFYaGciXPIP53L8Azq9ziI4ipvHdQF3T4ZN3JjRJJz53THIctkMVHbzLtNdFQhQF9umMWv12kPhimIq4RCIIt-1COdS1_E8QQd_zHV3b6YdHZs4A53s6EnAk6E9m77l-8VarBtNCEaZJ29UyCQZJBjjGijncJCx_KWzsm604VXs4NHLjXuwlTOvgFCOJPg9YY2JByMs2-F_GTCseUEzLSxLf"/>
+</div>
+<h4 class="font-bold text-sm">TRÀ VẢI</h4>
+<span class="text-primary font-extrabold my-1">40</span>
+<button class="mt-2 w-full py-2 bg-primary rounded-full text-white text-xs font-bold uppercase tracking-wider">Add</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl rounded-t-[3rem] shadow-[0_-20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] scale-90 active:scale-100 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform">
+<span class="material-symbols-outlined" data-icon="cooking">cooking</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Kitchen</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">History</span>
+</div>
+</nav>
+<script type="module">
+import { db } from '../supabase.js';
+
+// Global variables
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let currentCategory = null;
+
+// Initialize the menu
+async function initMenu() {
+try {
+// Fetch categories
+const { data: categories, error: catError } = await db.getMenuCategories();
+if (catError) throw catError;
+
+// Fetch all menu items
+const { data: items, error: itemError } = await db.getMenuItems();
+if (itemError) throw itemError;
+
+// Populate categories in nav
+populateCategories(categories);
+
+// Populate menu items
+populateMenu(categories, items);
+
+// Set up event listeners
+setupEventListeners();
+
+} catch (error) {
+console.error('Error initializing menu:', error);
+}
+}
+
+// Populate category navigation
+function populateCategories(categories) {
+const categoryNav = document.querySelector('nav.sticky');
+const categoryButtons = categoryNav.querySelectorAll('button');
+
+// Clear existing buttons except the first if any
+categoryNav.innerHTML = '';
+
+categories.forEach((category, index) => {
+const button = document.createElement('button');
+button.className = `whitespace-nowrap px-6 py-2 rounded-full font-bold text-sm transition-all shadow-sm ${
+  index === 0 ? 'bg-secondary text-on-secondary' : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high'
+}`;
+button.textContent = category.name;
+button.dataset.categoryId = category.id;
+categoryNav.appendChild(button);
+});
+}
+
+// Populate menu sections
+function populateMenu(categories, items) {
+const menuContent = document.querySelector('.px-6.mt-6.space-y-12');
+menuContent.innerHTML = '';
+
+categories.forEach((category, catIndex) => {
+const categoryItems = items.filter(item => item.category_id === category.id);
+
+if (categoryItems.length === 0) return;
+
+const section = document.createElement('section');
+
+// Category header
+const header = document.createElement('div');
+header.className = 'flex items-center justify-between mb-6';
+header.innerHTML = `
+  <h3 class="font-headline text-xl font-extrabold tracking-tight text-primary">${category.name}</h3>
+  <div class="h-[1px] flex-grow ml-4 bg-outline-variant/30"></div>
+`;
+
+// Items container
+const itemsContainer = document.createElement('div');
+itemsContainer.className = 'space-y-4';
+
+categoryItems.forEach(item => {
+  const itemDiv = document.createElement('div');
+  itemDiv.className = 'flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg group transition-all hover:shadow-lg hover:-translate-y-1';
+  itemDiv.innerHTML = `
+    <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+      <img class="w-full h-full object-cover" alt="${item.name}" src="${item.image_url || 'https://via.placeholder.com/80'}">
+    </div>
+    <div class="flex-grow">
+      <div class="flex justify-between items-start">
+        <h4 class="font-bold text-on-surface text-lg">${item.name}</h4>
+        <span class="font-bold text-primary">${item.price.toFixed(0)}</span>
+      </div>
+      <p class="text-xs text-on-surface-variant mt-1">${item.description || ''}</p>
+    </div>
+    <button class="add-to-cart w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform" data-item-id="${item.id}">
+      <span class="material-symbols-outlined" data-icon="add">add</span>
+    </button>
+  `;
+  itemsContainer.appendChild(itemDiv);
+});
+
+section.appendChild(header);
+section.appendChild(itemsContainer);
+menuContent.appendChild(section);
+});
+}
+
+// Setup event listeners
+function setupEventListeners() {
+// Category filtering
+document.querySelectorAll('nav.sticky button').forEach(button => {
+button.addEventListener('click', () => {
+  // Remove active class from all
+  document.querySelectorAll('nav.sticky button').forEach(btn => {
+    btn.className = btn.className.replace('bg-secondary text-on-secondary', 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high');
+  });
+  // Add active to clicked
+  button.className = button.className.replace('bg-surface-container-low text-on-surface-variant hover:bg-surface-container-high', 'bg-secondary text-on-secondary');
+
+  // Scroll to category section
+  const categoryName = button.textContent;
+  const section = Array.from(document.querySelectorAll('section')).find(sec => sec.querySelector('h3').textContent === categoryName);
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+});
+
+// Add to cart buttons
+document.addEventListener('click', (e) => {
+if (e.target.closest('.add-to-cart')) {
+  const button = e.target.closest('.add-to-cart');
+  const itemId = button.dataset.itemId;
+  addToCart(itemId);
+}
+});
+
+// Bottom navigation
+document.querySelectorAll('nav.fixed button').forEach(button => {
+button.addEventListener('click', () => {
+  const icon = button.querySelector('.material-symbols-outlined').dataset.icon;
+  switch(icon) {
+    case 'shopping_cart':
+      window.location.href = '../cart_checkout/code.html';
+      break;
+    case 'cooking':
+      window.location.href = '../kitchen_queue/code.html';
+      break;
+    case 'history':
+      window.location.href = '../order_history/code.html';
+      break;
+  }
+});
+});
+}
+
+// Add item to cart
+async function addToCart(itemId) {
+try {
+const { data: item } = await db.getMenuItems().then(({ data }) => ({ data: data.find(i => i.id === itemId) }));
+
+if (!item) return;
+
+const existingItem = cart.find(cartItem => cartItem.id === itemId);
+if (existingItem) {
+  existingItem.quantity += 1;
+} else {
+  cart.push({
+    id: item.id,
+    name: item.name,
+    price: item.price,
+    quantity: 1,
+    image_url: item.image_url
+  });
+}
+
+localStorage.setItem('cart', JSON.stringify(cart));
+updateCartBadge();
+
+// Show feedback
+showToast('Added to cart!');
+
+} catch (error) {
+console.error('Error adding to cart:', error);
+}
+}
+
+// Update cart badge
+function updateCartBadge() {
+const cartButton = document.querySelector('[data-icon="shopping_cart"]').parentElement;
+const existingBadge = cartButton.querySelector('.cart-badge');
+if (existingBadge) existingBadge.remove();
+
+const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+if (totalItems > 0) {
+const badge = document.createElement('span');
+badge.className = 'cart-badge absolute -top-1 -right-1 bg-error text-on-error rounded-full text-xs px-1 min-w-[18px] h-5 flex items-center justify-center font-bold';
+badge.textContent = totalItems;
+cartButton.style.position = 'relative';
+cartButton.appendChild(badge);
+}
+}
+
+// Show toast notification
+function showToast(message) {
+const toast = document.createElement('div');
+toast.className = 'fixed top-20 left-1/2 transform -translate-x-1/2 bg-primary text-on-primary px-4 py-2 rounded-full text-sm font-bold z-50';
+toast.textContent = message;
+document.body.appendChild(toast);
+setTimeout(() => toast.remove(), 2000);
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', initMenu);
+</script>
+</body></html>

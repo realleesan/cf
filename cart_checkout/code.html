@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cart - The Artisanal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-variant": "#e2e2e2",
+                        "secondary-fixed-dim": "#b0cfad",
+                        "primary-fixed-dim": "#eabda0",
+                        "primary-fixed": "#ffdcc6",
+                        "surface-container": "#eeeeed",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#eec1a4",
+                        "outline": "#82746d",
+                        "surface-container-low": "#f4f4f3",
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e8e8e7",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f8",
+                        "on-secondary-container": "#506b4f",
+                        "secondary-fixed": "#ccebc7",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ece0dc",
+                        "secondary-container": "#ccebc7",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#d4c3ba",
+                        "primary-container": "#6f4e37",
+                        "tertiary": "#443d3a",
+                        "inverse-on-surface": "#f1f1f0",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#d3c8c5",
+                        "on-secondary-fixed": "#07200b",
+                        "on-surface-variant": "#50453e",
+                        "inverse-primary": "#eabda0",
+                        "on-secondary-fixed-variant": "#334d33",
+                        "on-primary-fixed-variant": "#5f402a",
+                        "on-tertiary-fixed": "#201a18",
+                        "primary": "#553722",
+                        "on-background": "#1a1c1c",
+                        "secondary": "#4a6549",
+                        "surface": "#f9f9f8",
+                        "surface-dim": "#dadad9",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-container": "#5b5451",
+                        "inverse-surface": "#2f3130",
+                        "on-primary-fixed": "#2d1604",
+                        "tertiary-fixed-dim": "#cfc4c0",
+                        "surface-bright": "#f9f9f8",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#79573f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-[#f9f9f8] dark:bg-[#1a1c1c] flex items-center justify-between px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#f4f4f3]" data-icon="coffee">coffee</span>
+<h1 class="font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3]">The Artisanal</h1>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#f4f4f3] transition-colors">
+<span class="material-symbols-outlined text-[#553722]" data-icon="close">close</span>
+</button>
+</header>
+<main class="px-6 pt-4 space-y-8">
+<!-- Page Title -->
+<section>
+<h2 class="text-4xl font-extrabold tracking-tight text-primary">Your Basket</h2>
+<p class="text-on-surface-variant font-medium mt-1">Review your handcrafted selection</p>
+</section>
+<!-- Cart Items - Bento Style Layering -->
+<section class="space-y-4">
+<!-- Item 1 -->
+<div class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-center">
+<div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="close up of premium Vietnamese iced coffee with thick condensed milk and cream foam on top in a glass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbPvVw9gqgZz9KVXjpoe_81IiRWn2lPhr5xqvxu51DiRqCo4j7vsjxDz09bCbCKpBRbdnRUB43dNsS-xn2PFmkQMHRWRXZw6TnoQHDZwMCWpRM6Er8NjsKlYhyV8k0HpssC61BDp0_QyQPQzL_xIDQtrali8RldrCiR9oaLiDXG4il9Vq3xP_FiNfBtLGSU9-t5H3wDmyJeKq44Ym0wzZC30Hshm39u0TpieceWHPwnErDLs0iqtqmhD7aYGgiFxF4c3B6OgcLo9xC"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-bold leading-tight uppercase">PHINDI KEM SỮA</h3>
+<span class="font-bold text-primary">$5.50</span>
+</div>
+<p class="text-sm text-on-surface-variant mt-1">Large • Oat Milk</p>
+<div class="flex items-center justify-between mt-3">
+<div class="flex items-center bg-surface-container-highest rounded-full px-2 py-1">
+<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="px-3 font-bold text-sm">1</span>
+<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+<button class="text-on-surface-variant/40"><span class="material-symbols-outlined text-xl" data-icon="delete">delete</span></button>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-center border-l-4 border-secondary">
+<div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="freshly squeezed carrot and orange juice in a clear glass with ice cubes and ginger slices" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGMfvhEF37FlXf1EwwJPOVHoygBOv54al_P-NKO3lziha1YNQV9IfOClGt9b-OM7_2JNCvuz7xXs_XaKBcpPOX3mrIJl_steTFA5kWr2bsAOny_fkZMuEtcG9AGF8f1qyU7OdnLu9cdDBMYZ4mIONPyjkuZRakPUvIpDaeiPpUruC8gX3eJ6LGKrvl_Hpe2PHAjzzzxA5CRb5V-AU0zZ3uUgwXnC-W-Y-OlgUpP0c5Onatf1TlEhJOf7godPdOEF02jDFsNrTNAQz4"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-bold leading-tight uppercase">CAM-CAROT-(GỪNG)</h3>
+<span class="font-bold text-primary">$6.25</span>
+</div>
+<p class="text-sm text-secondary font-medium mt-1">Fresh Pressed • No Sugar</p>
+<div class="flex items-center justify-between mt-3">
+<div class="flex items-center bg-surface-container-highest rounded-full px-2 py-1">
+<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
+<span class="px-3 font-bold text-sm">2</span>
+<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
+</div>
+<button class="text-on-surface-variant/40"><span class="material-symbols-outlined text-xl" data-icon="delete">delete</span></button>
+</div>
+</div>
+</div>
+</section>
+<!-- Order Type Toggle -->
+<section class="bg-surface-container-highest/50 p-2 rounded-full flex">
+<button class="flex-1 py-3 px-6 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="restaurant">restaurant</span>
+                Dine-in
+            </button>
+<button class="flex-1 py-3 px-6 rounded-full text-on-surface-variant font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="takeout_dining">takeout_dining</span>
+                Takeaway
+            </button>
+</section>
+<!-- Order Summary -->
+<section class="bg-surface-container-low rounded-xl p-6 space-y-4">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="text-label-md font-bold uppercase tracking-widest">Subtotal</span>
+<span class="font-bold">$18.00</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="text-label-md font-bold uppercase tracking-widest">VAT (8%)</span>
+<span class="font-bold">$1.44</span>
+</div>
+<div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+<span class="text-xl font-extrabold">Total Price</span>
+<span class="text-2xl font-black text-primary">$19.44</span>
+</div>
+</section>
+<!-- Note Section -->
+<section>
+<label class="block text-sm font-bold text-on-surface-variant mb-2 uppercase tracking-wide">Special Instructions</label>
+<div class="bg-surface-container-low rounded-lg p-4">
+<textarea class="w-full bg-transparent border-none focus:ring-0 text-on-surface p-0 placeholder:text-on-surface-variant/40" placeholder="Add a note (e.g. less ice, extra shot)..." rows="2"></textarea>
+</div>
+</section>
+</main>
+<!-- Checkout Footer Interaction -->
+<div class="fixed bottom-24 left-0 w-full px-6 z-40">
+<button class="w-full py-5 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-extrabold text-lg shadow-[0_20px_40px_rgba(80,69,62,0.15)] flex items-center justify-center gap-3 active:scale-95 transition-transform">
+            Confirm Order
+            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10">
+<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Menu</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] scale-90 active:scale-100 transition-transform">
+<span class="material-symbols-outlined" data-icon="shopping_cart" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="cooking">cooking</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Kitchen</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">History</span>
+</div>
+</nav>
+</body></html>

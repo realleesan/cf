@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#5b5451",
+                        "surface": "#f9f9f8",
+                        "on-background": "#1a1c1c",
+                        "background": "#f9f9f8",
+                        "surface-container-high": "#e8e8e7",
+                        "primary-fixed": "#ffdcc6",
+                        "outline": "#82746d",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#d4c3ba",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#eabda0",
+                        "secondary-container": "#ccebc7",
+                        "primary": "#553722",
+                        "on-secondary-fixed-variant": "#334d33",
+                        "tertiary-fixed": "#ece0dc",
+                        "on-secondary-container": "#506b4f",
+                        "on-secondary-fixed": "#07200b",
+                        "surface-dim": "#dadad9",
+                        "tertiary-fixed-dim": "#cfc4c0",
+                        "surface-variant": "#e2e2e2",
+                        "secondary": "#4a6549",
+                        "surface-container": "#eeeeed",
+                        "secondary-fixed-dim": "#b0cfad",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#50453e",
+                        "inverse-on-surface": "#f1f1f0",
+                        "on-primary-fixed-variant": "#5f402a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#2d1604",
+                        "on-tertiary-fixed": "#201a18",
+                        "inverse-surface": "#2f3130",
+                        "primary-container": "#6f4e37",
+                        "surface-bright": "#f9f9f8",
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "surface-tint": "#79573f",
+                        "on-tertiary-container": "#d3c8c5",
+                        "tertiary": "#443d3a",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1a1c1c",
+                        "on-primary-container": "#eec1a4",
+                        "secondary-fixed": "#ccebc7",
+                        "surface-container-low": "#f4f4f3",
+                        "inverse-primary": "#eabda0",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f9f9f8;
+        }
+        .editorial-header {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-50 bg-[#f9f9f8] dark:bg-stone-950 bg-gradient-to-b from-[#f4f4f3] to-transparent">
+<div class="flex items-center justify-between px-6 py-4 max-w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#d7ccc8] text-3xl" data-icon="coffee">coffee</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-2xl tracking-tight text-[#553722] dark:text-[#d7ccc8]">Brew &amp; Harvest</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border-2 border-primary-container/20">
+<img alt="Staff Profile" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional male barista in a cafe, warm soft indoor lighting, professional photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVIR-HPRY1UscTW1IqfbMOji8HFFLGxZ8BhFGH0wr6JiVzt4-fUGW6Z9dcscPDrcBJmgbcFTQNk0aAFsgq-jlYPazpJwh8Sp4c7wHto9jVaPw7oaj7z5febVzeYSQoanGQdmMaFU_FQLFrLHiybMWjUYuaNy2kjhk5d3DfP5YUebmPtjebgd89PK1AGDgMasn7B7BoaEeP4iksVurTMG3fa2VeRjkolxcTea_zr4y7bC5aHN0WCEml4zV_oIXrlI9YzxVcUcr2PxRP"/>
+</div>
+</div>
+</header>
+<main class="px-6 py-2">
+<!-- Floor Selection (Derived from NavigationDrawer concept) -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar py-4">
+<button class="flex-none bg-[#553722] text-white rounded-full px-6 py-3 font-['Manrope'] font-semibold text-sm uppercase tracking-wider ease-in-out transition-all duration-300">
+                Ground Floor (TRET)
+            </button>
+<button class="flex-none bg-surface-container-low text-stone-600 rounded-full px-6 py-3 font-['Manrope'] font-semibold text-sm uppercase tracking-wider hover:bg-stone-200 transition-colors">
+                Hallway (HANHLANG)
+            </button>
+<button class="flex-none bg-surface-container-low text-stone-600 rounded-full px-6 py-3 font-['Manrope'] font-semibold text-sm uppercase tracking-wider hover:bg-stone-200 transition-colors">
+                Upstairs (LAU)
+            </button>
+</div>
+<!-- Section Title & Meta -->
+<div class="mt-6 mb-8 flex justify-between items-end">
+<div>
+<p class="text-secondary font-label font-bold text-[10px] uppercase tracking-[0.1em] mb-1">Current Zone</p>
+<h2 class="editorial-header font-extrabold text-4xl text-primary tracking-tighter">Main Dining</h2>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="groups">groups</span>
+<span class="text-xs font-bold">12 / 24 Seats</span>
+</div>
+</div>
+<!-- Table Grid Layout -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Table TR1: Occupied -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_20px_40px_rgba(80,69,62,0.08)] border border-outline-variant/10 flex flex-col justify-between aspect-square hover:scale-[0.98] transition-transform active:opacity-90">
+<div class="flex justify-between items-start">
+<span class="editorial-header text-3xl font-extrabold text-primary">TR1</span>
+<span class="bg-secondary text-on-secondary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Occupied</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+<span class="font-bold text-lg">4 Items</span>
+</div>
+<p class="text-stone-400 text-xs">Total: $42.50</p>
+</div>
+</div>
+<!-- Table TR2: Available -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-transparent flex flex-col justify-between aspect-square hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start">
+<span class="editorial-header text-3xl font-extrabold text-stone-400">TR2</span>
+<span class="text-stone-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Available</span>
+</div>
+<div class="flex items-center justify-center grow">
+<span class="material-symbols-outlined text-stone-300 text-5xl" data-icon="add_circle">add_circle</span>
+</div>
+</div>
+<!-- Table TR3: Occupied -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_20px_40px_rgba(80,69,62,0.08)] border border-outline-variant/10 flex flex-col justify-between aspect-square hover:scale-[0.98] transition-transform active:opacity-90">
+<div class="flex justify-between items-start">
+<span class="editorial-header text-3xl font-extrabold text-primary">TR3</span>
+<span class="bg-secondary text-on-secondary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Occupied</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+<span class="font-bold text-lg">1 Item</span>
+</div>
+<p class="text-stone-400 text-xs">Waiting for checkout</p>
+</div>
+</div>
+<!-- Table TR4: Occupied (Warning/Recent) -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-[0_20px_40px_rgba(80,69,62,0.08)] border border-outline-variant/10 flex flex-col justify-between aspect-square hover:scale-[0.98] transition-transform active:opacity-90 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-2 h-full bg-primary/20"></div>
+<div class="flex justify-between items-start">
+<span class="editorial-header text-3xl font-extrabold text-primary">TR4</span>
+<span class="bg-secondary text-on-secondary text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Occupied</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+<span class="font-bold text-lg">6 Items</span>
+</div>
+<p class="text-stone-400 text-xs">Priority Service</p>
+</div>
+</div>
+<!-- Table TR5: Available -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-transparent flex flex-col justify-between aspect-square hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start">
+<span class="editorial-header text-3xl font-extrabold text-stone-400">TR5</span>
+<span class="text-stone-400 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Available</span>
+</div>
+<div class="flex items-center justify-center grow">
+<span class="material-symbols-outlined text-stone-300 text-5xl" data-icon="add_circle">add_circle</span>
+</div>
+</div>
+<!-- Table TR6: Reserved (Custom State) -->
+<div class="bg-stone-100 p-6 rounded-xl border border-dashed border-stone-300 flex flex-col justify-between aspect-square">
+<div class="flex justify-between items-start">
+<span class="editorial-header text-3xl font-extrabold text-stone-400">TR6</span>
+<span class="text-stone-500 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider border border-stone-300">Reserved</span>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-stone-500">
+<span class="material-symbols-outlined text-lg" data-icon="schedule">schedule</span>
+<span class="font-bold text-sm">18:30 PM</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Asymmetric Summary Card -->
+<div class="mt-8 bg-primary-container p-8 rounded-xl text-on-primary-container relative overflow-hidden mb-12">
+<div class="relative z-10">
+<h3 class="editorial-header text-2xl font-bold mb-2">Afternoon Shift</h3>
+<p class="text-on-primary-container/70 text-sm max-w-[200px]">You have 4 tables nearing completion. Ready for the next turnover?</p>
+</div>
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[180px]" data-icon="coffee_maker">coffee_maker</span>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 pb-6 bg-white/80 dark:bg-stone-900/80 backdrop-blur-xl shadow-[0_-10px_30px_rgba(80,69,62,0.05)] rounded-t-[2.5rem]">
+<!-- Tables - Active -->
+<a class="flex flex-col items-center justify-center bg-[#ccebc7] dark:bg-[#4a6549] text-[#4a6549] dark:text-[#ccebc7] rounded-full px-6 py-2 scale-90 transition-transform active:duration-100" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-['Manrope'] font-bold text-[10px] uppercase tracking-[0.05em] mt-1">Tables</span>
+</a>
+<!-- Orders -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Manrope'] font-bold text-[10px] uppercase tracking-[0.05em] mt-1">Orders</span>
+</a>
+<!-- Inventory -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="inventory_2">inventory_2</span>
+<span class="font-['Manrope'] font-bold text-[10px] uppercase tracking-[0.05em] mt-1">Inventory</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-stone-400 dark:text-stone-500 hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="settings">settings</span>
+<span class="font-['Manrope'] font-bold text-[10px] uppercase tracking-[0.05em] mt-1">Settings</span>
+</a>
+</nav>
+</body></html>

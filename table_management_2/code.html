@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Artisanal Cafe - Table Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f9f9f8",
+                        "tertiary-fixed-dim": "#cfc4c0",
+                        "secondary-container": "#ccebc7",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#506b4f",
+                        "surface-container-highest": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#eabda0",
+                        "tertiary": "#443d3a",
+                        "outline": "#82746d",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#2d1604",
+                        "on-surface-variant": "#50453e",
+                        "inverse-surface": "#2f3130",
+                        "on-primary-container": "#eec1a4",
+                        "tertiary-container": "#5b5451",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#79573f",
+                        "primary-container": "#6f4e37",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "on-surface": "#1a1c1c",
+                        "background": "#f9f9f8",
+                        "secondary": "#4a6549",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#1a1c1c",
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "surface-container-high": "#e8e8e7",
+                        "secondary-fixed": "#ccebc7",
+                        "primary-fixed": "#ffdcc6",
+                        "surface-dim": "#dadad9",
+                        "on-primary-fixed-variant": "#5f402a",
+                        "primary-fixed-dim": "#eabda0",
+                        "inverse-on-surface": "#f1f1f0",
+                        "on-tertiary-fixed": "#201a18",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#d4c3ba",
+                        "tertiary-fixed": "#ece0dc",
+                        "on-secondary-fixed": "#07200b",
+                        "primary": "#553722",
+                        "surface-container": "#eeeeed",
+                        "on-secondary-fixed-variant": "#334d33",
+                        "secondary-fixed-dim": "#b0cfad",
+                        "surface-container-low": "#f4f4f3",
+                        "on-tertiary-container": "#d3c8c5",
+                        "surface": "#f9f9f8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<header class="bg-[#f9f9f8] dark:bg-stone-950 flex justify-between items-center w-full px-6 py-4 sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container">
+<img alt="Staff Profile Avatar" class="w-full h-full object-cover" data-alt="close-up of a smiling barista in a modern cafe setting wearing a clean linen apron" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzbYRzmW6pdzPQjt44DgMJFHfBREYE1fdTjjhy0q4UUk02l0ZJWY9tvizcqPorYVOjsETyANhjIExKCXnrkcD5ex1l2y9YcWiC5Q9jbT_wi3gXsANAAas0KLI6nz0L9LAkWwRao9sUcTiZ2Mo6E4FRd4_sUV0Bn0yfkRqi2uaP9HyutWvKQgAq-h1lt_dSkrx4pGk05HUjPq9xx11AEgO7NTgWnWgHOGf0k6prGMQZQ9RMlMpej3P6SFEd7hBa-6kKwYeJY0uPMUHk"/>
+</div>
+<span class="font-['Plus_Jakarta_Sans'] font-bold text-lg tracking-tight text-[#553722] dark:text-[#d7ccc8]">The Artisanal Cafe</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-stone-200/50 dark:hover:bg-stone-800/50 transition-colors">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#d7ccc8]" data-icon="notifications">notifications</span>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 py-8">
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl font-extrabold text-primary tracking-tight mb-2">Ground Floor</h1>
+<p class="text-on-surface-variant font-medium">12 Tables • 8 Occupied • 4 Available</p>
+</div>
+<nav class="flex bg-surface-container-low p-1.5 rounded-full">
+<button class="bg-[#ccebc7] text-[#4a6549] dark:bg-green-900/30 dark:text-green-300 rounded-full px-6 py-2.5 font-bold text-sm transition-all duration-300 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="layers">layers</span>
+                    Ground Floor
+                </button>
+<button class="text-[#553722] dark:text-stone-400 hover:bg-[#f4f4f3] dark:hover:bg-stone-900 rounded-full px-6 py-2.5 font-medium text-sm transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="door_sliding">door_sliding</span>
+                    Hallway
+                </button>
+<button class="text-[#553722] dark:text-stone-400 hover:bg-[#f4f4f3] dark:hover:bg-stone-900 rounded-full px-6 py-2.5 font-medium text-sm transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="stairs">stairs</span>
+                    Upstairs
+                </button>
+</nav>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="bg-surface-container-lowest rounded-lg p-6 group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-primary mb-1">B1</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase tracking-widest">
+                            Occupied
+                        </span>
+</div>
+<div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                        3
+                    </div>
+</div>
+<div class="space-y-2 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Last activity</span>
+<span class="font-semibold">4 mins ago</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Server</span>
+<span class="font-semibold">Elena R.</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-white rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    View Order
+                    <span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+<div class="bg-surface-container-low rounded-lg p-6 opacity-80 hover:opacity-100 transition-all duration-300 hover:bg-surface-container-lowest hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-on-surface-variant mb-1">B2</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant text-[11px] font-bold uppercase tracking-widest">
+                            Available
+                        </span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center py-12 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="table_bar">table_bar</span>
+<p class="text-xs font-semibold uppercase tracking-widest">Ready for seating</p>
+</div>
+<button class="w-full py-4 border-2 border-primary/10 text-primary rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all hover:bg-primary/5 active:scale-95">
+                    Open Table
+                    <span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-primary mb-1">B3</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase tracking-widest">
+                            Occupied
+                        </span>
+</div>
+<div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                        1
+                    </div>
+</div>
+<div class="space-y-2 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Last activity</span>
+<span class="font-semibold">12 mins ago</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Server</span>
+<span class="font-semibold">Marcus T.</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-white rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    View Order
+                    <span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-primary mb-1">B4</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase tracking-widest">
+                            Occupied
+                        </span>
+</div>
+<div class="bg-primary/20 text-primary w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+                        0
+                    </div>
+</div>
+<div class="space-y-2 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Last activity</span>
+<span class="font-semibold">Just now</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Server</span>
+<span class="font-semibold">Elena R.</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-white rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    View Order
+                    <span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-primary mb-1">B5</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase tracking-widest">
+                            Occupied
+                        </span>
+</div>
+<div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                        5
+                    </div>
+</div>
+<div class="space-y-2 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Last activity</span>
+<span class="font-semibold">18 mins ago</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Server</span>
+<span class="font-semibold">Sophia L.</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-white rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    View Order
+                    <span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+<div class="bg-surface-container-low rounded-lg p-6 opacity-80 hover:opacity-100 transition-all duration-300 hover:bg-surface-container-lowest hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-on-surface-variant mb-1">B6</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant text-[11px] font-bold uppercase tracking-widest">
+                            Available
+                        </span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center py-12 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="table_bar">table_bar</span>
+<p class="text-xs font-semibold uppercase tracking-widest">Ready for seating</p>
+</div>
+<button class="w-full py-4 border-2 border-primary/10 text-primary rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all hover:bg-primary/5 active:scale-95">
+                    Open Table
+                    <span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-lg p-6 group transition-all duration-300 hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-primary mb-1">B7</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[11px] font-bold uppercase tracking-widest">
+                            Occupied
+                        </span>
+</div>
+<div class="bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                        2
+                    </div>
+</div>
+<div class="space-y-2 mb-6">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Last activity</span>
+<span class="font-semibold">32 mins ago</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Server</span>
+<span class="font-semibold">Marcus T.</span>
+</div>
+</div>
+<button class="w-full py-4 bg-primary text-white rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-transform active:scale-95">
+                    View Order
+                    <span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+<div class="bg-surface-container-low rounded-lg p-6 opacity-80 hover:opacity-100 transition-all duration-300 hover:bg-surface-container-lowest hover:shadow-[0_20px_40px_rgba(80,69,62,0.08)]">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h3 class="text-3xl font-black text-on-surface-variant mb-1">B8</h3>
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant text-[11px] font-bold uppercase tracking-widest">
+                            Available
+                        </span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center py-12 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="table_bar">table_bar</span>
+<p class="text-xs font-semibold uppercase tracking-widest">Ready for seating</p>
+</div>
+<button class="w-full py-4 border-2 border-primary/10 text-primary rounded-full font-bold text-sm flex items-center justify-center gap-2 transition-all hover:bg-primary/5 active:scale-95">
+                    Open Table
+                    <span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+</button>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#f9f9f8]/80 dark:bg-stone-950/80 backdrop-blur-xl shadow-[0_-10px_40px_rgba(80,69,62,0.08)]">
+<div class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full px-5 py-2 transition-all scale-90">
+<span class="material-symbols-outlined" data-icon="table_restaurant">table_restaurant</span>
+<span class="font-['Manrope'] text-[11px] font-semibold uppercase tracking-widest">Tables</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/50 dark:text-stone-500 px-5 py-2 hover:opacity-80">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Manrope'] text-[11px] font-semibold uppercase tracking-widest">Orders</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/50 dark:text-stone-500 px-5 py-2 hover:opacity-80">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-['Manrope'] text-[11px] font-semibold uppercase tracking-widest">Menu</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#553722]/50 dark:text-stone-500 px-5 py-2 hover:opacity-80">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-['Manrope'] text-[11px] font-semibold uppercase tracking-widest">Staff</span>
+</div>
+</div>
+</body></html>

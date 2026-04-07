@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f9f9f8",
+                        "surface-container-low": "#f4f4f3",
+                        "on-tertiary-container": "#d3c8c5",
+                        "primary": "#553722",
+                        "on-secondary-fixed-variant": "#334d33",
+                        "surface-container": "#eeeeed",
+                        "secondary-fixed-dim": "#b0cfad",
+                        "primary-fixed-dim": "#eabda0",
+                        "surface-dim": "#dadad9",
+                        "on-primary-fixed-variant": "#5f402a",
+                        "on-tertiary-fixed": "#201a18",
+                        "inverse-on-surface": "#f1f1f0",
+                        "outline-variant": "#d4c3ba",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#07200b",
+                        "tertiary-fixed": "#ece0dc",
+                        "secondary": "#4a6549",
+                        "on-surface": "#1a1c1c",
+                        "background": "#f9f9f8",
+                        "on-background": "#1a1c1c",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e8e8e7",
+                        "secondary-fixed": "#ccebc7",
+                        "primary-fixed": "#ffdcc6",
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "surface-tint": "#79573f",
+                        "tertiary-container": "#5b5451",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#6f4e37",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e2e2e2",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#2d1604",
+                        "on-primary-container": "#eec1a4",
+                        "on-surface-variant": "#50453e",
+                        "inverse-surface": "#2f3130",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#ccebc7",
+                        "on-secondary-container": "#506b4f",
+                        "surface-container-highest": "#e2e2e2",
+                        "error": "#ba1a1a",
+                        "tertiary": "#443d3a",
+                        "outline": "#82746d",
+                        "inverse-primary": "#eabda0",
+                        "surface-bright": "#f9f9f8",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed-dim": "#cfc4c0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+        .thermal-paper {
+            background-image: linear-gradient(to bottom, #ffffff 0%, #fdfdfd 100%);
+            box-shadow: 0 10px 30px rgba(80, 69, 62, 0.05);
+            position: relative;
+        }
+        .thermal-paper::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: radial-gradient(circle, transparent, transparent 50%, #ffffff 50%, #ffffff 100%) 0 0 / 20px 20px;
+            background-repeat: repeat-x;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low font-body text-on-surface min-h-screen flex flex-col items-center py-12 px-4">
+<header class="fixed top-0 w-full bg-[#f9f9f8] dark:bg-zinc-950 flex justify-between items-center px-6 py-4 z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">menu</span>
+<h1 class="font-headline font-bold tracking-tight text-xl text-[#553722]">The Alchemist Café</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border-2 border-primary-container/20">
+<img alt="Staff Profile" data-alt="Close up of a professional barista wearing a brown leather apron in a high-end cafe environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHBItplNqZFIBiwjTbiyqML-KYtnLKGwMCMiigCj8GuZxKRhkt0OPHqBNLFnuXel_aJY3GF4X0M_Csl5T48cbhFIpHHrnG_xHPHTa_xGO657IpmMauki13E7A1kxuRa3gzQPzCZQhGOgnw3RFVWgv7ZtxlzEPBrcBeNE4F59HQVhuZygle571ujMzAhccoFzUVIKqBNqvj9_NamEY_eb-h9PYS2_NHi20B_-PfpXMSxTy-fxQo5Avev2Fk1jeRNie61Fk5xq43sKJM"/>
+</div>
+</header>
+<main class="w-full max-w-md mt-16 mb-24 animate-in fade-in duration-700">
+<div class="thermal-paper bg-white p-8 rounded-t-lg overflow-hidden border border-surface-container">
+<div class="flex flex-col items-center text-center mb-8">
+<div class="mb-4 bg-primary-container/10 p-4 rounded-full">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<h2 class="font-headline font-black text-2xl text-primary tracking-tighter mb-1">Brew &amp; Harvest</h2>
+<p class="text-on-surface-variant text-sm font-medium tracking-wide">THE ARTISANAL</p>
+<div class="mt-6 flex flex-col gap-1 text-xs text-on-surface-variant/80 font-medium">
+<p>123 Đường Brew, TP.HCM</p>
+<p>Điện thoại: 0123-456-789</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-5 mb-8 flex flex-col gap-3 border border-outline-variant/10">
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Hóa đơn</span>
+<span class="font-headline font-bold text-primary">#8842</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Bàn</span>
+<span class="font-headline font-bold text-primary">TR1 (Ground Floor)</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Nhân viên</span>
+<span class="font-body font-semibold">Elena R.</span>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-outline-variant/20">
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant">Thời gian</span>
+<span class="font-body text-xs">24/10/2023 - 09:45 AM</span>
+</div>
+</div>
+<div class="space-y-6 mb-10">
+<div class="flex items-start justify-between group">
+<div class="flex flex-col">
+<span class="font-headline font-bold text-on-surface text-lg">Café Muối</span>
+<span class="font-body text-sm text-on-surface-variant/70">Số lượng: 01</span>
+</div>
+<span class="font-headline font-bold text-primary text-lg">32,000 VND</span>
+</div>
+<div class="flex items-start justify-between group">
+<div class="flex flex-col">
+<span class="font-headline font-bold text-on-surface text-lg">Bạc Xỉu</span>
+<span class="font-body text-sm text-on-surface-variant/70">Số lượng: 02</span>
+</div>
+<span class="font-headline font-bold text-primary text-lg">48,000 VND</span>
+</div>
+<div class="flex items-start justify-between group">
+<div class="flex flex-col">
+<span class="font-headline font-bold text-on-surface text-lg">Trà Đào</span>
+<span class="font-body text-sm text-on-surface-variant/70">Số lượng: 01</span>
+</div>
+<span class="font-headline font-bold text-primary text-lg">40,000 VND</span>
+</div>
+</div>
+<div class="border-t-2 border-dashed border-outline-variant/30 py-6 space-y-3">
+<div class="flex justify-between items-center">
+<span class="font-body text-on-surface-variant">Tạm tính</span>
+<span class="font-body font-semibold">120,000 VND</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body text-on-surface-variant">Thuế VAT (8%)</span>
+<span class="font-body font-semibold">9,600 VND</span>
+</div>
+<div class="flex justify-between items-center pt-4">
+<span class="font-headline font-black text-xl text-on-surface uppercase tracking-tight">Tổng cộng</span>
+<span class="font-headline font-black text-2xl text-primary">129,600 VND</span>
+</div>
+</div>
+<div class="flex flex-col items-center mt-8 py-8 bg-surface-container-low rounded-xl">
+<p class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-4">Quét mã thanh toán</p>
+<div class="bg-white p-3 rounded-lg shadow-sm">
+<img alt="Payment QR" class="w-32 h-32" data-alt="High quality QR code icon on a clean white background with rounded corners for mobile payment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCweq55HNYJ_5fRcDpLDzxzKJ15AmbdmeVLNbsyxS5AnxO9cgkQpEztHkoSVniqa0piNmOxXtx1oCwMMetEN63SfuxFKZJ8Mk9XTJklvBEfTLQ518UjEvrDI1BSuLTr4TAOVv97e4KoNEVSYeaXITj-aHw-ujSslpMJnHRxsrbbX3L2q0fc_GMkeYhKWTNogC93nURYpx9uFDz-eN5PX71xi1K_iz0iFrUgLcwqnnTDofBQn1Hey3uNxOHFhTpEWzH3hYKV4vaF_NcH"/>
+</div>
+<div class="mt-6 text-center">
+<p class="font-headline font-bold text-primary mb-1">Cảm ơn quý khách đã ghé thăm!</p>
+<a class="text-secondary font-semibold text-sm underline underline-offset-4 hover:text-primary transition-colors" href="#">Để lại ý kiến đóng góp cho chúng tôi</a>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center gap-4">
+<button class="flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-full font-headline font-bold shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined">print</span>
+                In Hóa Đơn
+            </button>
+<button class="flex items-center justify-center bg-secondary-container text-on-secondary-container w-14 h-14 rounded-full shadow-lg active:scale-95 transition-all">
+<span class="material-symbols-outlined">share</span>
+</button>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#f9f9f8]/80 backdrop-blur-xl border-t border-zinc-200/20">
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 px-6 py-2 transition-transform duration-300">
+<span class="material-symbols-outlined mb-1">table_restaurant</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-[0.05em]">Table</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 px-6 py-2 transition-transform duration-300">
+<span class="material-symbols-outlined mb-1">coffee</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-[0.05em]">Menu</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 px-6 py-2 transition-transform duration-300">
+<span class="material-symbols-outlined mb-1">shopping_cart</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-[0.05em]">Cart</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#553722] text-white rounded-2xl px-6 py-2 scale-110 duration-300">
+<span class="material-symbols-outlined mb-1">print</span>
+<span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-[0.05em]">Print</span>
+</div>
+</nav>
+</body></html>

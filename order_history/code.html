@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order History - The Artisanal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e2e2e2",
+                        "surface-variant": "#e2e2e2",
+                        "secondary-fixed-dim": "#b0cfad",
+                        "primary-fixed-dim": "#eabda0",
+                        "primary-fixed": "#ffdcc6",
+                        "surface-container": "#eeeeed",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#eec1a4",
+                        "outline": "#82746d",
+                        "surface-container-low": "#f4f4f3",
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#e8e8e7",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f8",
+                        "on-secondary-container": "#506b4f",
+                        "secondary-fixed": "#ccebc7",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ece0dc",
+                        "secondary-container": "#ccebc7",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#d4c3ba",
+                        "primary-container": "#6f4e37",
+                        "tertiary": "#443d3a",
+                        "inverse-on-surface": "#f1f1f0",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#d3c8c5",
+                        "on-secondary-fixed": "#07200b",
+                        "on-surface-variant": "#50453e",
+                        "inverse-primary": "#eabda0",
+                        "on-secondary-fixed-variant": "#334d33",
+                        "on-primary-fixed-variant": "#5f402a",
+                        "on-tertiary-fixed": "#201a18",
+                        "primary": "#553722",
+                        "on-background": "#1a1c1c",
+                        "secondary": "#4a6549",
+                        "surface": "#f9f9f8",
+                        "surface-dim": "#dadad9",
+                        "on-surface": "#1a1c1c",
+                        "tertiary-container": "#5b5451",
+                        "inverse-surface": "#2f3130",
+                        "on-primary-fixed": "#2d1604",
+                        "tertiary-fixed-dim": "#cfc4c0",
+                        "surface-bright": "#f9f9f8",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#79573f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body min-h-screen pb-32">
+<!-- TopAppBar Shell -->
+<header class="bg-[#f9f9f8] dark:bg-[#1a1c1c] w-full sticky top-0 z-50">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#f4f4f3] text-2xl" data-icon="coffee">coffee</span>
+<h1 class="font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3]">The Artisanal</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] transition-colors scale-95 duration-150 ease-in-out">
+<span class="material-symbols-outlined text-[#553722]" data-icon="search">search</span>
+</button>
+</div>
+<div class="bg-[#f4f4f3] dark:bg-[#2a2c2c] h-[1px] w-full"></div>
+</header>
+<main class="px-6 py-8">
+<!-- Hero Editorial Header -->
+<section class="mb-10">
+<span class="font-label text-secondary font-extrabold tracking-widest text-[10px] uppercase mb-2 block">Your Archive</span>
+<h2 class="font-headline text-4xl font-extrabold text-primary leading-none tracking-tighter">Order History</h2>
+<p class="text-on-surface-variant mt-3 text-sm max-w-[280px]">Revisiting your favorite artisanal brews and harvest-fresh selections.</p>
+</section>
+<!-- Chronological Grid -->
+<div class="space-y-6">
+<!-- Order Card 1: Active/Recent -->
+<div class="group relative bg-surface-container-low rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-high border-b-2 border-primary/10">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label text-[11px] font-extrabold uppercase tracking-widest text-secondary block mb-1">COMPLETED</span>
+<h3 class="font-headline text-xl font-bold text-on-surface">Order #8842</h3>
+<p class="text-on-surface-variant text-xs mt-1">Oct 24, 2023 • 08:45 AM</p>
+</div>
+<div class="text-right">
+<span class="font-headline text-xl font-extrabold text-primary">$24.50</span>
+</div>
+</div>
+<div class="flex gap-3 mb-6 overflow-hidden">
+<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Close-up of a perfectly poured cafe latte with intricate heart-shaped latte art in a ceramic cup" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXPd3lbYNHbOZRxgCkULvrhupItGnXNQoLJUs8RUkQz9nyyRseuKdm9Y_uTdh2L2YkHY47a_5VRPiWjGUtmeoJHuSzhRkyKIlqPd0KiXqC2uZoDdH6nVPFHDjVN7_OR2FcdxJ6Th6p_UUt4f7X-q1GnoKT93q3vauepwXWIpz_8eGWvt1h9W1MDa0Rg45YfC_TjAD2TCtDx6Lz15Z2BfPUb_THglSRqXQbWcBEuJgNkTTlzjKylDLBf3z_CgU6iPRG6zmGq1tNbLa-"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-sm font-bold text-on-surface">Honey Oat Latte, Avocado Smash</p>
+<p class="text-xs text-on-surface-variant">+ 1 more item</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-3 bg-primary text-on-primary rounded-full font-label text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="replay">replay</span>
+                        Reorder
+                    </button>
+<button class="w-12 h-12 border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</div>
+<!-- Order Card 2 -->
+<div class="bg-surface-container-low rounded-xl p-6 transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant/60 block mb-1">PAST ORDER</span>
+<h3 class="font-headline text-xl font-bold text-on-surface">Order #8712</h3>
+<p class="text-on-surface-variant text-xs mt-1">Oct 21, 2023 • 12:30 PM</p>
+</div>
+<div class="text-right">
+<span class="font-headline text-xl font-extrabold text-tertiary">$18.20</span>
+</div>
+</div>
+<div class="flex gap-3 mb-6">
+<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A vibrant healthy harvest bowl with kale, quinoa, roasted sweet potatoes, and avocado with bright natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhQq7v-BGKFMGTHTDp_4wO6zHkbHwEMpNxt7FwxlRPPmyiA35awMsk-ze72mhwBR8erx5oeqVk6K5rKHnLncdWeE7MTNRt-sFNwOK2Vg-GazviffGdjkw816oX_kmJrC1VC_qfUfQ2q05ZR48-LtYTQcOBpBO95gCeUEnrn0o_yURqazgwHvf3wZ5o9T7Agbh1iDdMtVRO8uR7OIds0ndeQi_nlricSeT1R1-k6GAP6Zjnx6pzf8pUOGFu1dQAh2AW2-nG-yGK1t5F"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-sm font-bold text-on-surface">Harvest Grain Bowl</p>
+<p class="text-xs text-on-surface-variant">Cold Brew with Sweet Foam</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-3 bg-secondary-container text-on-secondary-container rounded-full font-label text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="replay">replay</span>
+                        Reorder
+                    </button>
+<button class="w-12 h-12 border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</div>
+<!-- Recommendation Interstitial -->
+<div class="my-10 relative h-48 rounded-xl overflow-hidden group">
+<img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Atmospheric shot of a busy artisanal cafe with warm wooden textures and steam rising from an espresso machine" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw4P6cgmaThVowmcqi-SkN0_6M2nd2G4sj9alWv6Obfl30isLd_-08HHV8fZPoaL5e-5rshJy4c1h0qaUZqBLfbjnMPSO7OIzOd33U9Aa7sPSk6ThMZ65bINRYhWUtxukWfPnexOMNHjO_RM8hsGrvl0ow7QHwuFoZtDk3ZtiZG9cIsBl98o39v6KWL4nk_ljoQ9NzQ6AYjWA6Tj_C5sTsjpmA34nPQXuq8qmHhWVUaVNS5sIu9Y5yeNG9eKLQJk0_ktfxZhvcyu4E"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-6">
+<h4 class="text-white font-headline text-lg font-bold">Missing your morning ritual?</h4>
+<p class="text-white/80 text-xs mb-3">Our seasonal Pumpkin Spiced Brew is now back for a limited time.</p>
+<button class="w-max px-6 py-2 bg-white text-primary rounded-full text-xs font-bold uppercase tracking-widest">Order Now</button>
+</div>
+</div>
+<!-- Order Card 3 -->
+<div class="bg-surface-container-low rounded-xl p-6 opacity-80">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="font-label text-[11px] font-extrabold uppercase tracking-widest text-on-surface-variant/60 block mb-1">PAST ORDER</span>
+<h3 class="font-headline text-xl font-bold text-on-surface">Order #8590</h3>
+<p class="text-on-surface-variant text-xs mt-1">Oct 18, 2023 • 09:15 AM</p>
+</div>
+<div class="text-right">
+<span class="font-headline text-xl font-extrabold text-tertiary">$9.50</span>
+</div>
+</div>
+<div class="flex gap-3 mb-6">
+<div class="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="Close up of a rich chocolate brownie with sea salt flakes on a rustic ceramic plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcvPdN6OytHJKtXE43F-HvWvAz2XJywOIE5FDzf-wcbM_tH_zfqVG2nv8o6ep-eAoB9Edf_MELJLfLHyqls2NGaR-Tt09XVu4o4xzyUWQ5KqSoVuapWmFawVKX3TY5LeSHZ_Z-XFczwBnbMVUzejQ61cXGh-zD6KsfCOoeB5r3pB-9H7a8kGwuJcfI_xbStN3ZOoSJRN46YeoLt9PEMmm3Z30txWSPhXSoZl4RZYxQdffZUSOyJwcKetqOKLrN_RRDV0Pjjnah_NUz"/>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-sm font-bold text-on-surface">Sea Salt Brownie</p>
+<p class="text-xs text-on-surface-variant">Flat White</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 py-3 bg-secondary-container text-on-secondary-container rounded-full font-label text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="replay">replay</span>
+                        Reorder
+                    </button>
+<button class="w-12 h-12 border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl rounded-t-[3rem] shadow-[0_-20px_40px_rgba(80,69,62,0.08)]">
+<!-- Menu Tab -->
+<a class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Menu</span>
+</a>
+<!-- Cart Tab -->
+<a class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Cart</span>
+</a>
+<!-- Kitchen Tab -->
+<a class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="cooking">cooking</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Kitchen</span>
+</a>
+<!-- History Tab (Active) -->
+<a class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">History</span>
+</a>
+</nav>
+</body></html>

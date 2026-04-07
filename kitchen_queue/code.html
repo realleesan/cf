@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-error-container": "#93000a",
+                    "surface-container-highest": "#e2e2e2",
+                    "surface-variant": "#e2e2e2",
+                    "secondary-fixed-dim": "#b0cfad",
+                    "primary-fixed-dim": "#eabda0",
+                    "primary-fixed": "#ffdcc6",
+                    "surface-container": "#eeeeed",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#eec1a4",
+                    "outline": "#82746d",
+                    "surface-container-low": "#f4f4f3",
+                    "on-tertiary-fixed-variant": "#4c4542",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e8e8e7",
+                    "on-primary": "#ffffff",
+                    "background": "#f9f9f8",
+                    "on-secondary-container": "#506b4f",
+                    "secondary-fixed": "#ccebc7",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ece0dc",
+                    "secondary-container": "#ccebc7",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#d4c3ba",
+                    "primary-container": "#6f4e37",
+                    "tertiary": "#443d3a",
+                    "inverse-on-surface": "#f1f1f0",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-container": "#d3c8c5",
+                    "on-secondary-fixed": "#07200b",
+                    "on-surface-variant": "#50453e",
+                    "inverse-primary": "#eabda0",
+                    "on-secondary-fixed-variant": "#334d33",
+                    "on-primary-fixed-variant": "#5f402a",
+                    "on-tertiary-fixed": "#201a18",
+                    "primary": "#553722",
+                    "on-background": "#1a1c1c",
+                    "secondary": "#4a6549",
+                    "surface": "#f9f9f8",
+                    "surface-dim": "#dadad9",
+                    "on-surface": "#1a1c1c",
+                    "tertiary-container": "#5b5451",
+                    "inverse-surface": "#2f3130",
+                    "on-primary-fixed": "#2d1604",
+                    "tertiary-fixed-dim": "#cfc4c0",
+                    "surface-bright": "#f9f9f8",
+                    "on-error": "#ffffff",
+                    "surface-tint": "#79573f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body text-on-surface selection:bg-secondary-container selection:text-on-secondary-container min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-[#f9f9f8] dark:bg-[#1a1c1c]">
+<div class="flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#f4f4f3]" data-icon="coffee">coffee</span>
+<h1 class="font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3]">The Artisanal</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 items-center">
+<button class="text-[#a1a1a1] font-label font-bold text-sm tracking-widest hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] px-4 py-2 rounded-full transition-colors">MENU</button>
+<button class="text-[#a1a1a1] font-label font-bold text-sm tracking-widest hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] px-4 py-2 rounded-full transition-colors">CART</button>
+<button class="text-[#553722] dark:text-[#f4f4f3] font-label font-bold text-sm tracking-widest bg-surface-container-low px-4 py-2 rounded-full transition-colors">KITCHEN</button>
+<button class="text-[#a1a1a1] font-label font-bold text-sm tracking-widest hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] px-4 py-2 rounded-full transition-colors">HISTORY</button>
+</div>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a head chef in a clean white uniform with a friendly expression in a modern kitchen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwImUgdQryxiwIzuU2N77GzfANGL8DDIB1gdbJXyw8OYXRnu-qCSDVCAgmVqLoRRWh4O89tX4C_uo4YDq9jGnLHGCYqYnw8kLTwxge8boZQmv2ynqtJtTDm5ppYjJ9NMc2btaBgV9c4WvzLwggzy9LUPKIgteRc7n_ye4LR9tbEJteGEUq0OC9-OAA-5SNHT2eGOvDV386hNA6QklbH6YxoX3SPZx3E4vOCuQDYEQ8p95dNNMqojt76cEvEUMYyt0IyV8z9w0rYE19"/>
+</button>
+</div>
+</div>
+<div class="bg-[#f4f4f3] dark:bg-[#2a2c2c] h-[1px] w-full"></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+<!-- Quick Stats & Filter Row -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div>
+<h2 class="font-headline text-4xl font-extrabold text-primary mb-2">Live Kitchen Board</h2>
+<p class="font-body text-on-surface-variant max-w-md">Real-time order synchronization for high-volume service. Speed is the secret ingredient.</p>
+</div>
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-3 rounded-full bg-primary text-white font-label font-bold text-sm flex items-center gap-2 shadow-xl shadow-primary/20">
+<span class="material-symbols-outlined text-sm" data-icon="pending">pending</span>
+                    ACTIVE (8)
+                </button>
+<button class="px-6 py-3 rounded-full bg-secondary-container text-on-secondary-container font-label font-bold text-sm flex items-center gap-2 hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="check_circle">check_circle</span>
+                    READY (12)
+                </button>
+<button class="px-3 py-3 rounded-full bg-surface-container-low text-on-surface-variant flex items-center justify-center hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</section>
+<!-- Kitchen Order Grid: Bento Inspired Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+<!-- Order Card 1: Urgent -->
+<div class="group bg-surface-container-low p-1 rounded-xl transition-all duration-300 hover:bg-gradient-to-br hover:from-primary/10 hover:to-transparent">
+<div class="bg-surface-container-lowest p-6 rounded-[2.5rem] h-full flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold">Order Number</span>
+<h3 class="font-headline text-3xl font-black text-primary">#402</h3>
+</div>
+<div class="bg-error-container text-on-error-container px-3 py-1 rounded-full font-label text-[10px] font-black tracking-tighter">
+                            URGENT • 12 MIN
+                        </div>
+</div>
+<div class="space-y-4 flex-grow">
+<div class="flex justify-between items-center group/item">
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">2</span>
+<span class="font-body font-extrabold text-lg uppercase tracking-tight">BẠC XỈU</span>
+</div>
+<span class="text-tertiary font-body font-bold">Iced</span>
+</div>
+<div class="flex justify-between items-center group/item">
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">1</span>
+<span class="font-body font-extrabold text-lg uppercase tracking-tight">TRÀ ĐÀO</span>
+</div>
+<span class="text-tertiary font-body font-bold">Extra Syrup</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<div class="bg-surface-container-low p-4 rounded-lg mb-6">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="notes">notes</span>
+<span class="font-label text-[10px] uppercase font-black text-on-surface-variant">Instructions</span>
+</div>
+<p class="font-body text-sm text-on-surface italic">"Less condensed milk for both coffees please. Extra cup of ice."</p>
+</div>
+<button class="w-full bg-primary text-white py-4 rounded-full font-label font-bold tracking-widest flex items-center justify-center gap-2 transition-transform active:scale-95">
+                            START PREPARING
+                            <span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Order Card 2: Preparing -->
+<div class="group bg-surface-container-high p-1 rounded-xl">
+<div class="bg-surface-container-lowest p-6 rounded-[2.5rem] h-full flex flex-col border-2 border-secondary/20">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold">Order Number</span>
+<h3 class="font-headline text-3xl font-black text-primary">#405</h3>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label text-[10px] font-black tracking-tighter">
+                            PREPARING...
+                        </div>
+</div>
+<div class="space-y-4 flex-grow">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center font-bold text-sm">1</span>
+<span class="font-body font-extrabold text-lg uppercase tracking-tight">ESPRESSO TONIC</span>
+</div>
+<span class="text-tertiary font-body font-bold">Single Shot</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center font-bold text-sm">1</span>
+<span class="font-body font-extrabold text-lg uppercase tracking-tight">LATTE ART</span>
+</div>
+<span class="text-tertiary font-body font-bold">Oat Milk</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant flex items-center justify-center font-bold text-sm">2</span>
+<span class="font-body font-extrabold text-lg uppercase tracking-tight">CROISSANT</span>
+</div>
+<span class="text-tertiary font-body font-bold">Heated</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<div class="flex gap-3">
+<button class="flex-1 border-2 border-outline-variant text-on-surface-variant py-4 rounded-full font-label font-bold tracking-widest transition-colors hover:bg-surface-container-low">
+                                REVERT
+                            </button>
+<button class="flex-[2] bg-secondary text-white py-4 rounded-full font-label font-bold tracking-widest flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-lg shadow-secondary/20">
+                                MARK AS READY
+                                <span class="material-symbols-outlined" data-icon="check">check</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Card 3: Standard -->
+<div class="group bg-surface-container-low p-1 rounded-xl">
+<div class="bg-surface-container-lowest p-6 rounded-[2.5rem] h-full flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold">Order Number</span>
+<h3 class="font-headline text-3xl font-black text-primary">#406</h3>
+</div>
+<div class="bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full font-label text-[10px] font-black tracking-tighter">
+                            PENDING • 2 MIN
+                        </div>
+</div>
+<div class="space-y-4 flex-grow">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">3</span>
+<span class="font-body font-extrabold text-lg uppercase tracking-tight">COLD BREW</span>
+</div>
+<span class="text-tertiary font-body font-bold">Original</span>
+</div>
+</div>
+<div class="mt-8 pt-6 border-t border-outline-variant/20">
+<button class="w-full bg-primary text-white py-4 rounded-full font-label font-bold tracking-widest flex items-center justify-center gap-2 transition-transform active:scale-95">
+                            START PREPARING
+                            <span class="material-symbols-outlined" data-icon="play_arrow">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Order Card 4: Detailed Order -->
+<div class="group bg-surface-container-low p-1 rounded-xl lg:col-span-2">
+<div class="bg-surface-container-lowest p-8 rounded-[2.5rem] h-full flex flex-col md:flex-row gap-8">
+<div class="flex-1">
+<div class="flex justify-between items-start mb-8">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold">Group Order</span>
+<h3 class="font-headline text-4xl font-black text-primary">#399</h3>
+</div>
+<div class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full font-label text-xs font-black tracking-widest">
+                                WAITING • 18 MIN
+                            </div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
+<div class="flex justify-between items-center p-3 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">4</span>
+<span class="font-body font-bold uppercase text-sm">Sữa Đá</span>
+</div>
+<span class="text-xs text-on-surface-variant">Hot</span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">2</span>
+<span class="font-body font-bold uppercase text-sm">Cold Brew Berry</span>
+</div>
+<span class="text-xs text-on-surface-variant">Large</span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">1</span>
+<span class="font-body font-bold uppercase text-sm">Matcha Latte</span>
+</div>
+<span class="text-xs text-on-surface-variant">Oat</span>
+</div>
+<div class="flex justify-between items-center p-3 rounded-2xl bg-surface-container-low">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">1</span>
+<span class="font-body font-bold uppercase text-sm">Cappuccino</span>
+</div>
+<span class="text-xs text-on-surface-variant">Soy</span>
+</div>
+</div>
+</div>
+<div class="md:w-72 flex flex-col justify-between pt-4">
+<div class="bg-secondary-container/30 p-5 rounded-3xl">
+<h4 class="font-label text-[10px] font-black uppercase text-secondary mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="person">person</span>
+                                Customer Note
+                            </h4>
+<p class="font-body text-sm leading-relaxed text-on-secondary-container">Table 12. Deliver everything together. Guest is celebrating a birthday.</p>
+</div>
+<div class="mt-8 space-y-3">
+<button class="w-full bg-primary text-white py-4 rounded-full font-label font-bold tracking-widest flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-xl shadow-primary/20">
+                                START BATCH
+                                <span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+<button class="w-full border-2 border-outline-variant text-on-surface-variant py-3 rounded-full font-label font-bold text-xs tracking-widest">
+                                FLAG FOR REVIEW
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Order Card 5: Single Item Quick -->
+<div class="group bg-surface-container-low p-1 rounded-xl">
+<div class="bg-surface-container-lowest p-6 rounded-[2.5rem] h-full flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div>
+<span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold">Express</span>
+<h3 class="font-headline text-3xl font-black text-primary">#407</h3>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="electric_bolt">electric_bolt</span>
+</div>
+<div class="py-8">
+<div class="flex items-center gap-5">
+<span class="text-5xl font-black text-secondary">1</span>
+<div>
+<span class="font-headline text-2xl font-extrabold uppercase leading-tight block">AVOCADO<br/>SMOOTHIE</span>
+<span class="font-body text-secondary font-bold text-sm">Sugar-free</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary text-white py-4 rounded-full font-label font-bold tracking-widest flex items-center justify-center gap-2">
+                        READY NOW
+                        <span class="material-symbols-outlined" data-icon="done_all">done_all</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Visible on Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10 md:hidden">
+<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Cart</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="cooking">cooking</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Kitchen</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">History</span>
+</button>
+</nav>
+<script type="module">
+import { auth, db } from '../supabase.js'
+
+document.addEventListener('DOMContentLoaded', init)
+
+async function init() {
+  const { data: { user } } = await auth.getUser()
+  if (!user) {
+    showLoginModal()
+  } else {
+    await loadKitchen()
+  }
+}
+
+function showLoginModal() {
+  const modal = document.createElement('div')
+  modal.id = 'login-modal'
+  modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'
+  modal.innerHTML = `
+    <div class="bg-surface p-8 rounded-xl max-w-md w-full mx-4">
+      <h2 class="text-2xl font-bold mb-4">Staff Login</h2>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required class="w-full p-3 border rounded mb-4">
+        <input type="password" id="password" placeholder="Password" required class="w-full p-3 border rounded mb-4">
+        <button type="submit" class="w-full bg-primary text-white py-3 rounded font-bold">Login</button>
+      </form>
+      <div id="error" class="text-error mt-4 hidden"></div>
+    </div>
+  `
+  document.body.appendChild(modal)
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const email = e.target.email.value
+    const password = e.target.password.value
+    const { error } = await auth.signIn(email, password)
+    if (error) {
+      document.getElementById('error').textContent = error.message
+      document.getElementById('error').classList.remove('hidden')
+    } else {
+      modal.remove()
+      await loadKitchen()
+    }
+  })
+}
+
+async function loadKitchen() {
+  const { data: orders, error } = await db.getActiveOrders()
+  if (error) {
+    console.error('Error loading orders:', error)
+    return
+  }
+  const ordersWithItems = await Promise.all(orders.map(async (order) => {
+    const { data: items } = await db.getOrderItems(order.id)
+    return { ...order, items: items || [] }
+  }))
+  populateOrders(ordersWithItems)
+  updateStats(ordersWithItems)
+}
+
+function populateOrders(orders) {
+  const grid = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3')
+  grid.innerHTML = ''
+  orders.forEach(order => {
+    const card = createOrderCard(order)
+    grid.appendChild(card)
+  })
+}
+
+function createOrderCard(order) {
+  const status = order.status
+  const statusClass = status === 'urgent' ? 'bg-error-container text-on-error-container' : status === 'preparing' ? 'bg-secondary-container text-on-secondary-container' : 'bg-surface-container-low text-on-surface-variant'
+  const buttonText = status === 'pending' ? 'START PREPARING' : status === 'preparing' ? 'MARK READY' : 'COMPLETE'
+  const buttonIcon = status === 'pending' ? 'play_arrow' : status === 'preparing' ? 'check_circle' : 'done'
+  const card = document.createElement('div')
+  card.className = 'group bg-surface-container-low p-1 rounded-xl transition-all duration-300 hover:bg-gradient-to-br hover:from-primary/10 hover:to-transparent'
+  card.innerHTML = `
+    <div class="bg-surface-container-lowest p-6 rounded-[2.5rem] h-full flex flex-col">
+      <div class="flex justify-between items-start mb-6">
+        <div>
+          <span class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 font-bold">Order Number</span>
+          <h3 class="font-headline text-3xl font-black text-primary">#${order.order_number}</h3>
+        </div>
+        <div class="${statusClass} px-3 py-1 rounded-full font-label text-[10px] font-black tracking-tighter">
+          ${status.toUpperCase()} • ${Math.floor((new Date() - new Date(order.order_time)) / 60000)} MIN
+        </div>
+      </div>
+      <div class="space-y-4 flex-grow">
+        ${order.items.map(item => `
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-4">
+              <span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">${item.quantity}</span>
+              <span class="font-body font-extrabold text-lg uppercase tracking-tight">${item.menu_items?.name || 'Item'}</span>
+            </div>
+            <span class="text-tertiary font-body font-bold">${item.special_instructions || ''}</span>
+          </div>
+        `).join('')}
+      </div>
+      ${order.special_instructions ? `
+        <div class="mt-8 pt-6 border-t border-outline-variant/20">
+          <div class="bg-surface-container-low p-4 rounded-lg mb-6">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="material-symbols-outlined text-sm text-primary">notes</span>
+              <span class="font-label text-[10px] uppercase font-black text-on-surface-variant">Instructions</span>
+            </div>
+            <p class="font-body text-sm text-on-surface italic">"${order.special_instructions}"</p>
+          </div>
+        </div>
+      ` : '<div class="mt-8 pt-6 border-t border-outline-variant/20"></div>'}
+      <button class="update-status w-full bg-primary text-white py-4 rounded-full font-label font-bold tracking-widest flex items-center justify-center gap-2 transition-transform active:scale-95" data-order-id="${order.id}" data-new-status="${status === 'pending' ? 'preparing' : status === 'preparing' ? 'ready' : 'completed'}">
+        ${buttonText}
+        <span class="material-symbols-outlined" data-icon="${buttonIcon}">${buttonIcon}</span>
+      </button>
+    </div>
+  `
+  return card
+}
+
+function updateStats(orders) {
+  const activeCount = orders.filter(o => ['pending', 'preparing', 'urgent'].includes(o.status)).length
+  const readyCount = orders.filter(o => o.status === 'ready').length
+  const activeButton = document.querySelector('button').parentElement.querySelector('[data-icon="pending"]').parentElement
+  activeButton.querySelector('span:last-child').textContent = `ACTIVE (${activeCount})`
+  const readyButton = document.querySelector('[data-icon="check_circle"]').parentElement
+  readyButton.querySelector('span:last-child').textContent = `READY (${readyCount})`
+}
+
+document.addEventListener('click', async (e) => {
+  if (e.target.closest('.update-status')) {
+    const button = e.target.closest('.update-status')
+    const orderId = button.dataset.orderId
+    const newStatus = button.dataset.newStatus
+    const { error } = await db.updateOrderStatus(orderId, newStatus)
+    if (!error) {
+      await loadKitchen()
+    } else {
+      console.error('Error updating status:', error)
+    }
+  }
+})
+</script>
+</body></html>

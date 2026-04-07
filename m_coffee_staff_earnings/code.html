@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>M Coffee - Staff Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#4c4542",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed": "#ece0dc",
+                        "primary-container": "#6f4e37",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eeeeed",
+                        "on-secondary-container": "#506b4f",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#ccebc7",
+                        "surface": "#f9f9f8",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#5b5451",
+                        "on-tertiary-container": "#d3c8c5",
+                        "surface-tint": "#79573f",
+                        "surface-variant": "#e2e2e2",
+                        "inverse-primary": "#eabda0",
+                        "inverse-on-surface": "#f1f1f0",
+                        "on-tertiary-fixed": "#201a18",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed": "#2d1604",
+                        "secondary-fixed": "#ccebc7",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9f8",
+                        "primary-fixed": "#ffdcc6",
+                        "on-surface": "#1a1c1c",
+                        "on-background": "#1a1c1c",
+                        "surface-container-low": "#f4f4f3",
+                        "inverse-surface": "#2f3130",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#dadad9",
+                        "on-secondary-fixed": "#07200b",
+                        "surface-container-highest": "#e2e2e2",
+                        "tertiary-fixed-dim": "#cfc4c0",
+                        "on-surface-variant": "#50453e",
+                        "primary-fixed-dim": "#eabda0",
+                        "outline-variant": "#d4c3ba",
+                        "primary": "#553722",
+                        "on-secondary-fixed-variant": "#334d33",
+                        "on-error": "#ffffff",
+                        "tertiary": "#443d3a",
+                        "secondary": "#4a6549",
+                        "secondary-fixed-dim": "#b0cfad",
+                        "surface-container-high": "#e8e8e7",
+                        "outline": "#82746d",
+                        "on-primary-container": "#eec1a4",
+                        "surface-bright": "#f9f9f8",
+                        "on-primary-fixed-variant": "#5f402a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#f9f9f8] dark:bg-stone-950 flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#553722] dark:text-[#d7ccc8] transition-opacity duration-200 active:opacity-70 cursor-pointer" data-icon="menu">menu</span>
+<h1 class="text-2xl font-extrabold text-[#553722] dark:text-[#d7ccc8] font-['Plus_Jakarta_Sans'] tracking-tight">M Coffee</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional male manager in a clean minimalist studio setting with warm natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqfvmUcrMQnYTB2-JGJ6sI67JUbLc1AGW8gNhRoaTCOCDvpYdD61dNJuUfIQ72IC4hFm8FqOS8Vx0ftr1mI8uqL2791b2k22LXPOqJOuQjfc802Ux77TF5Fndtn0n-smVWFhiz5QHdcRS0umJFsgxGqhTTJEAQkb-1ewxhZy3eEfHYHPbZsETqpz3weYRA-97gPLH7K1w-IBaJT86o17nDQPApXRsEnii1FbKeiEYCvLXvqos9-cITwET5ZjXg3b6KZ6WMbVlDScmX"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-5xl mx-auto">
+<!-- Editorial Header Section -->
+<section class="mb-10">
+<span class="font-label text-xs font-semibold uppercase tracking-wider text-primary mb-2 block">Management Portal</span>
+<h2 class="text-4xl md:text-5xl font-headline font-extrabold text-primary tracking-tight mb-4">Staff Performance</h2>
+<p class="text-on-surface-variant max-w-xl font-body leading-relaxed">Monitor team contributions and manage individual earnings across seasonal shifts with artisanal precision.</p>
+</section>
+<!-- Date Range Filter: Tonal Layering -->
+<section class="mb-12">
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+<div class="space-y-1">
+<p class="font-headline font-bold text-lg text-primary">Earnings Period</p>
+<p class="text-sm text-on-surface-variant">Select range to update statistics</p>
+</div>
+<div class="flex flex-wrap gap-3">
+<button class="px-6 py-2.5 rounded-full bg-secondary text-on-secondary font-label text-sm font-semibold transition-all hover:opacity-90 active:scale-95">Today</button>
+<button class="px-6 py-2.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-semibold hover:bg-surface-container-high transition-all active:scale-95">Last 7 Days</button>
+<button class="px-6 py-2.5 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-sm font-semibold hover:bg-surface-container-high transition-all active:scale-95">This Month</button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary-container text-white font-label text-sm font-semibold hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+                            Custom
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Staff List: Bento/Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Staff Card 1 -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-xl shadow-[0_20px_40px_rgba(80,69,62,0.05)] hover:shadow-[0_25px_50px_rgba(80,69,62,0.1)] transition-all duration-300">
+<div class="flex items-start justify-between mb-8">
+<div class="flex items-center gap-5">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-primary-container/10">
+<img class="w-full h-full object-cover" data-alt="Portrait of a professional barista wearing a linen apron in a sunlit craft coffee shop interior" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKLXRLr90fzT7TdskHXG9xwfI5HV_qS0X0_U_lVbVLcFUawvbS4Ce8HhTeK7W66Fru54unXL_MwTJ-Nxi_8TcIhOB8jdOFJNW6YqYokl5JkNn-gGCabLmXmULxl4bJHqdzGCrYPZPn_qX77XBxlMURf2H-Rs8zKer6nbyQxdvlIR4H7UPj8gXyL5nihquPzW_ZAUm61n06XnZZlwR-5dHKaSDqtGuDRmZBPaes3_yBHPkBW_GwKcyTQgW7YEjVI8dWzLGwkh29Mk5u"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-primary">Alex Nguyen</h3>
+<span class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest mt-1">Senior Barista</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary/30" data-icon="more_vert">more_vert</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-lg bg-surface-container-low">
+<p class="text-xs font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Thu nhập trong khoảng ngày:</p>
+<p class="text-2xl font-headline font-extrabold text-primary">$1,240.50</p>
+</div>
+<div class="flex items-center justify-between text-sm px-1">
+<span class="text-on-surface-variant">Shift completion</span>
+<span class="font-bold text-secondary">98%</span>
+</div>
+</div>
+</div>
+<!-- Staff Card 2 -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-xl shadow-[0_20px_40px_rgba(80,69,62,0.05)] hover:shadow-[0_25px_50px_rgba(80,69,62,0.1)] transition-all duration-300">
+<div class="flex items-start justify-between mb-8">
+<div class="flex items-center gap-5">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-primary-container/10">
+<img class="w-full h-full object-cover" data-alt="candid shot of a young female cafe manager working on a tablet in a bright modern organic coffee house" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWfutbDOb2UvyhAn_Qt41KwwulLJ3MFoXh7ymFaxwwLweo_Ue7-YwqdhYb8I7SZWiOb_ORXuL6YHMwqp08eOLYrM55FlPATf_U3M2YNdoEfDHHHTBW_HUyd9zAbXW4WK0fGA-MvAD-feocM06bnRXn57urRkTufz_vxd8O17Meu_HImWsZkIoGNA_lep9-gDP5X280VG5dfk8Je22oucNW6d3Ekl55CQzvoJqIS7zpkO0ai64H736a6RUzOhxUjVDX6HeKjWNYsItP"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-primary">Elena Rossi</h3>
+<span class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest mt-1">Floor Manager</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary/30" data-icon="more_vert">more_vert</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-lg bg-surface-container-low">
+<p class="text-xs font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Thu nhập trong khoảng ngày:</p>
+<p class="text-2xl font-headline font-extrabold text-primary">$2,850.00</p>
+</div>
+<div class="flex items-center justify-between text-sm px-1">
+<span class="text-on-surface-variant">Active hours</span>
+<span class="font-bold text-secondary">164h</span>
+</div>
+</div>
+</div>
+<!-- Staff Card 3 -->
+<div class="group relative bg-surface-container-lowest p-8 rounded-xl shadow-[0_20px_40px_rgba(80,69,62,0.05)] hover:shadow-[0_25px_50px_rgba(80,69,62,0.1)] transition-all duration-300">
+<div class="flex items-start justify-between mb-8">
+<div class="flex items-center gap-5">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden border-2 border-primary-container/10">
+<img class="w-full h-full object-cover" data-alt="portrait of a male waiter smiling warmly in a high-end minimalist restaurant setting with soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAabOJCs9pcEWqt55V3a3uE8FmM-IG-EPtMIvamZxiDOjGrhL-3RgJQvEdlSx3f4tzfgw-w-mAQr4DDfDZrN6pPReYTu0Gb5Zg42WYORWIqXcoVYUrvBhETZA2DIbPeD-8s9zuB3qe_QVUu64xuRNvSVZSzX8YNAa08CwHNpVWYxy93hGuxLGiX0cta0YeYG5Uk_fCP0tPWwW3q7Le7wkwZMEvmxdavfVONN4fOWrTqqGGxDz6IKiHioWwc_AJPPShZKe27cBySBL9P"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-primary">Marcus Wright</h3>
+<span class="inline-block px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-widest mt-1">Waiter</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary/30" data-icon="more_vert">more_vert</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-lg bg-surface-container-low">
+<p class="text-xs font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-1">Thu nhập trong khoảng ngày:</p>
+<p class="text-2xl font-headline font-extrabold text-primary">$945.20</p>
+</div>
+<div class="flex items-center justify-between text-sm px-1">
+<span class="text-on-surface-variant">Customer Rating</span>
+<span class="font-bold text-secondary">4.9/5</span>
+</div>
+</div>
+</div>
+<!-- Staff Card 4 (Empty State/Add New) -->
+<div class="flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed border-outline-variant hover:border-primary/40 hover:bg-surface-container-low/50 transition-all cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary" data-icon="person_add">person_add</span>
+</div>
+<h3 class="text-lg font-headline font-bold text-primary">Add Team Member</h3>
+<p class="text-sm text-on-surface-variant text-center mt-1">Onboard new staff and define roles</p>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-[#f9f9f8]/80 dark:bg-stone-950/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] flex justify-around items-center px-4 pb-6 pt-3">
+<!-- Orders -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Manrope'] text-xs font-semibold uppercase tracking-wider mt-1">Orders</span>
+</a>
+<!-- Staff (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-[#6f4e37] dark:bg-[#553722] text-white rounded-full px-6 py-2 transition-transform duration-200 scale-95 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-['Manrope'] text-xs font-semibold uppercase tracking-wider mt-1">Staff</span>
+</a>
+<!-- Inventory -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-['Manrope'] text-xs font-semibold uppercase tracking-wider mt-1">Inventory</span>
+</a>
+<!-- Settings -->
+<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Manrope'] text-xs font-semibold uppercase tracking-wider mt-1">Settings</span>
+</a>
+</nav>
+</body></html>
