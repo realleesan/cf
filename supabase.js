@@ -51,14 +51,14 @@
             },
             async createOrder(orderData) {
                 const { data: latest } = await supabase.from('orders').select('order_number').order('created_at', { ascending: false }).limit(1);
-                const nextNo = latest && latest.length > 0 ? latest[0].order_number + 1 : 1;
+                const nextNo = latest && latest.length > 0 ? (parseInt(latest[0].order_number) || 1000) + 1 : 1001;
                 
                 const { data: order, error: orderErr } = await supabase.from('orders').insert([{
                     table_id: orderData.table_id,
                     order_type: orderData.order_type,
-                    order_number: nextNo,
+                    order_number: nextNo.toString(),
                     status: 'pending',
-                    total_amount: orderData.items.reduce((sum, i) => sum + (i.price * i.quantity), 0) * 1.08,
+                    subtotal: orderData.items.reduce((sum, i) => sum + (i.price * i.quantity), 0), tax_amount: orderData.items.reduce((sum, i) => sum + (i.price * i.quantity), 0) * 0.08, total_amount: orderData.items.reduce((sum, i) => sum + (i.price * i.quantity), 0) * 1.08,
                     special_instructions: orderData.special_instructions
                 }]).select();
                 if (orderErr) throw orderErr;
@@ -67,7 +67,8 @@
                     order_id: order[0].id,
                     menu_item_id: i.menu_item_id,
                     quantity: i.quantity,
-                    price: i.price
+                    unit_price: i.price,
+                    total_price: i.price * i.quantity
                 }));
                 const { error: itemsErr } = await supabase.from('order_items').insert(items);
                 if (itemsErr) throw itemsErr;
@@ -99,3 +100,4 @@
         };
     }
 })();
+

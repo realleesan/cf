@@ -176,7 +176,7 @@
                     <div class="space-y-2 mb-4">
                         <div class="flex justify-between">
                             <span class="text-sm text-on-surface-variant">Table</span>
-                            <span class="text-sm font-bold">${order.table?.table_number || 'Takeaway'}</span>
+                            <span class="text-sm font-bold">${order.order_type === 'takeaway' ? 'Takeaway' : `Table ${order.tables?.table_number || '?'}`}</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-sm text-on-surface-variant">Served by</span>
