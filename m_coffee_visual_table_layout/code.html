@@ -154,7 +154,12 @@
 
         function renderVisualLayout() {
             const container = document.getElementById('visual-layout');
-            const filtered = tables.filter(t => t.floor_zone?.toLowerCase() === currentFloor.toLowerCase() || (!t.floor_zone && currentFloor === 'ground'));
+            const filtered = tables.filter(t => {
+                if (!t.floor_zone) return currentFloor === 'ground';
+                const zone = t.floor_zone.toLowerCase();
+                if (currentFloor === 'ground') return zone === 'ground' || zone === 'ground_floor';
+                return zone.includes(currentFloor.toLowerCase());
+            });
             const availableCount = tables.filter(t => t.status === 'available').length;
             const occupiedCount = tables.filter(t => t.status === 'occupied').length;
 
