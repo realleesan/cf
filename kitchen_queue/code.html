@@ -275,6 +275,8 @@
     }
 
     async function startPreparing(orderId) {
+        const api = window.api;
+        if (!api) return;
         try {
             await api.updateOrderStatus(orderId, 'preparing');
             await loadOrders();
@@ -286,11 +288,15 @@
 
     // Mark order as ready
     async function markReady(orderId) {
+        const api = window.api;
+        if (!api) return;
         try {
             await api.updateOrderStatus(orderId, 'ready');
             
             // Print kitchen ticket after marking ready
-            await printKitchenTicket(orderId);
+            if (typeof printKitchenTicket === 'function') {
+                await printKitchenTicket(orderId);
+            }
             
             await loadOrders();
         } catch (err) {
