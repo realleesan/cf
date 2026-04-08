@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - The Artisanal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#553722',
+                        'on-primary': '#ffffff',
+                        'primary-container': '#6f4e37',
+                        secondary: '#4a6549',
+                        'on-secondary': '#ffffff',
+                        'secondary-container': '#ccebc7',
+                        surface: '#f9f9f8',
+                        'surface-container': '#eeeeed',
+                        'on-surface': '#1a1c1c',
+                        'on-surface-variant': '#50453e',
+                    },
+                    fontFamily: {
+                        'body': ['Manrope', 'sans-serif'],
+                        'heading': ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface min-h-screen font-body flex items-center justify-center p-6">
+    <div class="w-full max-w-md">
+        <!-- Logo & Title -->
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="material-symbols-outlined text-4xl text-white">storefront</span>
+            </div>
+            <h1 class="text-2xl font-bold font-heading text-primary">The Artisanal</h1>
+            <p class="text-on-surface-variant mt-2">Đăng nhập để tiếp tục</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg">
+            <form id="login-form" class="space-y-6">
+                <!-- Username -->
+                <div>
+                    <label class="block text-sm font-bold text-on-surface mb-2">Tên đăng nhập</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">person</span>
+                        <input type="text" id="username" required
+                            class="w-full pl-12 pr-4 py-3 bg-surface-container rounded-xl border-b-2 border-transparent focus:border-primary focus:bg-surface-container-low outline-none transition-all"
+                            placeholder="Nhập tên đăng nhập">
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm font-bold text-on-surface mb-2">Mật khẩu</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">lock</span>
+                        <input type="password" id="password" required
+                            class="w-full pl-12 pr-4 py-3 bg-surface-container rounded-xl border-b-2 border-transparent focus:border-primary focus:bg-surface-container-low outline-none transition-all"
+                            placeholder="Nhập mật khẩu">
+                        <button type="button" id="toggle-password" class="absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" id="login-btn"
+                    class="w-full py-4 bg-primary text-white rounded-xl font-bold text-lg hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+                    <span>Đăng nhập</span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </form>
+
+            <!-- Error Message -->
+            <div id="error-msg" class="mt-4 p-4 bg-red-100 text-red-700 rounded-xl hidden"></div>
+            <!-- Success Message -->
+            <div id="success-msg" class="mt-4 p-4 bg-green-100 text-green-700 rounded-xl hidden"></div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // Supabase configuration
+        var SUPABASE_URL = 'https://upqccnvdsovqrklbmsvw.supabase.co';
+        var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcWNjbnZkc292cXJrbGJtc3Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njk0MDEsImV4cCI6MjA5MTE0NTQwMX0.d1-H0TKBrVbXtMrfBc9OVU6KPvODd5f5OXp8Bzg4hXU';
+        
+        // Create or reuse Supabase client
+        if (!window.supabaseClient) {
+            window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+        var supabase = window.supabaseClient;
+
+        // Toggle password visibility
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('span');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                passwordInput.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        });
+
+        // Login form submission
+        document.getElementById('login-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('login-btn');
+            const errorMsg = document.getElementById('error-msg');
+            const successMsg = document.getElementById('success-msg');
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Đang đăng nhập...';
+            errorMsg.classList.add('hidden');
+            successMsg.classList.add('hidden');
+
+            try {
+                // Authenticate with staff table
+                const { data: staff, error } = await supabase
+                    .from('staff')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('is_active', true)
+                    .single();
+
+                if (error || !staff) {
+                    errorMsg.textContent = 'Tên đăng nhập không tồn tại.';
+                    errorMsg.classList.remove('hidden');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<span>Đăng nhập</span><span class="material-symbols-outlined">arrow_forward</span>';
+                    return;
+                }
+
+                // Verify password
+                if (staff.password !== password) {
+                    errorMsg.textContent = 'Mật khẩu không đúng.';
+                    errorMsg.classList.remove('hidden');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<span>Đăng nhập</span><span class="material-symbols-outlined">arrow_forward</span>';
+                    return;
+                }
+
+                // Save user info
+                localStorage.setItem('user', JSON.stringify({
+                    id: staff.id,
+                    username: staff.username,
+                    fullName: staff.full_name,
+                    role: staff.role,
+                    loginTime: new Date().toISOString()
+                }));
+
+                // Show success message
+                const successMsg = document.getElementById('success-msg');
+                successMsg.textContent = 'Đăng nhập thành công! Đang chuyển...';
+                successMsg.classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+
+                // Redirect based on role from database
+                setTimeout(() => {
+                    const rolePaths = {
+                        'admin': 'hi_u_su_t_nh_n_vi_n_m_coffee/code.html',
+                        'cashier': 'customer_menu/code.html',
+                        'kitchen': 'kitchen_queue/code.html',
+                        'manager': 'table_management_1/code.html'
+                    };
+                    window.location.href = rolePaths[staff.role] || 'customer_menu/code.html';
+                }, 1000);
+
+                return;
+
+            } catch (err) {
+                console.error('Login error:', err);
+                errorMsg.textContent = 'Đăng nhập thất bại. Vui lòng thử lại.';
+                errorMsg.classList.remove('hidden');
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>Đăng nhập</span><span class="material-symbols-outlined">arrow_forward</span>';
+            }
+        });
+
+        // Check if already logged in
+        const user = localStorage.getItem('user');
+        if (user) {
+            const userData = JSON.parse(user);
+            const rolePaths = {
+                'admin': 'hi_u_su_t_nh_n_vi_n_m_coffee/code.html',
+                'cashier': 'customer_menu/code.html',
+                'kitchen': 'kitchen_queue/code.html',
+                'manager': 'table_management_1/code.html'
+            };
+            if (rolePaths[userData.role]) {
+                // Uncomment to auto-redirect when logged in
+                // window.location.href = rolePaths[userData.role];
+            }
+        }
+    </script>
+</body>
+</html>

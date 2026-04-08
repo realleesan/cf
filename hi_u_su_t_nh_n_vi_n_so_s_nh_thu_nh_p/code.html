@@ -5,8 +5,9 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>M Coffee - Quản lý nhân viên</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script src="../supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
@@ -93,6 +94,155 @@
             min-height: max(884px, 100dvh);
         }
     </style>
+<script>
+    // Configuration
+    // Configuration - Use Supabase client directly
+    const api = window.api;
+    
+    // State
+    let staff = [];
+    let currentPeriod = 'today';
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadStaff();
+        setupEventListeners();
+    });
+
+    // Load staff from API
+    async function loadStaff() {
+        try {
+            staff = await api.getStaffEarningsSummary();
+            
+            renderStaff();
+        } catch (err) {
+            console.error('Failed to load staff:', err);
+            // Fallback
+            renderStaffFallback();
+        }
+    }
+
+    // Render staff cards
+    function renderStaff() {
+        const container = document.getElementById('staff-grid');
+        if (!container) return;
+        
+        if (staff.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center py-12">
+                    <span class="material-symbols-outlined text-6xl text-on-surface-variant/30">group</span>
+                    <p class="mt-4 text-on-surface-variant">No staff found</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = staff.map(member => `
+            <div class="group relative bg-surface-container-lowest p-5 rounded-2xl shadow-[0_4px_20px_rgba(80,69,62,0.05)] hover:shadow-[0_8px_30px_rgba(80,69,62,0.1)] transition-all duration-300">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-14 h-14 rounded-xl overflow-hidden border border-primary-container/10">
+                            ${member.photo_url 
+                                ? `<img class="w-full h-full object-cover" src="${member.photo_url}" alt="${member.full_name}"/>`
+                                : `<div class="w-full h-full bg-primary-container flex items-center justify-center text-white font-bold">${member.full_name.charAt(0)}</div>`
+                            }
+                        </div>
+                        <div>
+                            <h3 class="text-base font-headline font-bold text-primary">${member.full_name}</h3>
+                            <span class="inline-block px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase tracking-wider">${member.role}</span>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-primary/30 cursor-pointer" data-icon="more_vert">more_vert</span>
+                </div>
+                <div class="space-y-3">
+                    <div class="p-3 rounded-xl bg-surface-container-low">
+                        <p class="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5">Thu nhập trong kỳ</p>
+                        <p class="text-xl font-headline font-extrabold text-primary">$${(member.total_earnings || 0).toFixed(2)}</p>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[10px] font-bold px-1">
+                            <div class="flex flex-col">
+                                <span class="text-on-surface-variant uppercase">Tiền thực thu</span>
+                                <span class="text-secondary text-xs">$${(member.total_earnings || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="text-on-surface-variant uppercase">Tiền Bill</span>
+                                <span class="text-primary text-xs">$${(member.total_earnings || 0).toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
+                            <div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        // Add "Add Staff" button
+        container.innerHTML += `
+            <div class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-dashed border-outline-variant hover:border-primary/40 hover:bg-surface-container-low/50 transition-all cursor-pointer group h-full min-h-[160px]">
+                <div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-2xl text-primary" data-icon="person_add">person_add</span>
+                </div>
+                <h3 class="text-base font-headline font-bold text-primary">Thêm nhân viên</h3>
+            </div>
+        `;
+    }
+
+    // Render fallback staff (when API not available)
+    function renderStaffFallback() {
+        const container = document.getElementById('staff-grid');
+        container.innerHTML = `
+            <div class="group relative bg-surface-container-lowest p-5 rounded-2xl shadow-[0_4px_20px_rgba(80,69,62,0.05)]">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-4">
+                        <div class="relative w-14 h-14 rounded-xl bg-primary-container flex items-center justify-center text-white font-bold">A</div>
+                        <div>
+                            <h3 class="text-base font-headline font-bold text-primary">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Set period filter
+    function setPeriod(period) {
+        currentPeriod = period;
+        
+        document.querySelectorAll('.period-btn').forEach(btn => {
+            if (btn.dataset.period === period) {
+                btn.className = 'period-btn px-5 py-2 rounded-full bg-secondary text-on-secondary font-label text-xs font-semibold transition-all hover:opacity-90 active:scale-95';
+            } else {
+                btn.className = 'period-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-xs font-semibold hover:bg-surface-container-high transition-all active:scale-95';
+            }
+        });
+        
+        // Reload with period (future implementation)
+        loadStaff();
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Orders nav
+        const ordersBtn = document.getElementById('orders-nav');
+        if (ordersBtn) {
+            ordersBtn.onclick = () => window.location.href = '../order_history/code.html';
+        }
+        
+        // Inventory nav
+        const inventoryBtn = document.getElementById('inventory-nav');
+        if (inventoryBtn) {
+            inventoryBtn.onclick = () => window.location.href = '../table_management_1/code.html';
+        }
+        
+        // Settings nav
+        const settingsBtn = document.getElementById('settings-nav');
+        if (settingsBtn) {
+            settingsBtn.onclick = () => {};
+        }
+    }
+</script>
 </head>
 <body class="bg-surface text-on-surface min-h-screen pb-32">
 <!-- TopAppBar -->
@@ -123,9 +273,9 @@
 <p class="text-sm text-on-surface-variant">Chọn phạm vi để cập nhật số liệu</p>
 </div>
 <div class="flex flex-wrap gap-2">
-<button class="px-5 py-2 rounded-full bg-secondary text-on-secondary font-label text-xs font-semibold transition-all hover:opacity-90 active:scale-95">Hôm nay</button>
-<button class="px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-xs font-semibold hover:bg-surface-container-high transition-all active:scale-95">7 ngày qua</button>
-<button class="px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-xs font-semibold hover:bg-surface-container-high transition-all active:scale-95">Tháng này</button>
+<button onclick="setPeriod('today')" class="period-btn px-5 py-2 rounded-full bg-secondary text-on-secondary font-label text-xs font-semibold transition-all hover:opacity-90 active:scale-95" data-period="today">Hôm nay</button>
+<button onclick="setPeriod('week')" class="period-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-xs font-semibold hover:bg-surface-container-high transition-all active:scale-95" data-period="week">7 ngày qua</button>
+<button onclick="setPeriod('month')" class="period-btn px-5 py-2 rounded-full bg-surface-container-highest text-on-surface-variant font-label text-xs font-semibold hover:bg-surface-container-high transition-all active:scale-95" data-period="month">Tháng này</button>
 <button class="flex items-center gap-2 px-5 py-2 rounded-full bg-primary-container text-white font-label text-xs font-semibold hover:opacity-90 transition-all active:scale-95">
 <span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
                         Tùy chỉnh
@@ -135,128 +285,14 @@
 </div>
 </section>
 <!-- Staff List: More compact grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-<!-- Staff Card 1 -->
-<div class="group relative bg-surface-container-lowest p-5 rounded-2xl shadow-[0_4px_20px_rgba(80,69,62,0.05)] hover:shadow-[0_8px_30px_rgba(80,69,62,0.1)] transition-all duration-300">
-<div class="flex items-start justify-between mb-4">
-<div class="flex items-center gap-4">
-<div class="relative w-14 h-14 rounded-xl overflow-hidden border border-primary-container/10">
-<img class="w-full h-full object-cover" data-alt="Portrait of Alex Nguyen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKLXRLr90fzT7TdskHXG9xwfI5HV_qS0X0_U_lVbVLcFUawvbS4Ce8HhTeK7W66Fru54unXL_MwTJ-Nxi_8TcIhOB8jdOFJNW6YqYokl5JkNn-gGCabLmXmULxl4bJHqdzGCrYPZPn_qX77XBxlMURf2H-Rs8zKer6nbyQxdvlIR4H7UPj8gXyL5nihquPzW_ZAUm61n06XnZZlwR-5dHKaSDqtGuDRmZBPaes3_yBHPkBW_GwKcyTQgW7YEjVI8dWzLGwkh29Mk5u"/>
-</div>
-<div>
-<h3 class="text-base font-headline font-bold text-primary">Alex Nguyen</h3>
-<span class="inline-block px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase tracking-wider">Pha chế chính</span>
-</div>
-</div>
-<span class="material-symbols-outlined text-primary/30 cursor-pointer" data-icon="more_vert">more_vert</span>
-</div>
-<div class="space-y-3">
-<div class="p-3 rounded-xl bg-surface-container-low">
-<p class="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5">Thu nhập trong kỳ</p>
-<p class="text-xl font-headline font-extrabold text-primary">$1,240.50</p>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between text-[10px] font-bold px-1">
-<div class="flex flex-col">
-<span class="text-on-surface-variant uppercase">Tiền thực thu</span>
-<span class="text-secondary text-xs">$1,240.50</span>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-on-surface-variant uppercase">Tiền Bill</span>
-<span class="text-primary text-xs">$1,240.50</span>
-</div>
-</div>
-<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Staff Card 2 -->
-<div class="group relative bg-surface-container-lowest p-5 rounded-2xl shadow-[0_4px_20px_rgba(80,69,62,0.05)] hover:shadow-[0_8px_30px_rgba(80,69,62,0.1)] transition-all duration-300">
-<div class="flex items-start justify-between mb-4">
-<div class="flex items-center gap-4">
-<div class="relative w-14 h-14 rounded-xl overflow-hidden border border-primary-container/10">
-<img class="w-full h-full object-cover" data-alt="Portrait of Elena Rossi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWfutbDOb2UvyhAn_Qt41KwwulLJ3MFoXh7ymFaxwwLweo_Ue7-YwqdhYb8I7SZWiOb_ORXuL6YHMwqp08eOLYrM55FlPATf_U3M2YNdoEfDHHHTBW_HUyd9zAbXW4WK0fGA-MvAD-feocM06bnRXn57urRkTufz_vxd8O17Meu_HImWsZkIoGNA_lep9-gDP5X280VG5dfk8Je22oucNW6d3Ekl55CQzvoJqIS7zpkO0ai64H736a6RUzOhxUjVDX6HeKjWNYsItP"/>
-</div>
-<div>
-<h3 class="text-base font-headline font-bold text-primary">Elena Rossi</h3>
-<span class="inline-block px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase tracking-wider">Quản lý sảnh</span>
-</div>
-</div>
-<span class="material-symbols-outlined text-primary/30 cursor-pointer" data-icon="more_vert">more_vert</span>
-</div>
-<div class="space-y-3">
-<div class="p-3 rounded-xl bg-surface-container-low">
-<p class="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5">Thu nhập trong kỳ</p>
-<p class="text-xl font-headline font-extrabold text-primary">$2,850.00</p>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between text-[10px] font-bold px-1">
-<div class="flex flex-col">
-<span class="text-on-surface-variant uppercase">Tiền thực thu</span>
-<span class="text-amber-600 text-xs">$2,700.00</span>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-on-surface-variant uppercase">Tiền Bill</span>
-<span class="text-primary text-xs">$2,850.00</span>
-</div>
-</div>
-<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-amber-500 rounded-full" style="width: 94.7%"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Staff Card 3 -->
-<div class="group relative bg-surface-container-lowest p-5 rounded-2xl shadow-[0_4px_20px_rgba(80,69,62,0.05)] hover:shadow-[0_8px_30px_rgba(80,69,62,0.1)] transition-all duration-300">
-<div class="flex items-start justify-between mb-4">
-<div class="flex items-center gap-4">
-<div class="relative w-14 h-14 rounded-xl overflow-hidden border border-primary-container/10">
-<img class="w-full h-full object-cover" data-alt="Portrait of Marcus Wright" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAabOJCs9pcEWqt55V3a3uE8FmM-IG-EPtMIvamZxiDOjGrhL-3RgJQvEdlSx3f4tzfgw-w-mAQr4DDfDZrN6pPReYTu0Gb5Zg42WYORWIqXcoVYUrvBhETZA2DIbPeD-8s9zuB3qe_QVUu64xuRNvSVZSzX8YNAa08CwHNpVWYxy93hGuxLGiX0cta0YeYG5Uk_fCP0tPWwW3q7Le7wkwZMEvmxdavfVONN4fOWrTqqGGxDz6IKiHioWwc_AJPPShZKe27cBySBL9P"/>
-</div>
-<div>
-<h3 class="text-base font-headline font-bold text-primary">Marcus Wright</h3>
-<span class="inline-block px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[9px] font-bold uppercase tracking-wider">Phục vụ</span>
-</div>
-</div>
-<span class="material-symbols-outlined text-primary/30 cursor-pointer" data-icon="more_vert">more_vert</span>
-</div>
-<div class="space-y-3">
-<div class="p-3 rounded-xl bg-surface-container-low">
-<p class="text-[10px] font-label font-semibold text-on-surface-variant uppercase tracking-wider mb-0.5">Thu nhập trong kỳ</p>
-<p class="text-xl font-headline font-extrabold text-primary">$945.20</p>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between text-[10px] font-bold px-1">
-<div class="flex flex-col">
-<span class="text-on-surface-variant uppercase">Tiền thực thu</span>
-<span class="text-secondary text-xs">$945.20</span>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-on-surface-variant uppercase">Tiền Bill</span>
-<span class="text-primary text-xs">$945.20</span>
-</div>
-</div>
-<div class="h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden">
-<div class="h-full bg-secondary rounded-full" style="width: 100%"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Add Staff Button -->
-<div class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-dashed border-outline-variant hover:border-primary/40 hover:bg-surface-container-low/50 transition-all cursor-pointer group h-full min-h-[160px]">
-<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined text-2xl text-primary" data-icon="person_add">person_add</span>
-</div>
-<h3 class="text-base font-headline font-bold text-primary">Thêm nhân viên</h3>
-</div>
+<div id="staff-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Staff will be loaded dynamically -->
 </div>
 </main>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full z-50 bg-[#f9f9f8]/90 dark:bg-stone-950/90 backdrop-blur-xl shadow-[0_-10px_30px_rgba(80,69,62,0.08)] rounded-t-[2.5rem] flex justify-around items-center px-4 pb-6 pt-3">
 <!-- Orders -->
-<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
+<a id="orders-nav" class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
 <span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
 <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-wider mt-1">Đơn hàng</span>
 </a>
@@ -266,12 +302,12 @@
 <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-wider mt-1">Nhân viên</span>
 </a>
 <!-- Inventory -->
-<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
+<a id="inventory-nav" class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
 <span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
 <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-wider mt-1">Kho</span>
 </a>
 <!-- Settings -->
-<a class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
+<a id="settings-nav" class="flex flex-col items-center justify-center text-stone-500 dark:text-stone-400 p-2 group hover:text-[#553722] transition-transform duration-200 active:scale-90" href="#">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 <span class="font-['Manrope'] text-[10px] font-bold uppercase tracking-wider mt-1">Cài đặt</span>
 </a>

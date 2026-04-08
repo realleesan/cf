@@ -5,9 +5,10 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Cart - The Artisanal</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="../supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -89,7 +90,299 @@
       min-height: max(884px, 100dvh);
     }
   </style>
-  </head>
+<script>
+    // Configuration - Use Supabase client directly for Vercel deployment
+    // No backend needed - frontend calls Supabase directly
+    const api = window.api;
+    
+    // State
+    let cart = [];
+    let orderType = 'dine-in';
+    let specialInstructions = '';
+    let selectedTableId = null;
+    let tables = [];
+    let menuItemsMap = {};
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Check for table ID in URL or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        let tableId = urlParams.get('table');
+        
+        if (!tableId) {
+            tableId = localStorage.getItem('currentTableId');
+        }
+        
+        if (tableId) {
+            selectedTableId = tableId;
+            localStorage.removeItem('currentTableId');
+        }
+        
+        loadCart();
+        await loadTables();
+        await loadMenuItems();
+        setupEventListeners();
+    });
+
+    // Load cart from localStorage
+    function loadCart() {
+        const savedCart = localStorage.getItem('stitch_cart');
+        if (savedCart) {
+            cart = JSON.parse(savedCart);
+            renderCartItems();
+            updateSummary();
+        }
+    }
+
+    // Load available tables
+    async function loadTables() {
+        try {
+            const tables = await api.getTables();
+            const availableTables = tables.filter(t => t.status === 'available');
+            renderTableOptions(availableTables);
+        } catch (err) {
+            console.error('Failed to load tables:', err);
+        }
+    }
+
+    // Load menu items for mapping
+    async function loadMenuItems() {
+        try {
+            const items = await api.getMenuItems();
+            items.forEach(item => {
+                menuItemsMap[item.id] = item;
+            });
+        } catch (err) {
+            console.error('Failed to load menu items:', err);
+        }
+    }
+
+    // Render table options
+    function renderTableOptions(availableTables) {
+        const container = document.getElementById('table-options');
+        if (!container) return;
+        
+        container.innerHTML = availableTables.map(table => `
+            <button onclick="selectTable('${table.id}', '${table.table_number}')" 
+                    class="table-btn flex-1 py-3 px-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all"
+                    data-table-id="${table.id}">
+                <span class="material-symbols-outlined text-sm">table_restaurant</span>
+                ${table.table_number}
+            </button>
+        `).join('');
+        
+        // If we have tables, select first one by default
+        if (availableTables.length > 0) {
+            selectTable(availableTables[0].id, availableTables[0].table_number);
+        }
+    }
+
+    // Select table
+    function selectTable(tableId, tableNumber) {
+        selectedTableId = tableId;
+        
+        document.querySelectorAll('.table-btn').forEach(btn => {
+            if (btn.dataset.tableId === tableId) {
+                btn.className = 'table-btn flex-1 py-3 px-4 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95';
+            } else {
+                btn.className = 'table-btn flex-1 py-3 px-4 rounded-full text-on-surface-variant font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-colors';
+            }
+        });
+    }
+
+    // Render cart items
+    function renderCartItems() {
+        const container = document.getElementById('cart-items');
+        if (!container) return;
+        
+        if (cart.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-12">
+                    <span class="material-symbols-outlined text-6xl text-on-surface-variant/30">shopping_cart</span>
+                    <p class="mt-4 text-on-surface-variant">Your cart is empty</p>
+                    <button onclick="window.location.href='../customer_menu/code.html'" class="mt-4 px-6 py-2 bg-primary text-white rounded-full font-bold">
+                        Browse Menu
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = cart.map((item, idx) => `
+            <div class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-center ${item.category === 'NƯỚC ÉP' ? 'border-l-4 border-secondary' : ''}">
+                <div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0 bg-surface-container">
+                    ${menuItemsMap[item.itemId]?.image_url ? `<img class="w-full h-full object-cover" src="${menuItemsMap[item.itemId].image_url}" alt="${item.name}"/>` : '<div class="w-full h-full flex items-center justify-center text-primary"><span class="material-symbols-outlined">coffee</span></div>'}
+                </div>
+                <div class="flex-grow">
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-lg font-bold leading-tight uppercase">${item.name}</h3>
+                        <span class="font-bold text-primary">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                    <p class="text-sm text-on-surface-variant mt-1">${item.modifiers || 'Regular'}</p>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center bg-surface-container-highest rounded-full px-2 py-1">
+                            <button onclick="updateQuantity(${idx}, -1)" class="w-6 h-6 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-sm" data-icon="remove">remove</span>
+                            </button>
+                            <span class="px-3 font-bold text-sm">${item.quantity}</span>
+                            <button onclick="updateQuantity(${idx}, 1)" class="w-6 h-6 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                            </button>
+                        </div>
+                        <button onclick="removeItem(${idx})" class="text-on-surface-variant/40">
+                            <span class="material-symbols-outlined text-xl" data-icon="delete">delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Update quantity
+    function updateQuantity(index, delta) {
+        cart[index].quantity += delta;
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+        }
+        saveCart();
+        renderCartItems();
+        updateSummary();
+    }
+
+    // Remove item
+    function removeItem(index) {
+        cart.splice(index, 1);
+        saveCart();
+        renderCartItems();
+        updateSummary();
+    }
+
+    // Save cart
+    function saveCart() {
+        localStorage.setItem('stitch_cart', JSON.stringify(cart));
+    }
+
+    // Update summary
+    function updateSummary() {
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const tax = subtotal * 0.08;
+        const total = subtotal + tax;
+        
+        document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Set order type
+    function setOrderType(type) {
+        orderType = type;
+        
+        const dineInBtn = document.getElementById('dine-in-btn');
+        const takeawayBtn = document.getElementById('takeaway-btn');
+        
+        if (type === 'dine-in') {
+            dineInBtn.className = 'flex-1 py-3 px-6 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95';
+            takeawayBtn.className = 'flex-1 py-3 px-6 rounded-full text-on-surface-variant font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-colors';
+        } else {
+            takeawayBtn.className = 'flex-1 py-3 px-6 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95';
+            dineInBtn.className = 'flex-1 py-3 px-6 rounded-full text-on-surface-variant font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-colors';
+        }
+    }
+
+    // Set special instructions
+    function setSpecialInstructions(value) {
+        specialInstructions = value;
+    }
+
+    // Confirm order
+    async function confirmOrder() {
+        if (cart.length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+        
+        const submitBtn = document.getElementById('confirm-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing...';
+        
+        try {
+            // Prepare order items
+            const orderItems = cart.map(item => ({
+                menu_item_id: item.itemId,
+                quantity: item.quantity,
+                price: item.price,
+                modifiers: item.modifiers || null,
+                special_instructions: item.specialInstructions || null
+            }));
+            
+            // Get default staff (first active staff)
+            const staff = await api.getStaff();
+            const defaultStaff = staff[0]?.id;
+            
+            const order = await api.createOrder({
+                table_id: orderType === 'dine-in' ? selectedTableId : null,
+                staff_id: defaultStaff,
+                order_type: orderType,
+                items: orderItems,
+                special_instructions: specialInstructions
+            });
+            
+            // Clear cart
+            cart = [];
+            saveCart();
+            
+            // Show success and redirect to kitchen
+            alert(`Order #${order.order_number} created successfully!`);
+            window.location.href = '../kitchen_queue/code.html';
+            
+        } catch (err) {
+            console.error('Failed to create order:', err);
+            alert('Failed to create order. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `Confirm Order <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>`;
+        }
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Close button
+        const closeBtn = document.getElementById('close-btn');
+        if (closeBtn) {
+            closeBtn.onclick = () => window.location.href = '../customer_menu/code.html';
+        }
+        
+        // Confirm button
+        const confirmBtn = document.getElementById('confirm-btn');
+        if (confirmBtn) {
+            confirmBtn.onclick = confirmOrder;
+        }
+        
+        // Special instructions
+        const notesTextarea = document.getElementById('special-instructions');
+        if (notesTextarea) {
+            notesTextarea.onchange = (e) => setSpecialInstructions(e.target.value);
+        }
+        
+        // Menu navigation
+        const menuBtn = document.getElementById('menu-nav-btn');
+        if (menuBtn) {
+            menuBtn.onclick = () => window.location.href = '../customer_menu/code.html';
+        }
+        
+        // Kitchen navigation
+        const kitchenBtn = document.getElementById('kitchen-nav-btn');
+        if (kitchenBtn) {
+            kitchenBtn.onclick = () => window.location.href = '../kitchen_queue/code.html';
+        }
+        
+        // History navigation
+        const historyBtn = document.getElementById('history-nav-btn');
+        if (historyBtn) {
+            historyBtn.onclick = () => window.location.href = '../order_history/code.html';
+        }
+    }
+</script>
+</head>
 <body class="bg-background text-on-surface min-h-screen pb-32">
 <!-- TopAppBar -->
 <header class="w-full sticky top-0 z-50 bg-[#f9f9f8] dark:bg-[#1a1c1c] flex items-center justify-between px-6 py-4">
@@ -97,7 +390,7 @@
 <span class="material-symbols-outlined text-[#553722] dark:text-[#f4f4f3]" data-icon="coffee">coffee</span>
 <h1 class="font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3]">The Artisanal</h1>
 </div>
-<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#f4f4f3] transition-colors">
+<button id="close-btn" onclick="window.location.href='../customer_menu/code.html'" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#f4f4f3] transition-colors cursor-pointer">
 <span class="material-symbols-outlined text-[#553722]" data-icon="close">close</span>
 </button>
 </header>
@@ -107,95 +400,61 @@
 <h2 class="text-4xl font-extrabold tracking-tight text-primary">Your Basket</h2>
 <p class="text-on-surface-variant font-medium mt-1">Review your handcrafted selection</p>
 </section>
-<!-- Cart Items - Bento Style Layering -->
-<section class="space-y-4">
-<!-- Item 1 -->
-<div class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-center">
-<div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="close up of premium Vietnamese iced coffee with thick condensed milk and cream foam on top in a glass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbPvVw9gqgZz9KVXjpoe_81IiRWn2lPhr5xqvxu51DiRqCo4j7vsjxDz09bCbCKpBRbdnRUB43dNsS-xn2PFmkQMHRWRXZw6TnoQHDZwMCWpRM6Er8NjsKlYhyV8k0HpssC61BDp0_QyQPQzL_xIDQtrali8RldrCiR9oaLiDXG4il9Vq3xP_FiNfBtLGSU9-t5H3wDmyJeKq44Ym0wzZC30Hshm39u0TpieceWHPwnErDLs0iqtqmhD7aYGgiFxF4c3B6OgcLo9xC"/>
-</div>
-<div class="flex-grow">
-<div class="flex justify-between items-start">
-<h3 class="text-lg font-bold leading-tight uppercase">PHINDI KEM SỮA</h3>
-<span class="font-bold text-primary">$5.50</span>
-</div>
-<p class="text-sm text-on-surface-variant mt-1">Large • Oat Milk</p>
-<div class="flex items-center justify-between mt-3">
-<div class="flex items-center bg-surface-container-highest rounded-full px-2 py-1">
-<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
-<span class="px-3 font-bold text-sm">1</span>
-<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
-</div>
-<button class="text-on-surface-variant/40"><span class="material-symbols-outlined text-xl" data-icon="delete">delete</span></button>
-</div>
-</div>
-</div>
-<!-- Item 2 -->
-<div class="bg-surface-container-low rounded-lg p-4 flex gap-4 items-center border-l-4 border-secondary">
-<div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
-<img class="w-full h-full object-cover" data-alt="freshly squeezed carrot and orange juice in a clear glass with ice cubes and ginger slices" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGMfvhEF37FlXf1EwwJPOVHoygBOv54al_P-NKO3lziha1YNQV9IfOClGt9b-OM7_2JNCvuz7xXs_XaKBcpPOX3mrIJl_steTFA5kWr2bsAOny_fkZMuEtcG9AGF8f1qyU7OdnLu9cdDBMYZ4mIONPyjkuZRakPUvIpDaeiPpUruC8gX3eJ6LGKrvl_Hpe2PHAjzzzxA5CRb5V-AU0zZ3uUgwXnC-W-Y-OlgUpP0c5Onatf1TlEhJOf7godPdOEF02jDFsNrTNAQz4"/>
-</div>
-<div class="flex-grow">
-<div class="flex justify-between items-start">
-<h3 class="text-lg font-bold leading-tight uppercase">CAM-CAROT-(GỪNG)</h3>
-<span class="font-bold text-primary">$6.25</span>
-</div>
-<p class="text-sm text-secondary font-medium mt-1">Fresh Pressed • No Sugar</p>
-<div class="flex items-center justify-between mt-3">
-<div class="flex items-center bg-surface-container-highest rounded-full px-2 py-1">
-<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="remove">remove</span></button>
-<span class="px-3 font-bold text-sm">2</span>
-<button class="w-6 h-6 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-sm" data-icon="add">add</span></button>
-</div>
-<button class="text-on-surface-variant/40"><span class="material-symbols-outlined text-xl" data-icon="delete">delete</span></button>
-</div>
-</div>
-</div>
+<!-- Cart Items -->
+<section id="cart-items" class="space-y-4">
+<!-- Cart items will be loaded dynamically -->
 </section>
 <!-- Order Type Toggle -->
 <section class="bg-surface-container-highest/50 p-2 rounded-full flex">
-<button class="flex-1 py-3 px-6 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95">
+<button id="dine-in-btn" onclick="setOrderType('dine-in')" class="flex-1 py-3 px-6 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95">
 <span class="material-symbols-outlined text-xl" data-icon="restaurant">restaurant</span>
                 Dine-in
             </button>
-<button class="flex-1 py-3 px-6 rounded-full text-on-surface-variant font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-colors">
+<button id="takeaway-btn" onclick="setOrderType('takeaway')" class="flex-1 py-3 px-6 rounded-full text-on-surface-variant font-bold flex items-center justify-center gap-2 hover:bg-surface-container transition-colors">
 <span class="material-symbols-outlined text-xl" data-icon="takeout_dining">takeout_dining</span>
                 Takeaway
             </button>
+</section>
+<!-- Table Selection (for Dine-in) -->
+<section id="table-section" class="bg-surface-container-low rounded-xl p-4">
+    <h4 class="font-bold text-on-surface-variant mb-3 uppercase tracking-wide text-sm">Select Table</h4>
+    <div id="table-options" class="flex flex-wrap gap-2">
+        <!-- Tables will be loaded dynamically -->
+    </div>
 </section>
 <!-- Order Summary -->
 <section class="bg-surface-container-low rounded-xl p-6 space-y-4">
 <div class="flex justify-between items-center text-on-surface-variant">
 <span class="text-label-md font-bold uppercase tracking-widest">Subtotal</span>
-<span class="font-bold">$18.00</span>
+<span id="subtotal" class="font-bold">$0.00</span>
 </div>
 <div class="flex justify-between items-center text-on-surface-variant">
 <span class="text-label-md font-bold uppercase tracking-widest">VAT (8%)</span>
-<span class="font-bold">$1.44</span>
+<span id="tax" class="font-bold">$0.00</span>
 </div>
 <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
 <span class="text-xl font-extrabold">Total Price</span>
-<span class="text-2xl font-black text-primary">$19.44</span>
+<span id="total" class="text-2xl font-black text-primary">$0.00</span>
 </div>
 </section>
 <!-- Note Section -->
 <section>
 <label class="block text-sm font-bold text-on-surface-variant mb-2 uppercase tracking-wide">Special Instructions</label>
 <div class="bg-surface-container-low rounded-lg p-4">
-<textarea class="w-full bg-transparent border-none focus:ring-0 text-on-surface p-0 placeholder:text-on-surface-variant/40" placeholder="Add a note (e.g. less ice, extra shot)..." rows="2"></textarea>
+<textarea id="special-instructions" class="w-full bg-transparent border-none focus:ring-0 text-on-surface p-0 placeholder:text-on-surface-variant/40" placeholder="Add a note (e.g. less ice, extra shot)..." rows="2"></textarea>
 </div>
 </section>
 </main>
 <!-- Checkout Footer Interaction -->
 <div class="fixed bottom-24 left-0 w-full px-6 z-40">
-<button class="w-full py-5 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-extrabold text-lg shadow-[0_20px_40px_rgba(80,69,62,0.15)] flex items-center justify-center gap-3 active:scale-95 transition-transform">
+<button id="confirm-btn" class="w-full py-5 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-extrabold text-lg shadow-[0_20px_40px_rgba(80,69,62,0.15)] flex items-center justify-center gap-3 active:scale-95 transition-transform">
             Confirm Order
             <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
 </button>
 </div>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10">
-<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
+<div id="menu-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
 <span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Menu</span>
 </div>
@@ -203,11 +462,11 @@
 <span class="material-symbols-outlined" data-icon="shopping_cart" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Cart</span>
 </div>
-<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
+<div id="kitchen-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
 <span class="material-symbols-outlined" data-icon="cooking">cooking</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Kitchen</span>
 </div>
-<div class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
+<div id="history-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
 <span class="material-symbols-outlined" data-icon="history">history</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">History</span>
 </div>

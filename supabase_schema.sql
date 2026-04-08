@@ -61,6 +61,8 @@ CREATE TABLE IF NOT EXISTS tables (
 CREATE TABLE IF NOT EXISTS staff (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     employee_id TEXT UNIQUE,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
     full_name TEXT NOT NULL,
     role TEXT NOT NULL,
     phone TEXT,
@@ -240,11 +242,13 @@ INSERT INTO menu_items (category_id, name, description, price, display_order, is
 ((SELECT id FROM menu_categories WHERE name = 'CAFÉ'), 'CAFÉ ĐEN', 'Bold traditional roast', 25.00, 3, true)
 ON CONFLICT DO NOTHING;
 
--- Insert sample staff
-INSERT INTO staff (employee_id, full_name, role, phone, email, is_active) VALUES
-('NV001', 'Alex Nguyen', 'Senior Barista', '0123456789', 'alex@mcoffee.vn', true),
-('NV002', 'Elena Rossi', 'Floor Manager', '0987654321', 'elena@mcoffee.vn', true),
-('NV003', 'Marcus Wright', 'Waiter', '0369852147', 'marcus@mcoffee.vn', true)
+-- Insert sample staff with proper login credentials
+-- Roles: admin, cashier, kitchen, manager
+INSERT INTO staff (employee_id, username, password, full_name, role, phone, email, is_active) VALUES
+('NV001', 'admin', 'admin123', 'Alex Nguyen', 'admin', '0123456789', 'alex@mcoffee.vn', true),
+('NV002', 'cashier', 'cashier123', 'Elena Rossi', 'cashier', '0987654321', 'elena@mcoffee.vn', true),
+('NV003', 'kitchen', 'kitchen123', 'Marcus Wright', 'kitchen', '0369852147', 'marcus@mcoffee.vn', true),
+('NV004', 'manager', 'manager123', 'Sarah Chen', 'manager', '0912345678', 'sarah@mcoffee.vn', true)
 ON CONFLICT DO NOTHING;
 
 -- Insert sample tables
