@@ -110,17 +110,13 @@
         let tables = [];
         let activeOrders = [];
         let currentFloor = 'ground';
+        let selectedTableId = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await initializeData();
         });
 
         async function initializeData() {
-            await loadTables();
-            await loadActiveOrders();
-        }
-
-        async function loadTables() {
             let retryCount = 0;
             while (!window.api && retryCount < 50) {
                 await new Promise(r => setTimeout(r, 100));
@@ -130,6 +126,7 @@
             try {
                 tables = await window.api.getTables();
                 renderVisualLayout();
+                await loadActiveOrders();
             } catch (err) { console.error(err); }
         }
 
@@ -143,6 +140,8 @@
 
         function setFloor(floor) {
             currentFloor = floor;
+            selectedTableId = null;
+            updateFAB();
             renderVisualLayout();
             document.querySelectorAll('.floor-tab').forEach(btn => {
                 const isActive = btn.id === `btn-${floor}`;
@@ -175,41 +174,53 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
-                    ${filtered.map(t => `
-                        <div onclick="tableClick('${t.id}')" class="${t.status === 'occupied' ? 'bg-[#ccebc7] border-secondary' : 'bg-white border-stone-100'} border-2 rounded-[2rem] p-8 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-all shadow-sm relative aspect-square">
-                            <span class="text-3xl font-black ${t.status === 'occupied' ? 'text-secondary' : 'text-primary'}">${t.table_number}</span>
-                            ${t.status === 'occupied' ? '<span class="text-[10px] bg-secondary/10 px-3 py-1 rounded-full font-bold text-secondary mt-2 uppercase tracking-wide">In Use</span>' : ''}
+                    ${filtered.map(t => {
+                        const isSelected = selectedTableId === t.id;
+                        const isOccupied = t.status === 'occupied';
+                        return `
+                        <div onclick="tableClick('${t.id}')" class="${isOccupied ? 'bg-[#ccebc7] border-secondary' : isSelected ? 'bg-white border-primary ring-4 ring-primary/10' : 'bg-white border-stone-100'} border-2 rounded-[2rem] p-8 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-all shadow-sm relative aspect-square">
+                            <span class="text-3xl font-black ${isOccupied ? 'text-secondary' : isSelected ? 'text-primary' : 'text-primary opacity-40'}">${t.table_number}</span>
+                            ${isOccupied ? '<span class="text-[10px] bg-secondary/10 px-3 py-1 rounded-full font-bold text-secondary mt-2 uppercase tracking-wide">In Use</span>' : isSelected ? '<span class="text-[10px] bg-primary/10 px-3 py-1 rounded-full font-bold text-primary mt-2 uppercase tracking-wide">Selected</span>' : ''}
                             <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-2 bg-stone-100 rounded-full"></div>
                             <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-2 bg-stone-100 rounded-full"></div>
                             <div class="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-8 bg-stone-100 rounded-full"></div>
                             <div class="absolute top-1/2 -translate-y-1/2 -right-1 w-2 h-8 bg-stone-100 rounded-full"></div>
                         </div>
-                    `).join('')}
+                    `}).join('')}
                 </div>
             `;
         }
 
-        async function tableClick(tableId) {
+        function tableClick(tableId) {
+            const table = tables.find(t => t.id === tableId);
+            if (table.status === 'occupied') {
+                alert('Bàn này đang được sử dụng!');
+                return;
+            }
+            if (selectedTableId === tableId) selectedTableId = null;
+            else selectedTableId = tableId;
+            renderVisualLayout();
+            updateFAB();
+        }
+
+        function updateFAB() {
+            const fab = document.getElementById('fab-action');
+            if (selectedTableId) {
+                fab.className = 'fixed bottom-32 right-6 w-16 h-16 rounded-3xl bg-primary text-white shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-all opacity-100 cursor-pointer';
+                fab.innerHTML = '<span class="material-symbols-outlined text-3xl">check</span>';
+            } else {
+                fab.className = 'fixed bottom-32 right-6 w-16 h-16 rounded-3xl bg-[#6f4e37] text-white shadow-2xl flex items-center justify-center z-40 active:scale-95 transition-all opacity-50 cursor-not-allowed';
+                fab.innerHTML = '<span class="material-symbols-outlined text-3xl">add</span>';
+            }
+        }
+
+        async function confirmTableSelection() {
+            if (!selectedTableId) return;
             try {
                 const api = window.api;
-                if (!api) return;
-                
-                const table = tables.find(t => t.id === tableId);
-                
-                // If table is occupied, alert user as requested
-                if (table?.status === 'occupied') {
-                    alert('Bàn này đang được sử dụng!');
-                    return;
-                }
-                
-                // If table is available, mark as occupied
-                await api.updateTableStatus(tableId, 'occupied');
-                
-                // Redirect to menu
-                window.location.href = `../customer_menu/code.html?table=${tableId}`;
-            } catch (err) {
-                console.error('Table selection error:', err);
-            }
+                await api.updateTableStatus(selectedTableId, 'occupied');
+                window.location.href = `../customer_menu/code.html?table=${selectedTableId}`;
+            } catch (err) { console.error(err); }
         }
 
         function renderActiveOrders() {
