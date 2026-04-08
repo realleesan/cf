@@ -114,10 +114,18 @@
 
     // Load orders from API
     async function loadOrders() {
+        let retryCount = 0;
+        while (!window.api && retryCount < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            retryCount++;
+        }
+        const api = window.api;
+        if (!api) return;
+
         try {
             orders = activeFilter === 'active' 
                 ? await api.getActiveOrders()
-                : await api.getOrderHistory(50);
+                : await api.getOrderHistory();
             
             renderOrders();
             updateCounts();
