@@ -33,7 +33,7 @@
                 return data;
             },
             async getMenuItems(categoryId) {
-                let query = supabase.from('menu_items').select('*').eq('is_active', true);
+                let query = supabase.from('menu_items').select('*').eq('is_available', true);
                 if (categoryId) query = query.eq('category_id', categoryId);
                 const { data, error } = await query.order('name');
                 if (error) throw error;
