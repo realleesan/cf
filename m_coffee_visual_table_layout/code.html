@@ -94,7 +94,7 @@
 <script>
     // Configuration
     // Configuration - Use Supabase client directly
-    const api = window.api;
+    // api will be retrieved locally in functions
     
     // State
     let tables = [];
@@ -106,6 +106,20 @@
 
     // Load tables
     async function loadTables() {
+        // Chờ api sẵn sàng nếu load async
+        let retryCount = 0;
+        while (!window.api && retryCount < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            retryCount++;
+        }
+
+        const api = window.api;
+        if (!api) {
+            console.error('API not ready');
+            renderVisualLayoutFallback();
+            return;
+        }
+
         try {
             tables = await api.getTables();
             renderVisualLayout();

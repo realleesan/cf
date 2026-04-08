@@ -96,7 +96,7 @@
     
     // Load Supabase client
     const supabaseClient = window.supabase;
-    const api = window.api;
+    // api will be retrieved locally in functions
     
     // Cart state
     let cart = [];
@@ -119,6 +119,19 @@
 
     // Load menu from API
     async function loadMenu() {
+        // Chờ api sẵn sàng nếu load async
+        let retryCount = 0;
+        while (!window.api && retryCount < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            retryCount++;
+        }
+
+        const api = window.api;
+        if (!api) {
+            console.error('API not ready');
+            return;
+        }
+
         try {
             // Fetch categories
             const categories = await api.getCategories();

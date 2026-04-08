@@ -10,24 +10,40 @@
     const SUPABASE_URL = 'https://upqccnvdsovqrklbmsvw.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcWNjbnZkc292cXJrbGJtc3Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njk0MDEsImV4cCI6MjA5MTE0NTQwMX0.d1-H0TKBrVbXtMrfBc9OVU6KPvODd5f5OXp8Bzg4hXU';
 
-    // ✅ GỌI NẠP CDN TỰ ĐỘNG NẾU CHƯA CÓ - KHÔNG CẦN THÊM GÌ Ở HTML
+    const initSupabase = () => {
+        if (!window.supabase) {
+            console.error('Supabase library not found even after loading.');
+            return;
+        }
+        
+        // Create Supabase client
+        if (!window.supabaseClient) {
+            window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+        
+        defineApi();
+    };
+
+    // ✅ GỌI NẠP CDN TỰ ĐỘNG NẾU CHƯA CÓ
     if (!window.supabase) {
         console.info('✓ Tự động nạp Supabase CDN...');
         const script = document.createElement('script');
         script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-        script.onload = () => window.location.reload();
+        script.onload = () => {
+            console.info('✓ Supabase CDN đã nạp xong.');
+            initSupabase();
+        };
+        script.onerror = () => console.error('Lỗi khi nạp Supabase CDN');
         document.head.appendChild(script);
-        return;
-    }
-    
-    // Create Supabase client only if not exists
-    let supabase = window.supabaseClient;
-    if (!supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        window.supabaseClient = supabase;
+    } else {
+        initSupabase();
     }
 
-// API Functions - only define if not exists, tránh khai báo trùng lặp khi load nhiều lần
+    function defineApi() {
+        const supabase = window.supabaseClient;
+        if (!supabase) return;
+
+// API Functions - only define if not exists
 if (typeof window.api === 'undefined') {
     var api;
     api = {
@@ -231,11 +247,8 @@ if (typeof window.api === 'undefined') {
             return { ...s, total_earnings: totalEarnings };
         });
     }
-};
-    // Export cho toàn bộ window
-    window.api = api;
-}
-
-    window.supabaseClient = supabase;
-
+        };
+        window.api = api;
+    }
+  }
 })();

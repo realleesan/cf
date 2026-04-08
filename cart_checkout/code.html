@@ -93,7 +93,7 @@
 <script>
     // Configuration - Use Supabase client directly for Vercel deployment
     // No backend needed - frontend calls Supabase directly
-    const api = window.api;
+    // api will be retrieved locally in functions
     
     // State
     let cart = [];
@@ -136,6 +136,15 @@
 
     // Load available tables
     async function loadTables() {
+        // Chờ api sẵn sàng
+        let retryCount = 0;
+        while (!window.api && retryCount < 50) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            retryCount++;
+        }
+        const api = window.api;
+        if (!api) return;
+
         try {
             const tables = await api.getTables();
             const availableTables = tables.filter(t => t.status === 'available');
@@ -147,6 +156,9 @@
 
     // Load menu items for mapping
     async function loadMenuItems() {
+        const api = window.api;
+        if (!api) return;
+        
         try {
             const items = await api.getMenuItems();
             items.forEach(item => {
@@ -307,6 +319,9 @@
         submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing...';
         
         try {
+            const api = window.api;
+            if (!api) throw new Error('API not ready');
+
             // Prepare order items
             const orderItems = cart.map(item => ({
                 menu_item_id: item.itemId,
