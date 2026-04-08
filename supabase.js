@@ -1,15 +1,36 @@
 // Supabase Client Configuration
 // Sử dụng trực tiếp trong browser (không cần backend)
+// ✅ HỆ THỐNG SAFE LOAD: KHÔNG BAO GIỜ XUNG ĐỘT, KHÔNG BAO GIỜ LỖI TRÙNG KHAI BÁO
 
-// Supabase credentials từ .env
-const SUPABASE_URL = 'https://upqccnvdsovqrklbmsvw.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcWNjbnZkc292cXJrbGJtc3Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njk0MDEsImV4cCI6MjA5MTE0NTQwMX0.d1-H0TKBrVbXtMrfBc9OVU6KPvODd5f5OXp8Bzg4hXU';
+(function() {
+    if (window.__supabase_js_loaded) return;
+    window.__supabase_js_loaded = true;
 
-// Tạo Supabase client
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Supabase credentials
+    const SUPABASE_URL = 'https://upqccnvdsovqrklbmsvw.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwcWNjbnZkc292cXJrbGJtc3Z3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njk0MDEsImV4cCI6MjA5MTE0NTQwMX0.d1-H0TKBrVbXtMrfBc9OVU6KPvODd5f5OXp8Bzg4hXU';
 
-// API Functions
-const api = {
+    // ✅ GỌI NẠP CDN TỰ ĐỘNG NẾU CHƯA CÓ - KHÔNG CẦN THÊM GÌ Ở HTML
+    if (!window.supabase) {
+        console.info('✓ Tự động nạp Supabase CDN...');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.onload = () => window.location.reload();
+        document.head.appendChild(script);
+        return;
+    }
+    
+    // Create Supabase client only if not exists
+    let supabase = window.supabaseClient;
+    if (!supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        window.supabaseClient = supabase;
+    }
+
+// API Functions - only define if not exists, tránh khai báo trùng lặp khi load nhiều lần
+if (typeof window.api === 'undefined') {
+    var api;
+    api = {
     // Menu
     async getCategories() {
         const { data, error } = await supabase
@@ -211,7 +232,10 @@ const api = {
         });
     }
 };
+    // Export cho toàn bộ window
+    window.api = api;
+}
 
-// Export for use in other scripts
-window.api = api;
-window.supabaseClient = supabase;
+    window.supabaseClient = supabase;
+
+})();

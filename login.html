@@ -165,20 +165,13 @@
                 }));
 
                 // Show success message
-                const successMsg = document.getElementById('success-msg');
                 successMsg.textContent = 'Đăng nhập thành công! Đang chuyển...';
                 successMsg.classList.remove('hidden');
                 errorMsg.classList.add('hidden');
 
                 // Redirect based on role from database
                 setTimeout(() => {
-                    const rolePaths = {
-                        'admin': 'hi_u_su_t_nh_n_vi_n_m_coffee/code.html',
-                        'cashier': 'customer_menu/code.html',
-                        'kitchen': 'kitchen_queue/code.html',
-                        'manager': 'table_management_1/code.html'
-                    };
-                    window.location.href = rolePaths[staff.role] || 'customer_menu/code.html';
+                    window.location.href = 'm_coffee_visual_table_layout/code.html';
                 }, 1000);
 
                 return;
@@ -197,16 +190,8 @@
         const user = localStorage.getItem('user');
         if (user) {
             const userData = JSON.parse(user);
-            const rolePaths = {
-                'admin': 'hi_u_su_t_nh_n_vi_n_m_coffee/code.html',
-                'cashier': 'customer_menu/code.html',
-                'kitchen': 'kitchen_queue/code.html',
-                'manager': 'table_management_1/code.html'
-            };
-            if (rolePaths[userData.role]) {
-                // Uncomment to auto-redirect when logged in
-                // window.location.href = rolePaths[userData.role];
-            }
+            // Auto-redirect when already logged in
+            // window.location.href = 'm_coffee_visual_table_layout/code.html';
         }
     </script>
 </body>

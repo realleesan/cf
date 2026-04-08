@@ -115,7 +115,7 @@
         
         if (tableId) {
             selectedTableId = tableId;
-            localStorage.removeItem('currentTableId');
+            // Keep in localStorage until order is confirmed
         }
         
         loadCart();
@@ -171,9 +171,10 @@
             </button>
         `).join('');
         
-        // If we have tables, select first one by default
+        // If we have tables, prioritize the already selected one
         if (availableTables.length > 0) {
-            selectTable(availableTables[0].id, availableTables[0].table_number);
+            const tableToSelect = availableTables.find(t => t.id === selectedTableId) || availableTables[0];
+            selectTable(tableToSelect.id, tableToSelect.table_number);
         }
     }
 
@@ -327,9 +328,10 @@
                 special_instructions: specialInstructions
             });
             
-            // Clear cart
+            // Clear cart and table
             cart = [];
             saveCart();
+            localStorage.removeItem('currentTableId');
             
             // Show success and redirect to kitchen
             alert(`Order #${order.order_number} created successfully!`);
@@ -454,20 +456,24 @@
 </div>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10">
-<div id="menu-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">table_restaurant</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Tables</span>
+</div>
+<div id="menu-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">menu_book</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Menu</span>
 </div>
 <div class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] scale-90 active:scale-100 transition-transform">
-<span class="material-symbols-outlined" data-icon="shopping_cart" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Cart</span>
 </div>
-<div id="kitchen-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" data-icon="cooking">cooking</span>
+<div id="kitchen-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">cooking</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">Kitchen</span>
 </div>
-<div id="history-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined" data-icon="history">history</span>
+<div id="history-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">history</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold mt-1">History</span>
 </div>
 </nav>

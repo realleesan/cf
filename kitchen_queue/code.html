@@ -469,21 +469,25 @@
 </div>
 </main>
 <!-- BottomNavBar (Visible on Mobile) -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10 md:hidden">
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10">
+<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../m_coffee_visual_table_layout/code.html'">
+<span class="material-symbols-outlined">table_restaurant</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Tables</span>
+</button>
 <button id="mobile-menu-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../customer_menu/code.html'">
-<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="material-symbols-outlined">menu_book</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
 </button>
 <button id="mobile-cart-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../cart_checkout/code.html'">
-<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span class="material-symbols-outlined">shopping_cart</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Cart</span>
 </button>
 <button class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] active:scale-90 transition-transform">
-<span class="material-symbols-outlined" data-icon="cooking">cooking</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cooking</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Kitchen</span>
 </button>
 <button id="mobile-history-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../order_history/code.html'">
-<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="material-symbols-outlined">history</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">History</span>
 </button>
 </nav>
