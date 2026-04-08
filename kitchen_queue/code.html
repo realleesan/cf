@@ -191,13 +191,16 @@
                         <div class="space-y-4 flex-grow">
                             <div class="flex justify-between items-center group/item">
                                 <div class="flex items-center gap-4">
-                                    <span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">${order.item_count || 1}</span>
+                                    <span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">${order.order_items ? order.order_items.reduce((acc, i) => acc + i.quantity, 0) : 1}</span>
                                     <span class="font-body font-extrabold text-lg uppercase tracking-tight">Items</span>
                                 </div>
                                 <span class="text-tertiary font-body font-bold">
                                     ${order.order_type === 'takeaway' ? 'Takeaway' : `Table ${order.tables?.table_number || '?'}`}
                                 </span>
                             </div>
+                        </div>
+                        <div class="mt-2 space-y-2 border-t border-outline-variant/10 pt-2 text-sm text-on-surface">
+                            ${order.order_items ? order.order_items.map(i => `<div class="flex justify-between items-center"><span class="font-bold">${i.quantity}x ${i.menu_items?.name || 'Item'}</span></div>`).join('') : ''}
                         </div>
                         ${order.special_instructions ? `
                         <div class="mt-4 p-3 rounded-lg bg-surface-container-low">

@@ -232,9 +232,9 @@
             container.innerHTML = activeOrders.map(o => `
                 <div onclick="window.location.href='../kitchen_queue/code.html'" class="bg-white rounded-[2xl] p-6 mb-4 flex items-center justify-between border-l-8 border-secondary shadow-sm hover:shadow-md transition-all cursor-pointer">
                     <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 rounded-full bg-[#ccebc7] flex items-center justify-center text-secondary font-black text-xl">${o.table_number || 'T'}</div>
+                        <div class="w-14 h-14 rounded-full bg-[#ccebc7] flex items-center justify-center text-secondary font-black text-xl">${o.order_type === 'takeaway' ? 'T/A' : (o.tables?.table_number || 'T')}</div>
                         <div>
-                            <h4 class="font-bold text-primary">${o.pending_items || 'Coffee & More'}</h4>
+                            <h4 class="font-bold text-primary">${o.order_items ? o.order_items.reduce((acc, i) => acc + i.quantity, 0) : 1} Items</h4>
                             <p class="text-[10px] text-secondary font-bold uppercase tracking-widest">In Service</p>
                         </div>
                     </div>
