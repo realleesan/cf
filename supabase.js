@@ -210,6 +210,17 @@ if (typeof window.api === 'undefined') {
         return data;
     },
     
+    async updateTableStatus(tableId, status) {
+        const { data, error } = await supabase
+            .from('tables')
+            .update({ status })
+            .eq('id', tableId)
+            .select()
+            .single();
+        if (error) throw error;
+        return data;
+    },
+    
     // Staff
     async getStaff() {
         const { data, error } = await supabase
