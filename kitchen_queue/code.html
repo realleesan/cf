@@ -194,7 +194,9 @@
                                     <span class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center font-bold text-sm">${order.item_count || 1}</span>
                                     <span class="font-body font-extrabold text-lg uppercase tracking-tight">Items</span>
                                 </div>
-                                <span class="text-tertiary font-body font-bold">${order.table_number || 'Takeaway'}</span>
+                                <span class="text-tertiary font-body font-bold">
+                                    ${order.order_type === 'takeaway' ? 'Takeaway' : `Table ${order.tables?.table_number || '?'}`}
+                                </span>
                             </div>
                         </div>
                         ${order.special_instructions ? `
@@ -361,6 +363,8 @@
 
     // Complete order
     async function completeOrder(orderId) {
+        const api = window.api;
+        if (!api) return;
         try {
             await api.updateOrderStatus(orderId, 'completed');
             await loadOrders();
@@ -372,6 +376,8 @@
 
     // Revert order status
     async function revertOrder(orderId, newStatus) {
+        const api = window.api;
+        if (!api) return;
         try {
             await api.updateOrderStatus(orderId, newStatus);
             await loadOrders();
