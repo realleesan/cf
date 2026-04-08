@@ -131,7 +131,7 @@
     // Update statistics
     function updateStats() {
         const today = new Date().toISOString().split('T')[0];
-        const todayOrders = orders.filter(o => o.completed_time && o.completed_time.startsWith(today));
+        const todayOrders = orders.filter(o => o.status === 'completed' && o.created_at && o.created_at.startsWith(today));
         
         const totalRevenue = todayOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
         const totalOrders = todayOrders.length;
@@ -162,7 +162,7 @@
         
         container.innerHTML = filteredOrders.map(order => {
             const statusColor = getStatusColor(order.status);
-            const time = order.completed_time ? formatTime(order.completed_time) : '';
+            const time = formatTime(order.updated_at || order.created_at || new Date());
             
             return `
                 <div class="glass-card bg-white/70 dark:bg-stone-900/70 rounded-3xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all">
@@ -186,6 +186,9 @@
                             <span class="text-sm text-on-surface-variant">Time</span>
                             <span class="text-sm font-bold">${time}</span>
                         </div>
+                    </div>
+                    <div class="mt-2 space-y-2 border-t border-outline-variant/10 pt-2 text-sm text-on-surface">
+                        ${order.order_items ? order.order_items.map(i => `<div class="flex justify-between"><span class="font-bold">${i.quantity}x ${i.menu_items?.name || ''}</span></div>`).join('') : ''}
                     </div>
                     <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
                         <span class="text-lg font-extrabold">Total</span>
