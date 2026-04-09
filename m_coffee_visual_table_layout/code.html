@@ -182,8 +182,9 @@
                 </div>
             </div>
             
-            <div class="p-6 bg-white border-t border-stone-100 pb-10">
-                <button onclick="window.location.href='../kitchen_queue/code.html'" class="w-full py-4 rounded-xl bg-primary text-white font-black text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">XEM TAI BẾP / KITCHEN</button>
+            <div class="p-6 bg-white border-t border-stone-100 pb-10 flex flex-col gap-3">
+                <button onclick="window.location.href='../kitchen_queue/code.html'" class="w-full py-4 rounded-xl bg-primary text-white font-black text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">XEM TẠI BẾP / KITCHEN</button>
+                <button onclick="cancelTable()" class="w-full py-4 rounded-xl bg-red-50 text-red-600 font-bold text-base hover:bg-red-100 transition-colors border border-red-100">HUỶ TRỐNG BÀN</button>
             </div>
         </div>
     </div>
@@ -193,6 +194,7 @@
         let activeOrders = [];
         let currentFloor = 'ground';
         let selectedTableId = null;
+        let currentOccupiedTableId = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await initializeData();
@@ -342,6 +344,7 @@
 
         /* --- OCCUPIED TABLE INFO LOGIC --- */
         function showOccupiedInfo(tableId) {
+            currentOccupiedTableId = tableId;
             const table = tables.find(t => t.id === tableId);
             if (!table) return;
 
@@ -385,7 +388,32 @@
             content.classList.add('translate-y-full');
             setTimeout(() => {
                 modal.classList.add('hidden');
+                currentOccupiedTableId = null;
             }, 300);
+        }
+
+        async function cancelTable() {
+            if (!currentOccupiedTableId) return;
+            if(!confirm('Bạn có chắc chắn muốn huỷ bàn này?\nMọi dữ liệu order của bàn này sẽ bị xoá đi và không thể lấy lại.')) return;
+            
+            const order = activeOrders.find(o => o.table_id === currentOccupiedTableId && ['pending', 'preparing', 'ready'].includes(o.status));
+            
+            try {
+                if (order) {
+                    await window.api.deleteOrder(order.id, currentOccupiedTableId);
+                } else {
+                    await window.api.updateTableStatus(currentOccupiedTableId, 'available');
+                }
+                
+                // Refresh data
+                tables = await window.api.getTables();
+                await loadActiveOrders();
+                renderVisualLayout();
+                closeOccupiedInfo();
+            } catch (err) {
+                console.error(err);
+                alert('Có lỗi xảy ra khi huỷ bàn.');
+            }
         }
 
         /* --- TABLE MANAGEMENT LOGIC --- */

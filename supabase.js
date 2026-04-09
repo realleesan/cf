@@ -92,6 +92,14 @@
                 }
                 return data[0];
             },
+            async deleteOrder(orderId, tableId) {
+                const { error } = await supabase.from('orders').delete().eq('id', orderId);
+                if (error) throw error;
+                if (tableId) {
+                    await this.updateTableStatus(tableId, 'available');
+                }
+                return true;
+            },
             async getStaff() {
                 const { data, error } = await supabase.from('staff').select('*').order('name');
                 if (error) throw error;
