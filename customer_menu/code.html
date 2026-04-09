@@ -114,7 +114,13 @@
         }
         
         await loadMenu();
+        
+        // Restore cart
+        const saved = localStorage.getItem('stitch_cart');
+        if (saved) cart = JSON.parse(saved);
+        
         setupEventListeners();
+        updateCartUI(); // Initial checkout panel render
     });
 
     // Load menu from API
@@ -211,6 +217,17 @@
         `;
         
         items.forEach(item => {
+            const cartItem = cart.find(c => c.itemId === item.id);
+            const actionButtonHTML = cartItem 
+                ? `<div class="flex items-center gap-2 bg-stone-100 rounded-full p-1 border border-stone-200">
+                       <button onclick="updateCartItem('${item.id}', -1)" class="w-8 h-8 rounded-full flex items-center justify-center text-primary bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] active:scale-90 transition-transform font-bold text-lg">-</button>
+                       <span class="font-black text-primary w-4 text-center text-sm">${cartItem.quantity}</span>
+                       <button onclick="updateCartItem('${item.id}', 1)" class="w-8 h-8 rounded-full flex items-center justify-center text-primary bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)] active:scale-90 transition-transform font-bold text-lg">+</button>
+                   </div>`
+                : `<button onclick="addToCart('${item.id}', '${item.name}', ${item.price.toFixed(2)})" class="w-10 h-10 rounded-full ${isSecondary ? 'bg-secondary' : 'bg-primary-container'} text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+                       <span class="material-symbols-outlined" data-icon="add">add</span>
+                   </button>`;
+
             if (isSecondary) {
                 html += `
                     <div class="flex items-center gap-4 p-4 bg-secondary-container/20 rounded-lg border border-secondary-container/30">
@@ -220,13 +237,11 @@
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-bold text-on-surface text-lg">${item.name}</h4>
-                                <span class="font-bold text-secondary">${item.price}</span>
+                                <span class="font-bold text-secondary">$${parseFloat(item.price).toFixed(2)}</span>
                             </div>
                             <p class="text-xs text-on-secondary-fixed-variant mt-1">${item.description || ''}</p>
                         </div>
-                        <button onclick="addToCart('${item.id}', '${item.name}', ${item.price})" class="w-10 h-10 rounded-full bg-secondary text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
-                            <span class="material-symbols-outlined" data-icon="add">add</span>
-                        </button>
+                        ${actionButtonHTML}
                     </div>
                 `;
             } else {
@@ -238,13 +253,11 @@
                         <div class="flex-grow">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-bold text-on-surface text-lg">${item.name}</h4>
-                                <span class="font-bold text-primary">${item.price}</span>
+                                <span class="font-bold text-primary">$${parseFloat(item.price).toFixed(2)}</span>
                             </div>
                             <p class="text-xs text-on-surface-variant mt-1">${item.description || ''}</p>
                         </div>
-                        <button onclick="addToCart('${item.id}', '${item.name}', ${item.price})" class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
-                            <span class="material-symbols-outlined" data-icon="add">add</span>
-                        </button>
+                        ${actionButtonHTML}
                     </div>
                 `;
             }
@@ -260,10 +273,21 @@
         if (existing) {
             existing.quantity++;
         } else {
-            cart.push({ itemId, name: itemName, price, quantity: 1 });
+            cart.push({ itemId, name: itemName, price: parseFloat(price), quantity: 1 });
         }
         updateCartUI();
-        showToast(`Added ${itemName} to cart`);
+    }
+
+    // Update cart item
+    function updateCartItem(itemId, delta) {
+        const existing = cart.find(c => c.itemId === itemId);
+        if (existing) {
+            existing.quantity += delta;
+            if (existing.quantity <= 0) {
+                cart = cart.filter(c => c.itemId !== itemId);
+            }
+        }
+        updateCartUI();
     }
 
     // Update cart UI
@@ -271,12 +295,70 @@
         const badge = document.getElementById('cart-badge');
         if (badge) {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            badge.textContent = totalItems;
-            badge.classList.toggle('hidden', totalItems === 0);
+            badge.textContent = totalItems > 0 ? totalItems : 'Cart';
         }
         
-        // Store cart in localStorage for cart page
+        // Store cart in localStorage
         localStorage.setItem('stitch_cart', JSON.stringify(cart));
+        
+        // Re-render currently visible items to show new buttons
+        if (selectedCategory) {
+            const items = menuData.items.filter(item => item.category_id == selectedCategory);
+            renderMenuItems(items);
+        }
+        
+        renderCheckoutPanel();
+    }
+
+    // Render Checkout Panel
+    function renderCheckoutPanel() {
+        const panel = document.getElementById('checkout-panel');
+        if (!panel) return;
+        
+        if (cart.length === 0) {
+            panel.classList.add('hidden');
+            return;
+        }
+        panel.classList.remove('hidden');
+
+        const subtotal = cart.reduce((sum, i) => sum + (i.price * i.quantity), 0);
+        const tax = subtotal * 0.08;
+        const total = subtotal + tax;
+        document.getElementById('co-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+        document.getElementById('co-tax').textContent = `$${tax.toFixed(2)}`;
+        document.getElementById('co-total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    async function confirmOrder() {
+        if (cart.length === 0) return;
+        
+        const tableId = localStorage.getItem('currentTableId');
+        const orderType = tableId ? 'dine-in' : 'takeaway';
+
+        const btn = document.getElementById('co-submit-btn');
+        const original = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> PROCESSING';
+        btn.disabled = true;
+
+        try {
+            const api = window.api;
+            await api.createOrder({
+                table_id: tableId || null,
+                order_type: orderType,
+                items: cart.map(i => ({ menu_item_id: i.itemId, quantity: i.quantity, price: i.price })),
+                special_instructions: document.getElementById('co-instructions').value
+            });
+            
+            cart = [];
+            localStorage.removeItem('stitch_cart');
+            
+            window.location.href = '../kitchen_queue/code.html';
+        } catch (err) {
+            console.error(err);
+            btn.innerHTML = 'ERROR - RETRY';
+            btn.disabled = false;
+            setTimeout(() => { btn.innerHTML = original; btn.disabled = false; }, 2000);
+        }
     }
 
     // Show toast notification
@@ -290,10 +372,17 @@
 
     // Setup event listeners
     function setupEventListeners() {
-        // Cart navigation
+        // Cart navigation (scroll to checkout panel)
         const cartBtn = document.getElementById('cart-nav-btn');
         if (cartBtn) {
-            cartBtn.onclick = () => window.location.href = '../cart_checkout/code.html';
+            cartBtn.onclick = () => {
+                const panel = document.getElementById('checkout-panel');
+                if (panel && cart.length > 0) {
+                    panel.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    showToast('Your basket is empty');
+                }
+            };
         }
         
         // Kitchen navigation
@@ -375,6 +464,37 @@
 <div id="menu-content" class="px-6 mt-6 space-y-12">
 <!-- Menu items will be loaded dynamically -->
 </div>
+
+<!-- Checkout Panel Container -->
+<div id="checkout-panel" class="px-6 mt-16 mb-8 hidden">
+    <!-- Summary -->
+    <div class="bg-white rounded-[2.5rem] p-8 space-y-5 mb-8 shadow-sm">
+        <div class="flex justify-between items-center text-on-surface-variant">
+            <span class="font-black tracking-[0.1em] text-[10px] uppercase">Subtotal</span>
+            <span id="co-subtotal" class="font-black text-primary">$0.00</span>
+        </div>
+        <div class="flex justify-between items-center text-on-surface-variant">
+            <span class="font-black tracking-[0.1em] text-[10px] uppercase">VAT (8%)</span>
+            <span id="co-tax" class="font-black text-primary">$0.00</span>
+        </div>
+        <div class="h-[1px] bg-stone-100"></div>
+        <div class="flex justify-between items-center">
+            <span class="text-xl font-black text-primary">Total Price</span>
+            <span id="co-total" class="text-3xl font-black text-primary">$0.00</span>
+        </div>
+    </div>
+
+    <!-- Special Instructions -->
+    <div class="mb-10">
+        <label class="block text-xs font-black text-on-surface-variant uppercase tracking-[0.2em] mb-4">Special Instructions</label>
+        <textarea id="co-instructions" placeholder="Add a note (e.g. less ice, extra shot)..." class="w-full bg-white border-2 border-stone-50 rounded-3xl p-6 text-sm focus:ring-2 focus:ring-primary focus:bg-white transition-all min-h-[140px] shadow-sm"></textarea>
+    </div>
+
+    <!-- Checkout Button -->
+    <button id="co-submit-btn" onclick="confirmOrder()" class="w-full py-7 rounded-[2rem] bg-primary text-white font-black text-xl flex items-center justify-center gap-4 shadow-2xl shadow-primary/30 active:scale-95 transition-all">
+        Confirm Order <span class="material-symbols-outlined">arrow_forward</span>
+    </button>
+</div>
 </main>
 <!-- BottomNavBar -->
 <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl rounded-t-[3rem] shadow-[0_-20px_40px_rgba(80,69,62,0.08)]">
@@ -386,7 +506,7 @@
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
 </div>
-<div id="cart-nav-btn" onclick="window.location.href='../cart_checkout/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform cursor-pointer">
+<div id="cart-nav-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity scale-90 active:scale-100 transition-transform cursor-pointer">
 <span class="material-symbols-outlined">shopping_cart</span>
 <span class="relative">
 <span id="cart-badge" class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Cart</span>
