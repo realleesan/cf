@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>M Coffee - Quản lý Thanh toán</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="../supabase.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#553722",
+                        secondary: "#4a6549",
+                        surface: "#f9f9f8",
+                        'surface-container': "#eeeeed",
+                        'on-surface-variant': "#50453e",
+                    },
+                    borderRadius: { '2xl': '1.5rem', '3xl': '2rem' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/10">
+    <header class="fixed top-0 w-full z-50 bg-[#f9f9f8] dark:bg-[#1a1c1c] flex justify-between items-center px-6 py-6 bg-surface/80 backdrop-blur-xl border-b border-stone-100">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">payments</span>
+            </div>
+            <h1 class="font-headline font-black tracking-tight text-2xl text-primary">Thanh toán</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+            <div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqfvmUcrMQnYTB2-JGJ6sI67JUbLc1AGW8gNhRoaTCOCDvpYdD61dNJuUfIQ72IC4hFm8FqOS8Vx0ftr1mI8uqL2791b2k22LXPOqJOuQjfc802Ux77TF5Fndtn0n-smVWFhiz5QHdcRS0umJFsgxGqhTTJEAQkb-1ewxhZy3eEfHYHPbZsETqpz3weYRA-97gPLH7K1w-IBaJT86o17nDQPApXRsEnii1FbKeiEYCvLXvqos9-cITwET5ZjXg3b6KZ6WMbVlDScmX" alt="User">
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-28 px-6 pb-40 max-w-5xl mx-auto">
+        <section class="mb-10">
+            <h2 class="text-4xl font-black text-primary leading-tight mb-2">Trạng thái<br>Phòng / Bàn</h2>
+            <p class="text-on-surface-variant font-medium">Theo dõi và hoàn tất thanh toán nhanh chóng.</p>
+        </section>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-2 gap-4 mb-10">
+            <div class="bg-white p-5 rounded-3xl border border-stone-100 shadow-sm">
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Chờ thanh toán</p>
+                <p id="stat-waiting" class="text-3xl font-black text-orange-500">0</p>
+            </div>
+            <div class="bg-white p-5 rounded-3xl border border-stone-100 shadow-sm">
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Bàn trống</p>
+                <p id="stat-empty" class="text-3xl font-black text-green-500">0</p>
+            </div>
+        </div>
+
+        <div id="tables-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <!-- Tables populated dynamically -->
+            <div class="col-span-full py-20 text-center text-stone-300">
+                <div class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Feedback Overlay -->
+    <div id="payment-success-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
+        <div class="bg-white rounded-[3rem] p-10 flex flex-col items-center gap-6 shadow-2xl scale-90 transition-transform" id="success-content">
+            <div class="w-24 h-24 rounded-full bg-green-100 text-green-600 flex items-center justify-center animate-bounce">
+                <span class="material-symbols-outlined text-6xl">check_circle</span>
+            </div>
+            <div class="text-center">
+                <h3 class="text-3xl font-black text-primary mb-2">Thành công!</h3>
+                <p class="text-on-surface-variant font-medium">Đã hoàn tất thanh toán cho <span id="success-table-name" class="font-bold text-primary">Bàn --</span></p>
+            </div>
+            <button onclick="closeSuccess()" class="w-full py-4 rounded-2xl bg-primary text-white font-black text-lg">XÁC NHẬN</button>
+        </div>
+    </div>
+
+    <!-- BottomNavBar -->
+    <nav class="fixed bottom-0 left-0 w-full z-[100] flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-20px_50px_rgba(80,69,62,0.1)]">
+        <div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">grid_view</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Tables</span>
+        </div>
+        <div onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">menu_book</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Menu</span>
+        </div>
+        <div class="flex flex-col items-center justify-center gap-1 min-w-[64px]">
+            <div class="bg-primary text-white rounded-2xl p-3 w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+            </div>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black text-primary">Payment</span>
+        </div>
+        <div onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">cooking</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Kitchen</span>
+        </div>
+        <div onclick="window.location.href='../order_history/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">history</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">History</span>
+        </div>
+    </nav>
+
+    <script>
+        let tables = [];
+        let activeOrders = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initialize();
+            setInterval(initialize, 15000);
+        });
+
+        async function initialize() {
+            if (!window.api) {
+                setTimeout(initialize, 500);
+                return;
+            }
+            try {
+                tables = await window.api.getTables();
+                activeOrders = await window.api.getActiveOrders();
+                render();
+            } catch (err) { console.error(err); }
+        }
+
+        function render() {
+            const container = document.getElementById('tables-grid');
+            let waitingCount = 0;
+            let emptyCount = 0;
+
+            container.innerHTML = tables.map(t => {
+                const order = activeOrders.find(o => o.table_id === t.id);
+                // "Chờ thanh toán" state: table is occupied and has an order that is "ready" 
+                // In the kitchen flow, "ready" means food is out. User says kitchen mark ready -> moves here.
+                const isWaiting = order && (order.status === 'ready' || order.status === 'preparing' || order.status === 'pending');
+                const isEmpty = t.status === 'available' || !order;
+
+                if (isWaiting) waitingCount++;
+                if (isEmpty) emptyCount++;
+
+                let bgClass = 'bg-white border-stone-100';
+                let textClass = 'text-primary opacity-20';
+                let badge = '';
+
+                if (isWaiting) {
+                    bgClass = 'bg-orange-50 border-orange-200 ring-2 ring-orange-100';
+                    textClass = 'text-orange-600';
+                    badge = `<span class="bg-orange-500 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase">Chờ thanh toán</span>`;
+                } else if (!isEmpty) {
+                    bgClass = 'bg-stone-50 border-stone-200';
+                    textClass = 'text-primary opacity-40';
+                } else {
+                    bgClass = 'bg-white border-stone-100';
+                    textClass = 'text-primary opacity-10';
+                    badge = `<span class="text-[10px] font-bold text-stone-300 uppercase">Trống</span>`;
+                }
+
+                return `
+                    <div onclick="handleTableClick('${t.id}', '${t.table_number}', ${isWaiting})" class="${bgClass} border-2 rounded-[2.5rem] p-8 flex flex-col items-center justify-center gap-3 cursor-pointer hover:scale-105 transition-all shadow-sm active:scale-95 aspect-square">
+                        <span class="text-4xl font-black ${textClass}">${t.table_number}</span>
+                        ${badge}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('stat-waiting').textContent = waitingCount;
+            document.getElementById('stat-empty').textContent = emptyCount;
+        }
+
+        async function handleTableClick(id, number, isWaiting) {
+            if (!isWaiting) return;
+
+            const order = activeOrders.find(o => o.table_id === id);
+            if (!order) return;
+
+            if (confirm(`Xác nhận thanh toán cho Bàn ${number}?`)) {
+                try {
+                    await window.api.updateOrderStatus(order.id, 'completed');
+                    showSuccess(number);
+                    await initialize();
+                } catch (err) { alert('Lỗi thanh toán: ' + err.message); }
+            }
+        }
+
+        function showSuccess(number) {
+            const overlay = document.getElementById('payment-success-overlay');
+            const content = document.getElementById('success-content');
+            document.getElementById('success-table-name').textContent = `Bàn ${number}`;
+            overlay.classList.remove('hidden');
+            setTimeout(() => content.classList.remove('scale-90'), 10);
+        }
+
+        function closeSuccess() {
+            const overlay = document.getElementById('payment-success-overlay');
+            const content = document.getElementById('success-content');
+            content.classList.add('scale-90');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+    </script>
+</body>
+</html>
