@@ -188,6 +188,10 @@
                             <span class="text-sm text-on-surface-variant">Time</span>
                             <span class="text-xs font-black bg-stone-100 px-2 py-1 rounded-md">${time}</span>
                         </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-on-surface-variant">Thu ngân</span>
+                            <span class="text-sm font-black text-secondary">${order.staff?.full_name || '---'}</span>
+                        </div>
                     </div>
                     <div class="mt-2 space-y-2 border-t border-stone-100 pt-3 text-sm text-on-surface">
                         ${order.order_items ? order.order_items.map(i => `<div class="flex justify-between items-center"><span class="font-bold">${i.quantity}x ${i.menu_items?.name || ''}</span> <span class="text-[10px] text-stone-400">${formatVN(i.total_price)}</span></div>`).join('') : ''}
@@ -336,13 +340,17 @@
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
 </div>
 
+        <div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Payment</span>
+</div>
+<div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
+<span class="material-symbols-outlined">badge</span>
+<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Staff</span>
+</div>
 <div id="kitchen-nav-btn" onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
 <span class="material-symbols-outlined">cooking</span>
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Kitchen</span>
-</div>
-<div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
-<span class="material-symbols-outlined">payments</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Payment</span>
 </div>
 <div class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] scale-90 active:scale-100 transition-transform">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>

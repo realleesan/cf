@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>M Coffee - Quản lý Nhân sự</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="../supabase.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#553722",
+                        secondary: "#4a6549",
+                        surface: "#f9f9f8",
+                        'surface-container': "#eeeeed",
+                        'on-surface-variant': "#50453e",
+                    },
+                    borderRadius: { '2xl': '1.5rem', '3xl': '2rem' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/10">
+    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-6 bg-surface/80 backdrop-blur-xl border-b border-stone-100">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">badge</span>
+            </div>
+            <h1 class="font-headline font-black tracking-tight text-2xl text-primary">Nhân sự</h1>
+        </div>
+        <button onclick="openStaffModal('add')" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+            <span class="material-symbols-outlined">add</span>
+        </button>
+    </header>
+
+    <main class="pt-28 px-6 pb-40 max-w-5xl mx-auto">
+        <section class="mb-10">
+            <h2 class="text-4xl font-black text-primary leading-tight mb-2">Đội ngũ<br>Nhân viên</h2>
+            <p class="text-on-surface-variant font-medium text-sm">Quản lý thông tin và theo dõi doanh thu thu hộ của từng nhân viên.</p>
+        </section>
+
+        <div id="staff-grid" class="flex flex-col gap-4">
+            <!-- Staff cards will be populated here -->
+            <div class="py-20 text-center text-stone-300">
+                <div class="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+                <p>Đang tải dữ liệu nhân sự...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- CRUD Modal -->
+    <div id="staff-modal" class="fixed inset-0 z-[200] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeStaffModal()"></div>
+        <div class="absolute bottom-0 left-0 w-full bg-surface rounded-t-[3rem] shadow-2xl flex flex-col max-h-[85vh] transform transition-transform translate-y-full" id="modal-content">
+            <div class="p-8 border-b border-stone-100 flex justify-between items-center">
+                <h3 id="modal-title" class="text-2xl font-black text-primary">Thêm nhân viên</h3>
+                <button onclick="closeStaffModal()" class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="p-8 space-y-6 overflow-y-auto">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Tên đầy đủ</label>
+                        <input type="text" id="staff-name" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold" placeholder="Vd: Nguyễn Văn A">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Chức vụ</label>
+                        <select id="staff-role" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold">
+                            <option value="Staff">Phục vụ</option>
+                            <option value="Cashier">Thu ngân</option>
+                            <option value="Manager">Quản lý</option>
+                            <option value="Chef">Đầu bếp</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Số điện thoại</label>
+                            <input type="tel" id="staff-phone" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold" placeholder="090...">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Mã NV (Tùy chọn)</label>
+                            <input type="text" id="staff-eid" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold placeholder:font-normal" placeholder="NV001">
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-6 flex gap-3">
+                    <button id="modal-submit" onclick="saveStaff()" class="flex-1 py-5 rounded-[2rem] bg-primary text-white font-black text-lg shadow-xl shadow-primary/20 active:scale-95 transition-transform uppercase tracking-widest">Lưu thông tin</button>
+                </div>
+                <button id="modal-delete" onclick="handleDeleteStaff()" class="w-full py-4 text-red-500 font-bold text-sm uppercase tracking-widest hidden">Xóa nhân viên này</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BottomNavBar -->
+    <nav class="fixed bottom-0 left-0 w-full z-[100] flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-20px_50px_rgba(80,69,62,0.1)]">
+        <div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">grid_view</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Tables</span>
+        </div>
+        <div onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">menu_book</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Menu</span>
+        </div>
+        <div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">payments</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Payment</span>
+        </div>
+        <div class="flex flex-col items-center justify-center gap-1 min-w-[64px]">
+            <div class="bg-primary text-white rounded-2xl p-3 w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">badge</span>
+            </div>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black text-primary">Staff</span>
+        </div>
+        <div onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">cooking</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Kitchen</span>
+        </div>
+        <div onclick="window.location.href='../order_history/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">history</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">History</span>
+        </div>
+    </nav>
+
+    <script>
+        let staff = [];
+        let orders = [];
+        let selectedStaffId = null;
+
+        document.addEventListener('DOMContentLoaded', initialize);
+
+        async function initialize() {
+            if (!window.api) return setTimeout(initialize, 500);
+            try {
+                staff = await window.api.getStaff();
+                orders = await window.api.getOrderHistory(); // Get all orders to calculate earnings
+                render();
+            } catch (err) { console.error(err); }
+        }
+
+        function calculateEarnings(staffId) {
+            return orders
+                .filter(o => o.staff_id === staffId && o.status === 'completed')
+                .reduce((sum, o) => sum + (parseFloat(o.total_amount) || 0), 0);
+        }
+
+        function formatVN(price) {
+            let p = parseFloat(price) || 0;
+            if (p >= 1000) p = p / 1000;
+            return p.toLocaleString('vi-VN', {maximumFractionDigits: 1}) + 'k VNĐ';
+        }
+
+        function render() {
+            const container = document.getElementById('staff-grid');
+            if (staff.length === 0) {
+                container.innerHTML = '<div class="py-20 text-center text-stone-300">Chưa có nhân viên. Nhấn + để thêm.</div>';
+                return;
+            }
+
+            container.innerHTML = staff.map(s => {
+                const earnings = calculateEarnings(s.id);
+                return `
+                    <div onclick="openStaffModal('edit', '${s.id}')" class="bg-white rounded-[2rem] p-6 border border-stone-100 shadow-sm flex items-center justify-between hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]">
+                        <div class="flex items-center gap-4">
+                            <div class="w-16 h-16 rounded-3xl bg-primary/5 text-primary flex items-center justify-center font-black text-2xl border border-primary/10">
+                                ${s.full_name?.[0]?.toUpperCase() || 'S'}
+                            </div>
+                            <div>
+                                <h3 class="font-black text-primary text-lg leading-tight">${s.full_name}</h3>
+                                <p class="text-[10px] text-stone-400 font-bold uppercase tracking-widest mt-1">${s.role}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] text-stone-400 font-black uppercase tracking-widest leading-none mb-1">Thu hộ hôm nay</p>
+                            <p class="text-xl font-black text-secondary">${formatVN(earnings)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openStaffModal(mode, id = null) {
+            selectedStaffId = id;
+            const modal = document.getElementById('staff-modal');
+            const content = document.getElementById('modal-content');
+            const title = document.getElementById('modal-title');
+            const deleteBtn = document.getElementById('modal-delete');
+
+            // Reset
+            document.getElementById('staff-name').value = '';
+            document.getElementById('staff-role').value = 'Staff';
+            document.getElementById('staff-phone').value = '';
+            document.getElementById('staff-eid').value = '';
+
+            if (mode === 'edit' && id) {
+                const s = staff.find(x => x.id === id);
+                if (s) {
+                    title.textContent = 'Chỉnh sửa nhân viên';
+                    document.getElementById('staff-name').value = s.full_name;
+                    document.getElementById('staff-role').value = s.role;
+                    document.getElementById('staff-phone').value = s.phone || '';
+                    document.getElementById('staff-eid').value = s.employee_id || '';
+                    deleteBtn.classList.remove('hidden');
+                }
+            } else {
+                title.textContent = 'Thêm nhân viên mới';
+                deleteBtn.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => content.classList.remove('translate-y-full'), 10);
+        }
+
+        function closeStaffModal() {
+            const modal = document.getElementById('staff-modal');
+            const content = document.getElementById('modal-content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        async function saveStaff() {
+            const name = document.getElementById('staff-name').value;
+            if (!name) return alert('Vui lòng nhập tên');
+
+            const data = {
+                full_name: name,
+                role: document.getElementById('staff-role').value,
+                phone: document.getElementById('staff-phone').value,
+                employee_id: document.getElementById('staff-eid').value
+            };
+
+            try {
+                if (selectedStaffId) {
+                    await window.api.updateStaff(selectedStaffId, data);
+                } else {
+                    await window.api.addStaff(data);
+                }
+                closeStaffModal();
+                await initialize();
+            } catch (err) { alert('Lỗi: ' + err.message); }
+        }
+
+        async function handleDeleteStaff() {
+            if (!selectedStaffId) return;
+            if (confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
+                try {
+                    await window.api.deleteStaff(selectedStaffId);
+                    closeStaffModal();
+                    await initialize();
+                } catch (err) { alert('Lỗi: ' + err.message); }
+            }
+        }
+    </script>
+</body>
+</html>

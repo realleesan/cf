@@ -91,8 +91,12 @@
                 if (error) throw error;
                 return data;
             },
-            async updateOrderStatus(orderId, status) {
-                const { data, error } = await supabase.from('orders').update({ status }).eq('id', orderId).select();
+            async updateOrderStatus(orderId, status, staffId = null) {
+                const updatePayload = { status };
+                if (staffId) updatePayload.staff_id = staffId;
+                if (status === 'completed') updatePayload.completed_time = new Date().toISOString();
+
+                const { data, error } = await supabase.from('orders').update(updatePayload).eq('id', orderId).select();
                 if (error) throw error;
                 if (status === 'completed' && data[0].table_id) {
                     await this.updateTableStatus(data[0].table_id, 'available');
@@ -186,8 +190,27 @@
                 if (error) throw error;
                 return data && data.length > 0 ? data[0] : null;
             },
-            async deleteMenuItem(id) {
-                const { error } = await supabase.from('menu_items').delete().eq('id', id);
+            async addStaff(staffData) {
+                const { data, error } = await supabase.from('staff').insert([{
+                    full_name: staffData.full_name,
+                    role: staffData.role || 'staff',
+                    phone: staffData.phone || '',
+                    email: staffData.email || '',
+                    is_active: true
+                }]).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async updateStaff(id, staffData) {
+                const { data, error } = await supabase.from('staff')
+                    .update(staffData)
+                    .eq('id', id)
+                    .select();
+                if (error) throw error;
+                return data[0];
+            },
+            async deleteStaff(id) {
+                const { error } = await supabase.from('staff').delete().eq('id', id);
                 if (error) throw error;
                 return true;
             }

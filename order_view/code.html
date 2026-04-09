@@ -72,6 +72,23 @@
         </div>
     </main>
 
+    <!-- Staff Selection Modal -->
+    <div id="staff-selector-modal" class="fixed inset-0 z-[150] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeStaffSelector()"></div>
+        <div class="absolute bottom-0 left-0 w-full bg-surface rounded-t-[2.5rem] shadow-2xl flex flex-col max-h-[80vh] transform transition-transform translate-y-full" id="staff-selector-content">
+            <div class="p-6 border-b border-stone-100 flex justify-between items-center">
+                <h2 class="text-2xl font-black text-primary">Nhân viên Thu ngân</h2>
+                <button onclick="closeStaffSelector()" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <div class="p-4 bg-orange-50 text-orange-700 text-xs font-bold text-center">
+                VUI LÒNG CHỌN NGƯỜI THỰC HIỆN THANH TOÁN
+            </div>
+            <div class="overflow-y-auto p-6" id="staff-list-grid">
+                <!-- Staff will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
     <!-- Success Feedback Overlay -->
     <div id="payment-success-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm hidden">
         <div class="bg-white rounded-[3rem] p-10 flex flex-col items-center gap-6 shadow-2xl scale-90 transition-transform" id="success-content">
@@ -96,11 +113,15 @@
             <span class="material-symbols-outlined text-2xl">menu_book</span>
             <span class="font-body text-[10px] uppercase tracking-widest font-black">Menu</span>
         </div>
-        <div class="flex flex-col items-center justify-center gap-1 min-w-[64px]">
+        <div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px]">
             <div class="bg-primary text-white rounded-2xl p-3 w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
             </div>
             <span class="font-body text-[10px] uppercase tracking-widest font-black text-primary">Payment</span>
+        </div>
+        <div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-2xl">badge</span>
+            <span class="font-body text-[10px] uppercase tracking-widest font-black">Staff</span>
         </div>
         <div onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
             <span class="material-symbols-outlined text-2xl">cooking</span>
@@ -115,6 +136,9 @@
     <script>
         let tables = [];
         let activeOrders = [];
+        let staff = [];
+        let pendingOrderId = null;
+        let pendingTableNumber = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
             await initialize();
@@ -129,6 +153,7 @@
             try {
                 tables = await window.api.getTables();
                 activeOrders = await window.api.getActiveOrders();
+                staff = await window.api.getStaff();
                 render();
             } catch (err) { console.error(err); }
         }
@@ -183,13 +208,53 @@
             const order = activeOrders.find(o => o.table_id === id);
             if (!order) return;
 
-            if (confirm(`Xác nhận thanh toán cho Bàn ${number}?`)) {
-                try {
-                    await window.api.updateOrderStatus(order.id, 'completed');
-                    showSuccess(number);
-                    await initialize();
-                } catch (err) { alert('Lỗi thanh toán: ' + err.message); }
-            }
+            pendingOrderId = order.id;
+            pendingTableNumber = number;
+            
+            // Show staff selector instead of simple confirm
+            openStaffSelector();
+        }
+
+        function openStaffSelector() {
+            const modal = document.getElementById('staff-selector-modal');
+            const content = document.getElementById('staff-selector-content');
+            const grid = document.getElementById('staff-list-grid');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => content.classList.remove('translate-y-full'), 10);
+            
+            grid.innerHTML = staff.map(s => `
+                <button onclick="processPayment('${s.id}')" class="w-full p-6 mb-3 rounded-2xl bg-white border-2 border-stone-100 flex items-center justify-between hover:border-primary active:scale-95 transition-all">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-black text-lg">
+                            ${s.full_name.charAt(0)}
+                        </div>
+                        <div class="text-left">
+                            <p class="font-black text-primary">${s.full_name}</p>
+                            <p class="text-[10px] text-stone-400 uppercase tracking-widest">${s.role}</p>
+                        </div>
+                    </div>
+                    <span class="material-symbols-outlined text-stone-300">chevron_right</span>
+                </button>
+            `).join('') || '<p class="text-center py-10 text-stone-400">Chưa có nhân sự nào.</p>';
+        }
+
+        function closeStaffSelector() {
+            const modal = document.getElementById('staff-selector-modal');
+            const content = document.getElementById('staff-selector-content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        async function processPayment(staffId) {
+            if (!pendingOrderId) return;
+            
+            try {
+                await window.api.updateOrderStatus(pendingOrderId, 'completed', staffId);
+                closeStaffSelector();
+                showSuccess(pendingTableNumber);
+                await initialize();
+            } catch (err) { alert('Lỗi thanh toán: ' + err.message); }
         }
 
         function showSuccess(number) {
