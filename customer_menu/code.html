@@ -109,11 +109,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const tableId = urlParams.get('table');
         if (tableId) {
-            // Store table ID for order creation
             localStorage.setItem('currentTableId', tableId);
         }
         
         await loadMenu();
+        updateTableDisplay();
         
         // Restore cart
         const saved = localStorage.getItem('stitch_cart');
@@ -122,6 +122,89 @@
         setupEventListeners();
         updateCartUI(); // Initial checkout panel render
     });
+
+    function updateTableDisplay() {
+        const tableId = localStorage.getItem('currentTableId');
+        const display = document.getElementById('current-table-display');
+        if (!display) return;
+
+        if (tableId) {
+            // Get table number from menuData if possible, or just show ID for now
+            // We'll improve this with a fetch if needed
+            display.textContent = `Bàn ${tableId}`;
+            // If we want real table number, we can fetch all tables once
+        } else {
+            display.textContent = 'Chưa chọn bàn';
+        }
+    }
+
+    async function openTableSelector() {
+        const modal = document.getElementById('table-selector-modal');
+        const content = document.getElementById('table-selector-content');
+        const grid = document.getElementById('available-tables-grid');
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => content.classList.remove('translate-y-full'), 10);
+        
+        grid.innerHTML = '<div class="p-4 text-center text-stone-400">Đang tải bàn trống...</div>';
+        
+        try {
+            const api = window.api;
+            const tables = await api.getTables();
+            const emptyTables = tables.filter(t => t.status === 'available');
+            
+            if (emptyTables.length === 0) {
+                grid.innerHTML = '<div class="p-10 text-center text-stone-400 flex flex-col items-center gap-3"><span class="material-symbols-outlined text-4xl">event_busy</span><p>Hiện tại không có bàn nào trống</p></div>';
+                return;
+            }
+            
+            grid.innerHTML = `
+                <div class="grid grid-cols-3 gap-4">
+                    ${emptyTables.map(t => `
+                        <button onclick="selectTable('${t.id}', '${t.table_number}')" class="aspect-square rounded-2xl bg-white border-2 border-stone-100 flex flex-col items-center justify-center gap-1 active:scale-90 transition-all hover:border-primary/30">
+                            <span class="material-symbols-outlined text-stone-400">table_bar</span>
+                            <span class="font-black text-xl text-primary">${t.table_number}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+        } catch (err) {
+            grid.innerHTML = '<div class="p-4 text-center text-red-500">Lỗi tải dữ liệu bàn</div>';
+        }
+    }
+
+    function selectTable(id, number) {
+        localStorage.setItem('currentTableId', id);
+        updateTableDisplay();
+        closeTableSelector();
+        showToast(`Đã chọn Bàn ${number}`);
+    }
+
+    function closeTableSelector() {
+        const modal = document.getElementById('table-selector-modal');
+        const content = document.getElementById('table-selector-content');
+        content.classList.add('translate-y-full');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function showToast(message) {
+        let toast = document.getElementById('toast-notification');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast-notification';
+            toast.className = 'fixed top-10 left-1/2 -translate-x-1/2 z-[200] bg-primary text-white px-6 py-3 rounded-full font-bold shadow-2xl transition-all opacity-0 pointer-events-none translate-y-[-20px]';
+            document.body.appendChild(toast);
+        }
+        
+        toast.textContent = message;
+        toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+        toast.classList.add('opacity-100', 'translate-y-0');
+        
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+            toast.classList.remove('opacity-100', 'translate-y-0');
+        }, 2000);
+    }
 
     // Load menu from API
     async function loadMenu() {
@@ -451,7 +534,7 @@
 </header>
 <main class="pb-32">
 <!-- Hero Section -->
-<section class="px-6 pt-4 pb-8">
+<section class="px-6 pt-4 pb-4">
 <div class="relative h-48 rounded-xl overflow-hidden group">
 <img alt="Artisan coffee bar" class="w-full h-full object-cover" data-alt="Close-up of a rustic wooden coffee bar with an espresso machine and fresh pastries in warm morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZCyAZLzL9AuuceokSBEgtzftO1DXM5Z9nYqLzAPF9kcynP-NqonGMgjFdFFBnRt74w1wNH1NyvNLXHEXPuI8ndtXK9m23Wg44PhAIsEwp3-SCGZ0jKaq8XITeZqhcDE7qgDg81Jr8IbPMrJOoJFbatWlXkfewRpVyb6zc1MzZshJR-E-FJj0rvKGq41FQSYkWOCqyvTvZ87-SamUcvs77rO6KXFho_74UP7-XvDEzc5Q4BDk7QYSmhIllDK3vj79A7zFetr-SGUP1"/>
 <div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex items-end p-6">
@@ -461,6 +544,22 @@
 </div>
 </div>
 </div>
+</section>
+
+<!-- Table Selection -->
+<section class="px-6 mb-4">
+    <div onclick="openTableSelector()" class="bg-primary/5 border border-primary/10 rounded-2xl p-4 flex items-center justify-between cursor-pointer active:scale-[0.98] transition-all">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary">table_restaurant</span>
+            <div>
+                <p class="text-[10px] uppercase font-bold text-primary/60 leading-none mb-1">Đang phục vụ tại</p>
+                <p class="font-black text-primary text-xl leading-none" id="current-table-display">Chưa chọn bàn</p>
+            </div>
+        </div>
+        <div class="bg-primary text-white p-2 rounded-xl">
+            <span class="material-symbols-outlined">edit</span>
+        </div>
+    </div>
 </section>
 <!-- Category Scroll -->
 <nav id="category-nav" class="sticky top-[72px] z-40 bg-surface/80 backdrop-blur-md px-6 py-4 overflow-x-auto hide-scrollbar flex gap-3">
@@ -577,6 +676,23 @@
             <div id="manage-items-list" class="flex flex-col gap-3">
                 <!-- Populated dynamically -->
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table Selector Modal -->
+<div id="table-selector-modal" class="fixed inset-0 z-[110] hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeTableSelector()"></div>
+    <div class="absolute bottom-0 left-0 w-full bg-surface rounded-t-[2.5rem] shadow-2xl flex flex-col max-h-[85vh] transform transition-transform translate-y-full" id="table-selector-content">
+        <div class="p-6 border-b border-stone-100 flex justify-between items-center">
+            <h2 class="text-2xl font-black text-primary">Chọn bàn trống</h2>
+            <button onclick="closeTableSelector()" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="overflow-y-auto p-6" id="available-tables-grid">
+            <!-- Tables will be loaded dynamically -->
+        </div>
+        <div class="p-6 bg-stone-50 border-t border-stone-100 pb-10">
+            <button onclick="localStorage.removeItem('currentTableId'); updateTableDisplay(); closeTableSelector();" class="w-full py-4 rounded-xl text-stone-500 font-bold hover:bg-stone-100 transition-colors uppercase tracking-widest text-xs">Phục vụ Mang đi / Takeaway</button>
         </div>
     </div>
 </div>
