@@ -212,8 +212,17 @@
         let selectedTableId = null;
         let currentOccupiedTableId = null;
 
+        let refreshInterval = null;
+
         document.addEventListener('DOMContentLoaded', async () => {
             await initializeData();
+            // Start polling for updates every 30 seconds
+            refreshInterval = setInterval(initializeData, 30000);
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) clearInterval(refreshInterval);
         });
 
         async function initializeData() {
@@ -241,6 +250,7 @@
             try {
                 activeOrders = await window.api.getActiveOrders();
                 renderActiveOrders();
+                renderVisualLayout(); // Re-render tables to show "Chờ món" status
             } catch (err) { console.error(err); }
         }
 
@@ -290,10 +300,29 @@
                     ${filtered.map(t => {
                         const isSelected = selectedTableId === t.id;
                         const isOccupied = t.status === 'occupied';
+                        
+                        // Check order status for waiting indicator
+                        const tableOrder = activeOrders.find(o => o.table_id === t.id);
+                        let statusText = isOccupied ? 'SỬ DỤNG' : '';
+                        let statusClass = 'bg-secondary/10 text-secondary';
+                        
+                        if (tableOrder) {
+                            if (tableOrder.status === 'preparing') {
+                                statusText = 'CHỜ MÓN';
+                                statusClass = 'bg-primary/10 text-primary animate-pulse';
+                            } else if (tableOrder.status === 'ready') {
+                                statusText = 'SẴN SÀNG';
+                                statusClass = 'bg-green-100 text-green-700';
+                            } else if (tableOrder.status === 'pending') {
+                                statusText = 'MỚI ĐẶT';
+                                statusClass = 'bg-orange-100 text-orange-700';
+                            }
+                        }
+
                         return `
                         <div onclick="tableClick('${t.id}')" class="${isOccupied ? 'bg-[#ccebc7] border-secondary' : isSelected ? 'bg-white border-primary ring-4 ring-primary/10' : 'bg-white border-stone-100'} border-2 rounded-[2rem] p-8 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transition-all shadow-sm relative aspect-square">
                             <span class="text-3xl font-black ${isOccupied ? 'text-secondary' : isSelected ? 'text-primary' : 'text-primary opacity-40'}">${t.table_number}</span>
-                            ${isOccupied ? '<span class="text-[10px] bg-secondary/10 px-3 py-1 rounded-full font-bold text-secondary mt-2 uppercase tracking-wide">In Use</span>' : isSelected ? '<span class="text-[10px] bg-primary/10 px-3 py-1 rounded-full font-bold text-primary mt-2 uppercase tracking-wide">Selected</span>' : ''}
+                            ${statusText ? `<span class="text-[10px] ${statusClass} px-3 py-1 rounded-full font-bold mt-2 uppercase tracking-wide">${statusText}</span>` : isSelected ? '<span class="text-[10px] bg-primary/10 px-3 py-1 rounded-full font-bold text-primary mt-2 uppercase tracking-wide">Selected</span>' : ''}
                             <div class="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-2 bg-stone-100 rounded-full"></div>
                             <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-2 bg-stone-100 rounded-full"></div>
                             <div class="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-8 bg-stone-100 rounded-full"></div>
