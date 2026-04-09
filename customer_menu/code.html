@@ -593,15 +593,18 @@
             });
             
             manageItems.push(newItem);
+            menuData.items.push(newItem);
             
             // Clear form
             nameInput.value = '';
             priceInput.value = '';
             imageInput.value = '';
             
-            // Refresh data
-            await loadManageMenuData();
-            await loadMenu(); // Refresh main menu UI
+            // Refresh UI instantly
+            updateCategorySelectOptions();
+            renderManageItems();
+            if (selectedCategory) selectCategory(selectedCategory);
+            
         } catch (err) {
             console.error(err);
             alert('Có lỗi xảy ra khi thêm món mới!');
@@ -633,24 +636,21 @@
             });
             
             const index = manageItems.findIndex(i => i.id == id);
-            if(index !== -1) {
-                if (updatedItem) {
-                    manageItems[index] = updatedItem;
-                } else {
-                    manageItems[index].category_id = newCatId;
-                    manageItems[index].name = newName;
-                    manageItems[index].price = newPrice;
-                    manageItems[index].image_url = newImage;
-                }
-            }
+            if(index !== -1 && updatedItem) manageItems[index] = updatedItem;
             
+            const mdIndex = menuData.items.findIndex(i => i.id == id);
+            if (mdIndex !== -1 && updatedItem) menuData.items[mdIndex] = updatedItem;
+            
+            // Refresh UI instantly
             renderManageItems();
-            await loadMenu(); // Refresh main menu UI
+            if (selectedCategory) selectCategory(selectedCategory);
             
             const row = document.getElementById(`mi-row-${id}`);
-            const origBg = row.style.backgroundColor;
-            row.style.backgroundColor = '#ccebc7';
-            setTimeout(() => row.style.backgroundColor = origBg, 500);
+            if (row) {
+                const origBg = row.style.backgroundColor;
+                row.style.backgroundColor = '#ccebc7';
+                setTimeout(() => row.style.backgroundColor = origBg, 500);
+            }
         } catch (err) {
             console.error(err);
             alert('Có lỗi xảy ra khi lưu thay đổi!');
@@ -662,8 +662,10 @@
         try {
             await window.api.deleteMenuItem(id);
             manageItems = manageItems.filter(i => i.id != id);
+            menuData.items = menuData.items.filter(i => i.id != id);
+            
             renderManageItems();
-            await loadMenu(); // Refresh main menu UI
+            if (selectedCategory) selectCategory(selectedCategory);
         } catch (err) {
             console.error(err);
             alert('Không thể xoá món này (có thể do món đã có trong hoá đơn trc đó). Vui lòng ẩn món thay vì xoá!');
