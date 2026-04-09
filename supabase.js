@@ -116,6 +116,33 @@
                 if (error) throw error;
                 return data;
             },
+            async addStaff(staffData) {
+                const { data, error } = await supabase.from('staff').insert([{
+                    full_name: staffData.full_name,
+                    role: staffData.role,
+                    phone: staffData.phone,
+                    avatar_url: staffData.avatar_url
+                }]).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async updateStaff(id, staffData) {
+                const { data, error } = await supabase.from('staff').update({
+                    full_name: staffData.full_name,
+                    role: staffData.role,
+                    phone: staffData.phone,
+                    avatar_url: staffData.avatar_url
+                }).eq('id', id).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async uploadFile(file, bucket = 'avatars') {
+                const fileName = `${Date.now()}_${file.name}`;
+                const { data, error } = await supabase.storage.from(bucket).upload(fileName, file);
+                if (error) throw error;
+                const { data: publicUrl } = supabase.storage.from(bucket).getPublicUrl(fileName);
+                return publicUrl.publicUrl;
+            },
             async addTable(tableData) {
                 const { data, error } = await supabase.from('tables').insert([{
                     table_number: tableData.table_number,

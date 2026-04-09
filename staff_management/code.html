@@ -37,15 +37,18 @@
             </div>
             <h1 class="font-headline font-black tracking-tight text-2xl text-primary">Nhân sự</h1>
         </div>
-        <button onclick="openStaffModal('add')" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-transform">
-            <span class="material-symbols-outlined">add</span>
-        </button>
+        <div class="flex items-center gap-3">
+            <input type="date" id="filter-date" onchange="render()" class="bg-white border-none rounded-2xl px-4 py-2 text-xs font-black text-primary shadow-sm outline-none focus:ring-2 focus:ring-primary/20">
+            <button onclick="openStaffModal('add')" class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+                <span class="material-symbols-outlined">add</span>
+            </button>
+        </div>
     </header>
 
     <main class="pt-28 px-6 pb-40 max-w-5xl mx-auto">
         <section class="mb-10">
             <h2 class="text-4xl font-black text-primary leading-tight mb-2">Đội ngũ<br>Nhân viên</h2>
-            <p class="text-on-surface-variant font-medium text-sm">Quản lý thông tin và theo dõi doanh thu thu hộ của từng nhân viên.</p>
+            <p class="text-on-surface-variant font-medium text-sm">Quản lý đội ngũ và theo dõi doanh thu theo ngày.</p>
         </section>
 
         <div id="staff-grid" class="flex flex-col gap-4">
@@ -60,16 +63,33 @@
     <!-- CRUD Modal -->
     <div id="staff-modal" class="fixed inset-0 z-[200] hidden">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeStaffModal()"></div>
-        <div class="absolute bottom-0 left-0 w-full bg-surface rounded-t-[3rem] shadow-2xl flex flex-col max-h-[85vh] transform transition-transform translate-y-full" id="modal-content">
+        <div class="absolute bottom-0 left-0 w-full bg-surface rounded-t-[3rem] shadow-2xl flex flex-col max-h-[90vh] transform transition-transform translate-y-full" id="modal-content">
             <div class="p-8 border-b border-stone-100 flex justify-between items-center">
                 <h3 id="modal-title" class="text-2xl font-black text-primary">Thêm nhân viên</h3>
                 <button onclick="closeStaffModal()" class="w-12 h-12 rounded-full bg-stone-100 flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
             </div>
             <div class="p-8 space-y-6 overflow-y-auto">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('staff-avatar-file').click()">
+                        <div id="avatar-preview" class="w-24 h-24 rounded-[2rem] bg-stone-100 border-2 border-dashed border-stone-200 flex items-center justify-center overflow-hidden">
+                            <span class="material-symbols-outlined text-stone-300 text-4xl">person</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-[2rem] transition-opacity">
+                            <span class="material-symbols-outlined text-white">upload</span>
+                        </div>
+                    </div>
+                    <input type="file" id="staff-avatar-file" class="hidden" accept="image/*" onchange="previewAvatar(event)">
+                    <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mt-3">Ảnh đại diện</p>
+                </div>
+
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Tên đầy đủ</label>
                         <input type="text" id="staff-name" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold" placeholder="Vd: Nguyễn Văn A">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Avatar URL (Nếu có)</label>
+                        <input type="text" id="staff-avatar-url" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold" placeholder="https://...">
                     </div>
                     <div>
                         <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Chức vụ</label>
@@ -87,7 +107,7 @@
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-stone-400 uppercase tracking-widest mb-2 px-1">Mã NV (Tùy chọn)</label>
-                            <input type="text" id="staff-eid" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold placeholder:font-normal" placeholder="NV001">
+                            <input type="text" id="staff-eid" class="w-full bg-white border border-stone-200 rounded-2xl px-5 py-4 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none font-bold" placeholder="NV001">
                         </div>
                     </div>
                 </div>
@@ -133,44 +153,54 @@
         let staff = [];
         let orders = [];
         let selectedStaffId = null;
+        let avatarFile = null;
 
-        document.addEventListener('DOMContentLoaded', initialize);
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('filter-date').value = today;
+            initialize();
+        });
 
         async function initialize() {
             if (!window.api) return setTimeout(initialize, 500);
             try {
                 staff = await window.api.getStaff();
-                orders = await window.api.getOrderHistory(); // Get all orders to calculate earnings
+                orders = await window.api.getOrderHistory();
                 render();
             } catch (err) { console.error(err); }
         }
 
-        function calculateEarnings(staffId) {
+        function calculateEarnings(staffId, dateStr) {
             return orders
-                .filter(o => o.staff_id === staffId && o.status === 'completed')
+                .filter(o => {
+                    const orderDate = new Date(o.created_at).toISOString().split('T')[0];
+                    return o.staff_id === staffId && o.status === 'completed' && orderDate === dateStr;
+                })
                 .reduce((sum, o) => sum + (parseFloat(o.total_amount) || 0), 0);
         }
 
         function formatVN(price) {
-            let p = parseFloat(price) || 0;
-            if (p >= 1000) p = p / 1000;
-            return p.toLocaleString('vi-VN', {maximumFractionDigits: 1}) + 'k VNĐ';
+            return (price || 0).toLocaleString('vi-VN') + 'đ';
         }
 
         function render() {
             const container = document.getElementById('staff-grid');
+            const selectedDate = document.getElementById('filter-date').value;
+            
             if (staff.length === 0) {
                 container.innerHTML = '<div class="py-20 text-center text-stone-300">Chưa có nhân viên. Nhấn + để thêm.</div>';
                 return;
             }
 
             container.innerHTML = staff.map(s => {
-                const earnings = calculateEarnings(s.id);
+                const earnings = calculateEarnings(s.id, selectedDate);
+                const avatar = s.avatar_url ? `<img src="${s.avatar_url}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-primary/40 text-2xl">person</span>`;
+                
                 return `
                     <div onclick="openStaffModal('edit', '${s.id}')" class="bg-white rounded-[2rem] p-6 border border-stone-100 shadow-sm flex items-center justify-between hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]">
                         <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 rounded-3xl bg-primary/5 text-primary flex items-center justify-center font-black text-2xl border border-primary/10">
-                                ${s.full_name?.[0]?.toUpperCase() || 'S'}
+                            <div class="w-16 h-16 rounded-[1.5rem] bg-stone-50 flex items-center justify-center overflow-hidden border border-stone-100 shadow-inner">
+                                ${avatar}
                             </div>
                             <div>
                                 <h3 class="font-black text-primary text-lg leading-tight">${s.full_name}</h3>
@@ -178,7 +208,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-[10px] text-stone-400 font-black uppercase tracking-widest leading-none mb-1">Thu hộ hôm nay</p>
+                            <p class="text-[10px] text-stone-400 font-black uppercase tracking-widest leading-none mb-1">Thu hộ ${selectedDate === new Date().toISOString().split('T')[0] ? 'Hôm nay' : selectedDate}</p>
                             <p class="text-xl font-black text-secondary">${formatVN(earnings)}</p>
                         </div>
                     </div>
@@ -186,18 +216,35 @@
             }).join('');
         }
 
+        function previewAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                avatarFile = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('avatar-preview').innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function openStaffModal(mode, id = null) {
             selectedStaffId = id;
+            avatarFile = null;
             const modal = document.getElementById('staff-modal');
             const content = document.getElementById('modal-content');
             const title = document.getElementById('modal-title');
             const deleteBtn = document.getElementById('modal-delete');
+            const preview = document.getElementById('avatar-preview');
 
             // Reset
             document.getElementById('staff-name').value = '';
             document.getElementById('staff-role').value = 'Staff';
             document.getElementById('staff-phone').value = '';
             document.getElementById('staff-eid').value = '';
+            document.getElementById('staff-avatar-url').value = '';
+            document.getElementById('staff-avatar-file').value = '';
+            preview.innerHTML = `<span class="material-symbols-outlined text-stone-300 text-4xl">person</span>`;
 
             if (mode === 'edit' && id) {
                 const s = staff.find(x => x.id === id);
@@ -207,6 +254,10 @@
                     document.getElementById('staff-role').value = s.role;
                     document.getElementById('staff-phone').value = s.phone || '';
                     document.getElementById('staff-eid').value = s.employee_id || '';
+                    document.getElementById('staff-avatar-url').value = s.avatar_url || '';
+                    if (s.avatar_url) {
+                        preview.innerHTML = `<img src="${s.avatar_url}" class="w-full h-full object-cover">`;
+                    }
                     deleteBtn.classList.remove('hidden');
                 }
             } else {
@@ -229,14 +280,26 @@
             const name = document.getElementById('staff-name').value;
             if (!name) return alert('Vui lòng nhập tên');
 
-            const data = {
-                full_name: name,
-                role: document.getElementById('staff-role').value,
-                phone: document.getElementById('staff-phone').value,
-                employee_id: document.getElementById('staff-eid').value
-            };
+            const submitBtn = document.getElementById('modal-submit');
+            const oldText = submitBtn.textContent;
+            submitBtn.textContent = 'Đang xử lý...';
+            submitBtn.disabled = true;
 
             try {
+                let avatarUrl = document.getElementById('staff-avatar-url').value;
+
+                if (avatarFile) {
+                    avatarUrl = await window.api.uploadFile(avatarFile);
+                }
+
+                const data = {
+                    full_name: name,
+                    role: document.getElementById('staff-role').value,
+                    phone: document.getElementById('staff-phone').value,
+                    employee_id: document.getElementById('staff-eid').value,
+                    avatar_url: avatarUrl
+                };
+
                 if (selectedStaffId) {
                     await window.api.updateStaff(selectedStaffId, data);
                 } else {
@@ -245,6 +308,9 @@
                 closeStaffModal();
                 await initialize();
             } catch (err) { alert('Lỗi: ' + err.message); }
+            
+            submitBtn.textContent = oldText;
+            submitBtn.disabled = false;
         }
 
         async function handleDeleteStaff() {
