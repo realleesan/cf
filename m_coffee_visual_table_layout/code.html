@@ -181,7 +181,7 @@
                         <span class="material-symbols-outlined text-primary text-xl">receipt_long</span>
                         <div>
                             <p class="text-[10px] uppercase font-bold text-stone-400">Tổng tiền</p>
-                            <p class="font-black text-primary leading-none" id="occ-table-total">$0.00</p>
+                            <p class="font-black text-primary leading-none" id="occ-table-total">0k VNĐ</p>
                         </div>
                     </div>
                 </div>
@@ -200,6 +200,12 @@
     </div>
 
     <script shadow>
+        function formatVN(price) {
+            let p = parseFloat(price) || 0;
+            if (p >= 1000) p = p / 1000;
+            return p.toLocaleString('vi-VN', {maximumFractionDigits: 1}) + 'k VNĐ';
+        }
+
         let tables = [];
         let activeOrders = [];
         let currentFloor = 'ground';
@@ -346,7 +352,7 @@
                         </div>
                     </div>
                     <div class="text-right">
-                        <span class="text-xl font-black text-primary">$${o.total_amount?.toFixed(2) || '0.00'}</span>
+                        <span class="text-xl font-black text-primary">${formatVN(o.total_amount)}</span>
                     </div>
                 </div>
             `).join('');
@@ -365,7 +371,7 @@
             
             const itemsContainer = document.getElementById('occ-order-items');
             if(order && order.order_items && order.order_items.length > 0) {
-                document.getElementById('occ-table-total').innerText = `$${order.total_amount?.toFixed(2) || '0.00'}`;
+                document.getElementById('occ-table-total').innerText = formatVN(order.total_amount);
                 
                 itemsContainer.innerHTML = order.order_items.map(i => `
                     <div class="bg-white p-4 rounded-xl flex items-center justify-between border border-stone-100 shadow-sm">
@@ -376,11 +382,11 @@
                                 ${i.special_instructions ? `<p class="text-xs text-stone-500 italic mt-0.5">${i.special_instructions}</p>` : ''}
                             </div>
                         </div>
-                        <div class="font-black text-primary">$${i.total_price?.toFixed(2) || '0.00'}</div>
+                        <div class="font-black text-primary">${formatVN(i.total_price)}</div>
                     </div>
                 `).join('');
             } else {
-                document.getElementById('occ-table-total').innerText = `$0.00`;
+                document.getElementById('occ-table-total').innerText = '0k VNĐ';
                 itemsContainer.innerHTML = `<div class="p-4 text-center text-stone-400 bg-white rounded-xl border border-stone-100">Đang tải chưa xong hoặc không tìm thấy món.</div>`;
             }
 
