@@ -629,7 +629,16 @@
             });
             
             const index = manageItems.findIndex(i => i.id === id);
-            if(index !== -1) manageItems[index] = updatedItem;
+            if(index !== -1) {
+                if (updatedItem) {
+                    manageItems[index] = updatedItem;
+                } else {
+                    manageItems[index].category_id = newCatId;
+                    manageItems[index].name = newName;
+                    manageItems[index].price = newPrice;
+                    manageItems[index].image_url = newImage;
+                }
+            }
             
             renderManageItems();
             await loadMenu(); // Refresh main menu UI
