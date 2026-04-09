@@ -520,35 +520,35 @@
         list.innerHTML = sortedItems.map(item => {
             const catOptions = manageCategories.map(c => `<option value="${c.id}" ${c.id === item.category_id ? 'selected' : ''}>${c.name}</option>`).join('');
             
-            return \`
-            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 relative flex flex-col gap-3 transform transition-all" id="mi-row-\${item.id}">
+            return `
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 relative flex flex-col gap-3 transform transition-all" id="mi-row-${item.id}">
                 <div class="flex flex-col gap-3 md:flex-row">
                     <div class="flex-[1]">
                         <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Loại đồ</label>
-                        <select class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all block text-sm focus:outline-none focus:ring-2 focus:ring-primary/20" id="edit-mi-cat-\${item.id}">
-                            \${catOptions}
+                        <select class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all block text-sm focus:outline-none focus:ring-2 focus:ring-primary/20" id="edit-mi-cat-${item.id}">
+                            ${catOptions}
                         </select>
                     </div>
                     <div class="flex-[1.5]">
                         <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Tên đồ</label>
-                        <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-base font-black text-primary block focus:outline-none focus:ring-2 focus:ring-primary/20" value="\${item.name}" id="edit-mi-name-\${item.id}">
+                        <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-base font-black text-primary block focus:outline-none focus:ring-2 focus:ring-primary/20" value="${item.name}" id="edit-mi-name-${item.id}">
                     </div>
                     <div class="flex-[0.5]">
                         <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block text-center">Giá</label>
-                        <input type="number" min="0" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-2 py-2 transition-all text-base font-black text-primary text-center block focus:outline-none focus:ring-2 focus:ring-primary/20" value="\${item.price || 0}" id="edit-mi-price-\${item.id}">
+                        <input type="number" min="0" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-2 py-2 transition-all text-base font-black text-primary text-center block focus:outline-none focus:ring-2 focus:ring-primary/20" value="${item.price || 0}" id="edit-mi-price-${item.id}">
                     </div>
                     <div class="flex-[1]">
                         <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Link Ảnh</label>
-                        <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-sm truncate block focus:outline-none focus:ring-2 focus:ring-primary/20" value="\${item.image_url || ''}" id="edit-mi-image-\${item.id}" placeholder="URL">
+                        <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-sm truncate block focus:outline-none focus:ring-2 focus:ring-primary/20" value="${item.image_url || ''}" id="edit-mi-image-${item.id}" placeholder="URL">
                     </div>
                 </div>
                 
                 <div class="flex gap-2 justify-end mt-1 pt-3 border-t border-stone-50">
-                    <button onclick="saveManagedMenuItem('\${item.id}')" class="px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-black text-sm hover:bg-secondary/20 transition-colors">LƯU</button>
-                    <button onclick="deleteManagedMenuItem('\${item.id}')" class="px-5 py-2 rounded-xl bg-red-50 text-red-600 font-black text-sm hover:bg-red-100 transition-colors">XOÁ</button>
+                    <button onclick="saveManagedMenuItem('${item.id}')" class="px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-black text-sm hover:bg-secondary/20 transition-colors">LƯU</button>
+                    <button onclick="deleteManagedMenuItem('${item.id}')" class="px-5 py-2 rounded-xl bg-red-50 text-red-600 font-black text-sm hover:bg-red-100 transition-colors">XOÁ</button>
                 </div>
             </div>
-        \`}).join('');
+        `}).join('');
     }
 
     async function addNewMenuItem() {
@@ -605,10 +605,10 @@
     }
 
     async function saveManagedMenuItem(id) {
-        const catInput = document.getElementById(\`edit-mi-cat-\${id}\`);
-        const nameInput = document.getElementById(\`edit-mi-name-\${id}\`);
-        const priceInput = document.getElementById(\`edit-mi-price-\${id}\`);
-        const imageInput = document.getElementById(\`edit-mi-image-\${id}\`);
+        const catInput = document.getElementById(`edit-mi-cat-${id}`);
+        const nameInput = document.getElementById(`edit-mi-name-${id}`);
+        const priceInput = document.getElementById(`edit-mi-price-${id}`);
+        const imageInput = document.getElementById(`edit-mi-image-${id}`);
         
         const newCatId = catInput.value;
         const newName = nameInput.value.trim();
@@ -634,7 +634,7 @@
             renderManageItems();
             await loadMenu(); // Refresh main menu UI
             
-            const row = document.getElementById(\`mi-row-\${id}\`);
+            const row = document.getElementById(`mi-row-${id}`);
             const origBg = row.style.backgroundColor;
             row.style.backgroundColor = '#ccebc7';
             setTimeout(() => row.style.backgroundColor = origBg, 500);
