@@ -406,41 +406,54 @@
 <div id="menu-manager-modal" class="fixed inset-0 z-[100] hidden">
     <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeMenuManager()"></div>
     <div class="absolute bottom-0 left-0 w-full h-[90vh] bg-surface rounded-t-[2rem] shadow-2xl flex flex-col transform transition-transform translate-y-full" id="menu-manager-content">
-        <div class="flex justify-between items-center p-6 border-b border-stone-200">
-            <h2 class="text-2xl font-black text-primary">Quản lý Menu</h2>
-            <button onclick="closeMenuManager()" class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+        <div class="flex justify-between items-center p-6 border-b border-stone-200 shadow-sm z-10 relative">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMenuManagerView('add')" id="mm-back-btn" class="hidden w-10 h-10 rounded-full bg-surface-container flex items-center justify-center transition-colors hover:bg-surface-container-high"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h2 class="text-2xl font-black text-primary" id="mm-title">Quản lý Menu</h2>
+            </div>
+            <button onclick="closeMenuManager()" class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center hover:bg-surface-container-high"><span class="material-symbols-outlined">close</span></button>
         </div>
         
-        <div class="p-6 bg-white border-b border-stone-200 flex flex-col gap-4">
-            <h3 class="font-bold text-lg text-primary">Thêm Món / Loại Mới</h3>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1">
-                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Loại đồ</label>
-                    <select id="new-item-category" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium" onchange="handleCategorySelectChange(this)">
-                        <!-- Options generated dynamically -->
-                    </select>
-                    <input type="text" id="new-item-category-custom" placeholder="Nhập tên loại đồ mới" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium mt-2 hidden">
+        <!-- Add View -->
+        <div id="mm-add-view" class="flex-1 flex flex-col overflow-y-auto bg-surface pb-32">
+            <div class="p-6 bg-white border-b border-stone-200 flex flex-col gap-4 rounded-b-[1.5rem] shadow-sm mb-6">
+                <h3 class="font-bold text-lg text-primary">Thêm Món / Loại Mới</h3>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Loại đồ</label>
+                        <select id="new-item-category" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium" onchange="handleCategorySelectChange(this)">
+                            <!-- Options generated dynamically -->
+                        </select>
+                        <input type="text" id="new-item-category-custom" placeholder="Nhập tên loại đồ mới" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium mt-2 hidden">
+                    </div>
+                    <div class="flex-[1.5]">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Tên đồ</label>
+                        <input type="text" id="new-item-name" placeholder="Vd: Cafe Sữa Đá" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                    </div>
+                    <div class="flex-none basis-[20%]">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Giá</label>
+                        <input type="number" id="new-item-price" placeholder="Vd: 35000" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Link Ảnh</label>
+                        <input type="text" id="new-item-image" placeholder="URL ảnh (tuỳ chọn)" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                    </div>
+                    <div class="flex items-end flex-none">
+                        <button onclick="addNewMenuItem()" class="h-[48px] px-6 rounded-xl bg-primary text-white font-bold hover:bg-[#6f4e37] transition-colors w-full md:w-auto">THÊM MỚI</button>
+                    </div>
                 </div>
-                <div class="flex-[1.5]">
-                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Tên đồ</label>
-                    <input type="text" id="new-item-name" placeholder="Vd: Cafe Sữa Đá" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
-                </div>
-                <div class="flex-none basis-[20%]">
-                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Giá</label>
-                    <input type="number" id="new-item-price" placeholder="Vd: 35000" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
-                </div>
-                <div class="flex-1">
-                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Link Ảnh</label>
-                    <input type="text" id="new-item-image" placeholder="URL ảnh (tuỳ chọn)" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
-                </div>
-                <div class="flex items-end flex-none">
-                    <button onclick="addNewMenuItem()" class="h-[48px] px-6 rounded-xl bg-primary text-white font-bold hover:bg-[#6f4e37] transition-colors w-full md:w-auto">THÊM</button>
-                </div>
+            </div>
+            
+            <div class="px-6">
+                <button onclick="toggleMenuManagerView('list')" class="w-full py-4 rounded-2xl bg-secondary/10 text-secondary font-black text-lg hover:bg-secondary/20 transition-colors flex items-center justify-center gap-2 border-2 border-secondary/20">
+                    <span class="material-symbols-outlined">menu_book</span> XEM DANH SÁCH MÓN & CHỈNH SỬA
+                </button>
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-6 pb-32 bg-surface">
-            <div id="manage-items-list" class="flex flex-col gap-3 mt-6">
+        <!-- List View -->
+        <div id="mm-list-view" class="hidden flex-1 overflow-y-auto px-6 pb-32 bg-surface pt-6">
+            <div id="manage-items-list" class="flex flex-col gap-3">
                 <!-- Populated dynamically -->
             </div>
         </div>
@@ -455,11 +468,31 @@
     async function openMenuManager() {
         const modal = document.getElementById('menu-manager-modal');
         const content = document.getElementById('menu-manager-content');
+        toggleMenuManagerView('add');
         modal.classList.remove('hidden');
         setTimeout(() => {
             content.classList.remove('translate-y-full');
         }, 10);
         await loadManageMenuData();
+    }
+
+    function toggleMenuManagerView(view) {
+        const addView = document.getElementById('mm-add-view');
+        const listView = document.getElementById('mm-list-view');
+        const backBtn = document.getElementById('mm-back-btn');
+        const title = document.getElementById('mm-title');
+        
+        if (view === 'list') {
+            addView.classList.add('hidden');
+            listView.classList.remove('hidden');
+            backBtn.classList.remove('hidden');
+            title.innerText = 'Danh sách Món';
+        } else {
+            listView.classList.add('hidden');
+            addView.classList.remove('hidden');
+            backBtn.classList.add('hidden');
+            title.innerText = 'Quản lý Menu';
+        }
     }
 
     function closeMenuManager() {
