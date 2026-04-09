@@ -1,360 +1,225 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Order History - The Artisanal</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<html class="light" lang="vi">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>M Coffee - Lịch sử Đơn hàng</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="../supabase.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,700;0,800;1,800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "on-error-container": "#93000a",
-                        "surface-container-highest": "#e2e2e2",
-                        "surface-variant": "#e2e2e2",
-                        "secondary-fixed-dim": "#b0cfad",
-                        "primary-fixed-dim": "#eabda0",
-                        "primary-fixed": "#ffdcc6",
-                        "surface-container": "#eeeeed",
-                        "on-secondary": "#ffffff",
-                        "on-primary-container": "#eec1a4",
-                        "outline": "#82746d",
-                        "surface-container-low": "#f4f4f3",
-                        "on-tertiary-fixed-variant": "#4c4542",
-                        "error": "#ba1a1a",
-                        "surface-container-high": "#e8e8e7",
-                        "on-primary": "#ffffff",
-                        "background": "#f9f9f8",
-                        "on-secondary-container": "#506b4f",
-                        "secondary-fixed": "#ccebc7",
-                        "surface-container-lowest": "#ffffff",
-                        "tertiary-fixed": "#ece0dc",
-                        "secondary-container": "#ccebc7",
-                        "on-tertiary": "#ffffff",
-                        "outline-variant": "#d4c3ba",
-                        "primary-container": "#6f4e37",
-                        "tertiary": "#443d3a",
-                        "inverse-on-surface": "#f1f1f0",
-                        "error-container": "#ffdad6",
-                        "on-tertiary-container": "#d3c8c5",
-                        "on-secondary-fixed": "#07200b",
-                        "on-surface-variant": "#50453e",
-                        "inverse-primary": "#eabda0",
-                        "on-secondary-fixed-variant": "#334d33",
-                        "on-primary-fixed-variant": "#5f402a",
-                        "on-tertiary-fixed": "#201a18",
-                        "primary": "#553722",
-                        "on-background": "#1a1c1c",
-                        "secondary": "#4a6549",
-                        "surface": "#f9f9f8",
-                        "surface-dim": "#dadad9",
-                        "on-surface": "#1a1c1c",
-                        "tertiary-container": "#5b5451",
-                        "inverse-surface": "#2f3130",
-                        "on-primary-fixed": "#2d1604",
-                        "tertiary-fixed-dim": "#cfc4c0",
-                        "surface-bright": "#f9f9f8",
-                        "on-error": "#ffffff",
-                        "surface-tint": "#79573f"
+                    colors: {
+                        primary: "#553722",
+                        secondary: "#4a6549",
+                        surface: "#f9f9f8",
+                        'surface-container': "#eeeeed",
+                        'on-surface-variant': "#50453e",
                     },
-                    "borderRadius": {
-                        "DEFAULT": "1rem",
-                        "lg": "2rem",
-                        "xl": "3rem",
-                        "full": "9999px"
-                    },
-                    "fontFamily": {
-                        "headline": ["Plus Jakarta Sans"],
-                        "body": ["Manrope"],
-                        "label": ["Manrope"]
-                    }
-                },
-            },
+                    borderRadius: { '2xl': '1.5rem', '3xl': '2rem' }
+                }
+            }
         }
     </script>
-<style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-<style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-<script>
-    // Configuration
-    // Configuration - Use Supabase client directly
-    const api = window.api;
-    
-    // State
-    let orders = [];
-    let currentFilter = 'all';
-
-    // Initialize
-    document.addEventListener('DOMContentLoaded', async () => {
-        await loadOrders();
-        setupEventListeners();
-    });
-
-    // Load orders from API
-    async function loadOrders() {
-        let retryCount = 0;
-        while (!window.api && retryCount < 50) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-            retryCount++;
-        }
-        const api = window.api;
-        if (!api) return;
-
-        try {
-            orders = await api.getOrderHistory();
-            
-            renderOrders();
-            updateStats();
-        } catch (err) {
-            console.error('Failed to load orders:', err);
-        }
-    }
-
-    // Update statistics
-    function updateStats() {
-        const today = new Date().toISOString().split('T')[0];
-        const todayOrders = orders.filter(o => o.status === 'completed' && o.created_at && o.created_at.startsWith(today));
-        
-        const totalRevenue = todayOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
-        const totalOrders = todayOrders.length;
-        
-        document.getElementById('today-revenue').textContent = formatVN(totalRevenue);
-        document.getElementById('today-orders').textContent = totalOrders;
-    }
-
-    // Render orders
-    function renderOrders() {
-        const container = document.getElementById('orders-list');
-        if (!container) return;
-        
-        let filteredOrders = orders;
-        if (currentFilter !== 'all') {
-            filteredOrders = orders.filter(o => o.status === currentFilter);
-        }
-        
-        if (filteredOrders.length === 0) {
-            container.innerHTML = `
-                <div class="text-center py-12 col-span-full">
-                    <span class="material-symbols-outlined text-6xl text-on-surface-variant/30">receipt_long</span>
-                    <p class="mt-4 text-on-surface-variant">No orders found</p>
-                </div>
-            `;
-            return;
-        }
-        
-        container.innerHTML = filteredOrders.map(order => {
-            const statusInfo = getStatusInfo(order.status);
-            const time = formatTime(order.updated_at || order.created_at || new Date());
-            
-            return `
-                <div class="glass-card bg-white/70 dark:bg-stone-900/70 rounded-3xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all relative overflow-hidden">
-                    ${order.status !== 'completed' && order.status !== 'cancelled' ? `<div class="absolute top-0 left-0 w-1 h-full ${statusInfo.border}"></div>` : ''}
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">Order</span>
-                            <h3 class="font-headline text-2xl font-black text-primary">#${order.order_number}</h3>
-                        </div>
-                        <div class="flex flex-col items-end gap-2">
-                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusInfo.color}">${statusInfo.label}</span>
-                            <button onclick="deleteOrder('${order.id}', '${order.table_id}')" class="text-red-300 hover:text-red-500 transition-colors">
-                                <span class="material-symbols-outlined text-sm">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 mb-4">
-                        <div class="flex justify-between">
-                            <span class="text-sm text-on-surface-variant font-medium">Table</span>
-                            <span class="text-sm font-black text-primary">${order.order_type === 'takeaway' ? 'Takeaway' : `Bàn ${order.tables?.table_number || '?'}`}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-on-surface-variant">Time</span>
-                            <span class="text-xs font-black bg-stone-100 px-2 py-1 rounded-md">${time}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-on-surface-variant">Thu ngân</span>
-                            <span class="text-sm font-black text-secondary">${order.staff?.full_name || '---'}</span>
-                        </div>
-                    </div>
-                    <div class="mt-2 space-y-2 border-t border-stone-100 pt-3 text-sm text-on-surface">
-                        ${order.order_items ? order.order_items.map(i => `<div class="flex justify-between items-center"><span class="font-bold">${i.quantity}x ${i.menu_items?.name || ''}</span> <span class="text-[10px] text-stone-400">${formatVN(i.total_price)}</span></div>`).join('') : ''}
-                    </div>
-                    <div class="pt-4 border-t border-stone-100 mt-4 flex justify-between items-center">
-                        <span class="text-base font-black text-stone-400 uppercase tracking-widest">Tổng cộng</span>
-                        <span class="text-2xl font-black text-primary">${formatVN(order.total_amount || 0)}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    async function deleteOrder(id, tableId) {
-        if (!confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) return;
-        try {
-            await window.api.deleteOrder(id, tableId);
-            await loadOrders();
-        } catch (err) {
-            alert('Lỗi khi xóa: ' + err.message);
-        }
-    }
-
-    // Get status info
-    function getStatusInfo(status) {
-        switch(status) {
-            case 'pending':
-                return { label: 'Mới đặt', color: 'bg-orange-100 text-orange-700', border: 'bg-orange-400' };
-            case 'preparing':
-                return { label: 'Đang làm', color: 'bg-primary/10 text-primary', border: 'bg-primary' };
-            case 'ready':
-                return { label: 'Chờ thanh toán', color: 'bg-blue-100 text-blue-700', border: 'bg-blue-400' };
-            case 'completed':
-                return { label: 'Hoàn tất', color: 'bg-green-100 text-green-700', border: 'bg-green-400' };
-            case 'cancelled':
-                return { label: 'Đã hủy', color: 'bg-red-100 text-red-700', border: 'bg-red-400' };
-            default:
-                return { label: status, color: 'bg-stone-100 text-stone-500', border: 'bg-stone-300' };
-        }
-    }
-
-    // Format time
-    function formatTime(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    // Format currency VN
-    function formatVN(price) {
-        let p = parseFloat(price) || 0;
-        if (p >= 1000) p = p / 1000;
-        return p.toLocaleString('vi-VN', {maximumFractionDigits: 1}) + 'k VNĐ';
-    }
-
-    // Set filter
-    function setFilter(filter) {
-        currentFilter = filter;
-        const buttons = document.querySelectorAll('.filter-btn');
-        buttons.forEach(btn => {
-            if (btn.dataset.filter === filter) {
-                btn.classList.add('bg-primary', 'text-white');
-                btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
-            } else {
-                btn.classList.remove('bg-primary', 'text-white');
-                btn.classList.add('bg-surface-container-low', 'text-on-surface-variant');
-            }
-        });
-        
-        renderOrders();
-    }
-
-    // Setup event listeners
-    function setupEventListeners() {
-        // Menu navigation
-        const menuBtn = document.getElementById('menu-nav-btn');
-        if (menuBtn) {
-            menuBtn.onclick = () => window.location.href = '../customer_menu/code.html';
-        }
-        
-        // Cart navigation
-        const cartBtn = document.getElementById('cart-nav-btn');
-        if (cartBtn) {
-            cartBtn.onclick = () => window.location.href = '../cart_checkout/code.html';
-        }
-        
-        // Kitchen navigation
-        const kitchenBtn = document.getElementById('kitchen-nav-btn');
-        if (kitchenBtn) {
-            kitchenBtn.onclick = () => window.location.href = '../kitchen_queue/code.html';
-        }
-    }
-</script>
 </head>
-<body class="bg-background text-on-surface font-body min-h-screen pb-32">
-<!-- TopAppBar Shell -->
-<header class="bg-[#f9f9f8] dark:bg-[#1a1c1c] w-full sticky top-0 z-50">
-<div class="flex items-center justify-between px-6 py-4 w-full">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-[#553722] dark:text-[#f4f4f3]" data-icon="coffee">coffee</span>
-<h1 class="font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3]">The Artisanal</h1>
-</div>
-<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#f4f4f3] transition-colors">
-<span class="material-symbols-outlined text-[#553722]" data-icon="search">search</span>
-</button>
-</div>
-</header>
-<main class="px-6 pt-6">
-<!-- Stats Row -->
-<section class="grid grid-cols-2 gap-4 mb-8">
-<div class="bg-surface-container-low rounded-2xl p-5">
-    <div class="flex items-center gap-3 mb-2">
-        <span class="material-symbols-outlined text-secondary">payments</span>
-        <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Today's Revenue</span>
-    </div>
-    <p id="today-revenue" class="text-3xl font-black text-primary">0k VNĐ</p>
-</div>
-<div class="bg-surface-container-low rounded-2xl p-5">
-    <div class="flex items-center gap-3 mb-2">
-        <span class="material-symbols-outlined text-secondary">receipt_long</span>
-        <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Orders Today</span>
-    </div>
-    <p id="today-orders" class="text-3xl font-black text-primary">0</p>
-</div>
-</section>
-<!-- Filter Row -->
-<section class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-2">
-<button onclick="setFilter('all')" class="filter-btn px-6 py-2 rounded-full bg-primary text-white font-black text-[10px] uppercase tracking-widest transition-all" data-filter="all">Tất cả</button>
-<button onclick="setFilter('pending')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="pending">Đang đợi</button>
-<button onclick="setFilter('preparing')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="preparing">Đang làm</button>
-<button onclick="setFilter('ready')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="ready">Chờ trả</button>
-<button onclick="setFilter('completed')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="completed">Đã Xong</button>
-</section>
-<!-- Orders Grid -->
-<div id="orders-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-<!-- Orders will be loaded dynamically -->
-</div>
-</main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl rounded-t-[3rem] shadow-[0_-20px_40px_rgba(80,69,62,0.08)]">
-<div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
-<span class="material-symbols-outlined">table_restaurant</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Tables</span>
-</div>
-<div id="menu-nav-btn" onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
-<span class="material-symbols-outlined">menu_book</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
-</div>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/10">
+    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-6 bg-surface/80 backdrop-blur-xl border-b border-stone-100">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-secondary flex items-center justify-center shadow-lg shadow-secondary/20">
+                <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">history</span>
+            </div>
+            <h1 class="font-headline font-black tracking-tight text-2xl text-primary">Lịch sử</h1>
+        </div>
+        <div class="flex items-center gap-4">
+            <span id="refresh-indicator" class="material-symbols-outlined text-on-surface-variant animate-spin hidden">sync</span>
+            <div class="w-10 h-10 rounded-full bg-stone-200 overflow-hidden">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqfvmUcrMQnYTB2-JGJ6sI67JUbLc1AGW8gNhRoaTCOCDvpYdD61dNJuUfIQ72IC4hFm8FqOS8Vx0ftr1mI8uqL2791b2k22LXPOqJOuQjfc802Ux77TF5Fndtn0n-smVWFhiz5QHdcRS0umJFsgxGqhTTJEAQkb-1ewxhZy3eEfHYHPbZsETqpz3weYRA-97gPLH7K1w-IBaJT86o17nDQPApXRsEnii1FbKeiEYCvLXvqos9-cITwET5ZjXg3b6KZ6WMbVlDScmX" alt="User">
+            </div>
+        </div>
+    </header>
 
-        <div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
-<span class="material-symbols-outlined">payments</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Payment</span>
-</div>
-<div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
-<span class="material-symbols-outlined">badge</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Staff</span>
-</div>
-<div id="kitchen-nav-btn" onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity cursor-pointer">
-<span class="material-symbols-outlined">cooking</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Kitchen</span>
-</div>
-<div class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] scale-90 active:scale-100 transition-transform">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">History</span>
-</div>
-</nav>
-</body></html>
+    <main class="pt-28 px-6 pb-40 max-w-5xl mx-auto">
+        <section class="mb-10">
+            <h2 class="text-4xl font-black text-primary leading-tight mb-2">Nhật ký<br>Hoạt động</h2>
+            <p class="text-on-surface-variant font-medium text-sm">Toàn bộ hành trình đặt món và thu ngân.</p>
+        </section>
+
+        <!-- Stats Overview -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-secondary p-6 rounded-3xl text-white shadow-xl shadow-secondary/20">
+                <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">Doanh thu hôm nay</p>
+                <p id="today-revenue" class="text-4xl font-black">0k</p>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-stone-100 shadow-sm">
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-1">Đơn hàng hôm nay</p>
+                <p id="today-orders" class="text-4xl font-black text-primary">0</p>
+            </div>
+        </section>
+
+        <!-- Filter Row -->
+        <section class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-2">
+            <button onclick="setFilter('all')" class="filter-btn shrink-0 px-6 py-3 rounded-full bg-primary text-white font-black text-[10px] uppercase tracking-widest transition-all" data-filter="all">Tất cả</button>
+            <button onclick="setFilter('pending')" class="filter-btn shrink-0 px-6 py-3 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-primary transition-all" data-filter="pending">Đang đợi</button>
+            <button onclick="setFilter('preparing')" class="filter-btn shrink-0 px-6 py-3 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-primary transition-all" data-filter="preparing">Đang làm</button>
+            <button onclick="setFilter('ready')" class="filter-btn shrink-0 px-6 py-3 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-primary transition-all" data-filter="ready">Chờ trả</button>
+            <button onclick="setFilter('completed')" class="filter-btn shrink-0 px-6 py-3 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:border-primary transition-all" data-filter="completed">Đã Xong</button>
+        </section>
+
+        <!-- Orders Grid -->
+        <div id="orders-list" class="space-y-4">
+            <!-- Orders populated dynamically -->
+        </div>
+    </main>
+
+    <!-- BottomNavBar -->
+    <nav class="fixed bottom-0 left-0 w-full z-[100] flex justify-between items-center px-2 pb-6 pt-3 bg-white/95 backdrop-blur-2xl rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(80,69,62,0.1)] border-t border-stone-100 dark:border-stone-800">
+        <div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">table_restaurant</span>
+            <span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Tables</span>
+        </div>
+        <div onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">menu_book</span>
+            <span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Menu</span>
+        </div>
+        <div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">payments</span>
+            <span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Payment</span>
+        </div>
+        <div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">badge</span>
+            <span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Staff</span>
+        </div>
+        <div onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">cooking</span>
+            <span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Kitchen</span>
+        </div>
+        <div class="flex flex-col items-center justify-center flex-1 min-w-0">
+            <div class="bg-primary text-white rounded-xl p-2 w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">history</span>
+            </div>
+            <span class="font-manrope text-[8px] uppercase tracking-tighter font-black text-primary mt-1">History</span>
+        </div>
+    </nav>
+
+    <script>
+        let orders = [];
+        let currentFilter = 'all';
+        let staff = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initialize();
+            setInterval(initialize, 10000);
+        });
+
+        async function initialize() {
+            if (!window.api) {
+                setTimeout(initialize, 500);
+                return;
+            }
+            document.getElementById('refresh-indicator').classList.remove('hidden');
+            try {
+                orders = await window.api.getOrderHistory();
+                staff = await window.api.getStaff();
+                render();
+            } catch (err) { console.error(err); }
+            document.getElementById('refresh-indicator').classList.add('hidden');
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('bg-primary', 'text-white');
+                    btn.classList.remove('bg-white', 'text-on-surface-variant', 'border-stone-100');
+                } else {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('bg-white', 'text-on-surface-variant', 'border-stone-100');
+                }
+            });
+            render();
+        }
+
+        function render() {
+            const list = document.getElementById('orders-list');
+            const today = new Date().toLocaleDateString();
+            const todayOrders = orders.filter(o => new Date(o.created_at).toLocaleDateString() === today);
+            const totalRevenue = todayOrders.filter(o => o.status === 'completed').reduce((sum, o) => sum + (o.total_amount || 0), 0);
+
+            document.getElementById('today-orders').textContent = todayOrders.length;
+            document.getElementById('today-revenue').textContent = `${Math.round(totalRevenue / 1000)}k VNĐ`;
+
+            const filtered = currentFilter === 'all' ? orders : orders.filter(o => o.status === currentFilter);
+
+            list.innerHTML = filtered.map(o => {
+                const date = new Date(o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const tableNum = o.tables?.table_number || 'Takeaway';
+                const staffName = o.staff_id ? (staff.find(s => s.id === o.staff_id)?.full_name || 'N/A') : null;
+
+                let statusText = 'Mới Đặt';
+                let statusClass = 'bg-stone-100 text-stone-600';
+                if (o.status === 'preparing') { statusText = 'Đang làm'; statusClass = 'bg-blue-100 text-blue-600'; }
+                if (o.status === 'ready') { statusText = 'Chờ trả'; statusClass = 'bg-orange-100 text-orange-600'; }
+                if (o.status === 'completed') { statusText = 'Hoàn tất'; statusClass = 'bg-green-100 text-green-600'; }
+
+                return `
+                    <div class="bg-white rounded-3xl p-6 border border-stone-100 shadow-sm flex flex-col gap-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-stone-50 text-primary flex items-center justify-center font-black text-xl">
+                                    ${tableNum.replace('Bàn ', '')}
+                                </div>
+                                <div>
+                                    <h3 class="font-black text-primary">#${o.order_number}</h3>
+                                    <p class="text-[10px] text-stone-400 font-bold uppercase tracking-widest">${date}</p>
+                                </div>
+                            </div>
+                            <span class="${statusClass} text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest">${statusText}</span>
+                        </div>
+                        
+                        <div class="text-sm font-medium text-on-surface-variant line-clamp-2">
+                            ${o.order_items?.map(i => `${i.quantity}x ${i.menu_items?.name}`).join(', ') || 'Không có món'}
+                        </div>
+
+                        <div class="pt-4 border-t border-stone-50 flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] text-stone-300 font-bold uppercase mb-1">Tổng cộng</p>
+                                <p class="font-black text-primary">${(o.total_amount || 0).toLocaleString()}đ</p>
+                            </div>
+                            <div class="text-right">
+                                ${staffName ? `
+                                    <p class="text-[10px] text-stone-300 font-bold uppercase mb-1">Thu ngân</p>
+                                    <div class="flex items-center gap-2 justify-end">
+                                        <span class="text-xs font-bold text-primary">${staffName}</span>
+                                        <div class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-[14px]">badge</span>
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <button onclick="deleteOrder('${o.id}', '${o.table_id}')" class="p-2 text-stone-300 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div class="py-20 text-center text-stone-300">Không có đơn hàng nào</div>';
+        }
+
+        async function deleteOrder(orderId, tableId) {
+            if (!confirm('Xóa đơn hàng này và giải phóng bàn?')) return;
+            try {
+                await window.api.deleteOrder(orderId, tableId);
+                await initialize();
+            } catch (err) { alert('Lỗi xóa đơn: ' + err.message); }
+        }
+    </script>
+</body>
+</html>

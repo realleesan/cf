@@ -484,31 +484,32 @@
 </div>
 </main>
 <!-- BottomNavBar (Visible on Mobile) -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#f9f9f8]/80 dark:bg-[#1a1c1c]/80 backdrop-blur-xl shadow-[0_-20px_40px_rgba(80,69,62,0.08)] rounded-t-[3rem] border-t border-[#e2e2e2]/10">
-<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../m_coffee_visual_table_layout/code.html'">
-<span class="material-symbols-outlined">table_restaurant</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Tables</span>
-</button>
-<button id="mobile-menu-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../customer_menu/code.html'">
-<span class="material-symbols-outlined">menu_book</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Menu</span>
-</button>
-<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../order_view/code.html'">
-<span class="material-symbols-outlined">payments</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Payment</span>
-</button>
-<button class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../staff_management/code.html'">
-<span class="material-symbols-outlined">badge</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Staff</span>
-</button>
-
-<button class="flex flex-col items-center justify-center bg-[#6f4e37] text-white rounded-full p-3 min-w-[64px] active:scale-90 transition-transform">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cooking</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">Kitchen</span>
-</button>
-<button id="mobile-history-btn" class="flex flex-col items-center justify-center text-[#553722]/60 dark:text-[#f4f4f3]/60 p-3 hover:opacity-80 transition-opacity active:scale-90 transition-transform" onclick="window.location.href='../order_history/code.html'">
-<span class="material-symbols-outlined">history</span>
-<span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">History</span>
-</button>
+<nav class="fixed bottom-0 left-0 w-full z-[100] flex justify-between items-center px-2 pb-6 pt-3 bg-white/95 dark:bg-stone-900/95 backdrop-blur-2xl rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(80,69,62,0.1)] border-t border-stone-100 dark:border-stone-800">
+<div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 text-[#553722]/60 dark:text-[#f4f4f3]/60 p-2 hover:opacity-80 transition-opacity active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-xl">table_restaurant</span>
+<span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Tables</span>
+</div>
+<div onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 text-[#553722]/60 dark:text-[#f4f4f3]/60 p-2 hover:opacity-80 transition-opacity active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-xl">menu_book</span>
+<span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Menu</span>
+</div>
+<div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 text-[#553722]/60 dark:text-[#f4f4f3]/60 p-2 hover:opacity-80 transition-opacity active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-xl">payments</span>
+<span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Payment</span>
+</div>
+<div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 text-[#553722]/60 dark:text-[#f4f4f3]/60 p-2 hover:opacity-80 transition-opacity active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-xl">badge</span>
+<span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">Staff</span>
+</div>
+<div class="flex flex-col items-center justify-center flex-1 min-w-0">
+<div class="bg-primary text-white rounded-xl p-2 w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">cooking</span>
+</div>
+<span class="font-manrope text-[8px] uppercase tracking-tighter font-black text-primary mt-1">Kitchen</span>
+</div>
+<div onclick="window.location.href='../order_history/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 text-[#553722]/60 dark:text-[#f4f4f3]/60 p-2 hover:opacity-80 transition-opacity active:scale-95 cursor-pointer">
+<span class="material-symbols-outlined text-xl">history</span>
+<span class="font-manrope text-[8px] uppercase tracking-tighter font-black mt-1">History</span>
+</div>
 </nav>
 </body></html>

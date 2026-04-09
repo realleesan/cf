@@ -30,7 +30,7 @@
     </style>
 </head>
 <body class="bg-surface text-on-surface font-body selection:bg-primary/10">
-    <header class="fixed top-0 w-full z-50 bg-[#f9f9f8] dark:bg-[#1a1c1c] flex justify-between items-center px-6 py-6 bg-surface/80 backdrop-blur-xl border-b border-stone-100">
+    <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-6 bg-surface/80 backdrop-blur-xl border-b border-stone-100">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">payments</span>
@@ -39,7 +39,7 @@
         </div>
         <div class="flex items-center gap-4">
             <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
-            <div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+            <div class="w-10 h-10 rounded-full bg-stone-200 overflow-hidden">
                 <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqfvmUcrMQnYTB2-JGJ6sI67JUbLc1AGW8gNhRoaTCOCDvpYdD61dNJuUfIQ72IC4hFm8FqOS8Vx0ftr1mI8uqL2791b2k22LXPOqJOuQjfc802Ux77TF5Fndtn0n-smVWFhiz5QHdcRS0umJFsgxGqhTTJEAQkb-1ewxhZy3eEfHYHPbZsETqpz3weYRA-97gPLH7K1w-IBaJT86o17nDQPApXRsEnii1FbKeiEYCvLXvqos9-cITwET5ZjXg3b6KZ6WMbVlDScmX" alt="User">
             </div>
         </div>
@@ -104,32 +104,32 @@
     </div>
 
     <!-- BottomNavBar -->
-    <nav class="fixed bottom-0 left-0 w-full z-[100] flex justify-around items-center px-4 pb-8 pt-4 bg-white/90 backdrop-blur-2xl rounded-t-[3rem] shadow-[0_-20px_50px_rgba(80,69,62,0.1)]">
-        <div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-            <span class="material-symbols-outlined text-2xl">grid_view</span>
-            <span class="font-body text-[10px] uppercase tracking-widest font-black">Tables</span>
+    <nav class="fixed bottom-0 left-0 w-full z-[100] flex justify-between items-center px-2 pb-6 pt-3 bg-white/95 backdrop-blur-2xl rounded-t-[2.5rem] shadow-[0_-20px_50px_rgba(80,69,62,0.1)] border-t border-stone-100">
+        <div onclick="window.location.href='../m_coffee_visual_table_layout/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">grid_view</span>
+            <span class="font-body text-[8px] uppercase tracking-tighter font-black mt-1">Tables</span>
         </div>
-        <div onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-            <span class="material-symbols-outlined text-2xl">menu_book</span>
-            <span class="font-body text-[10px] uppercase tracking-widest font-black">Menu</span>
+        <div onclick="window.location.href='../customer_menu/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">menu_book</span>
+            <span class="font-body text-[8px] uppercase tracking-tighter font-black mt-1">Menu</span>
         </div>
-        <div onclick="window.location.href='../order_view/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px]">
-            <div class="bg-primary text-white rounded-2xl p-3 w-12 h-12 flex items-center justify-center shadow-lg shadow-primary/20">
-                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+        <div class="flex flex-col items-center justify-center flex-1 min-w-0">
+            <div class="bg-primary text-white rounded-xl p-2 w-10 h-10 flex items-center justify-center shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">payments</span>
             </div>
-            <span class="font-body text-[10px] uppercase tracking-widest font-black text-primary">Payment</span>
+            <span class="font-body text-[8px] uppercase tracking-tighter font-black text-primary mt-1">Payment</span>
         </div>
-        <div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-            <span class="material-symbols-outlined text-2xl">badge</span>
-            <span class="font-body text-[10px] uppercase tracking-widest font-black">Staff</span>
+        <div onclick="window.location.href='../staff_management/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">badge</span>
+            <span class="font-body text-[8px] uppercase tracking-tighter font-black mt-1">Staff</span>
         </div>
-        <div onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-            <span class="material-symbols-outlined text-2xl">cooking</span>
-            <span class="font-body text-[10px] uppercase tracking-widest font-black">Kitchen</span>
+        <div onclick="window.location.href='../kitchen_queue/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">cooking</span>
+            <span class="font-body text-[8px] uppercase tracking-tighter font-black mt-1">Kitchen</span>
         </div>
-        <div onclick="window.location.href='../order_history/code.html'" class="flex flex-col items-center justify-center gap-1 min-w-[64px] opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
-            <span class="material-symbols-outlined text-2xl">history</span>
-            <span class="font-body text-[10px] uppercase tracking-widest font-black">History</span>
+        <div onclick="window.location.href='../order_history/code.html'" class="flex flex-col items-center justify-center flex-1 min-w-0 opacity-40 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="material-symbols-outlined text-xl">history</span>
+            <span class="font-body text-[8px] uppercase tracking-tighter font-black mt-1">History</span>
         </div>
     </nav>
 
@@ -165,8 +165,6 @@
 
             container.innerHTML = tables.map(t => {
                 const order = activeOrders.find(o => o.table_id === t.id);
-                // "Chờ thanh toán" state: table is occupied and has an order that is "ready" 
-                // In the kitchen flow, "ready" means food is out. User says kitchen mark ready -> moves here.
                 const isWaiting = order && (order.status === 'ready' || order.status === 'preparing' || order.status === 'pending');
                 const isEmpty = t.status === 'available' || !order;
 
@@ -204,14 +202,10 @@
 
         async function handleTableClick(id, number, isWaiting) {
             if (!isWaiting) return;
-
             const order = activeOrders.find(o => o.table_id === id);
             if (!order) return;
-
             pendingOrderId = order.id;
             pendingTableNumber = number;
-            
-            // Show staff selector instead of simple confirm
             openStaffSelector();
         }
 
@@ -219,10 +213,8 @@
             const modal = document.getElementById('staff-selector-modal');
             const content = document.getElementById('staff-selector-content');
             const grid = document.getElementById('staff-list-grid');
-            
             modal.classList.remove('hidden');
             setTimeout(() => content.classList.remove('translate-y-full'), 10);
-            
             grid.innerHTML = staff.map(s => `
                 <button onclick="processPayment('${s.id}')" class="w-full p-6 mb-3 rounded-2xl bg-white border-2 border-stone-100 flex items-center justify-between hover:border-primary active:scale-95 transition-all">
                     <div class="flex items-center gap-4">
@@ -248,7 +240,6 @@
 
         async function processPayment(staffId) {
             if (!pendingOrderId) return;
-            
             try {
                 await window.api.updateOrderStatus(pendingOrderId, 'completed', staffId);
                 closeStaffSelector();
