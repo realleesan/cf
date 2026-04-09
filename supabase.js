@@ -101,7 +101,7 @@
                 const { data, error } = await supabase.from('tables').insert([{
                     table_number: tableData.table_number,
                     floor_zone: tableData.floor_zone || 'ground',
-                    capacity: 4,
+                    capacity: tableData.capacity || 4,
                     status: 'available'
                 }]).select();
                 if (error) throw error;
@@ -110,7 +110,8 @@
             async updateTable(id, tableData) {
                 const { data, error } = await supabase.from('tables').update({
                     table_number: tableData.table_number,
-                    floor_zone: tableData.floor_zone
+                    floor_zone: tableData.floor_zone,
+                    capacity: tableData.capacity
                 }).eq('id', id).select();
                 if (error) throw error;
                 return data[0];

@@ -124,12 +124,16 @@
                         </select>
                         <input type="text" id="new-table-floor-custom" placeholder="Nhập tên lầu mới" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium mt-2 hidden">
                     </div>
-                    <div class="flex-1">
+                    <div class="flex-none basis-[30%]">
                         <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Tên Bàn</label>
-                        <input type="text" id="new-table-name" placeholder="Ví dụ: Bàn 12" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                        <input type="text" id="new-table-name" placeholder="Vd: Bàn 1" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
                     </div>
-                    <div class="flex items-end">
-                        <button onclick="addNewTable()" class="h-12 px-6 rounded-xl bg-primary text-white font-bold hover:bg-[#6f4e37] transition-colors w-full md:w-auto">THÊM</button>
+                    <div class="flex-none basis-[20%]">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Cỡ bàn</label>
+                        <input type="number" id="new-table-capacity" value="4" min="1" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium text-center">
+                    </div>
+                    <div class="flex items-end flex-none">
+                        <button onclick="addNewTable()" class="h-[48px] px-6 rounded-xl bg-primary text-white font-bold hover:bg-[#6f4e37] transition-colors w-full md:w-auto">THÊM</button>
                     </div>
                 </div>
             </div>
@@ -138,6 +142,48 @@
                 <div id="manage-tables-list" class="flex flex-col gap-3">
                     <!-- Populated dynamically -->
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Occupied Table Info Modal -->
+    <div id="occupied-info-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeOccupiedInfo()"></div>
+        <div class="absolute bottom-0 left-0 w-full h-[70vh] bg-surface rounded-t-[2rem] shadow-2xl flex flex-col transform transition-transform translate-y-full" id="occupied-info-content">
+            <div class="flex justify-between items-center p-6 border-b border-stone-200 bg-white rounded-t-[2rem]">
+                <div>
+                    <h2 class="text-2xl font-black text-primary" id="occ-table-name">Bàn --</h2>
+                    <p class="text-sm font-bold text-secondary flex items-center gap-1 mt-1"><span class="w-2 h-2 rounded-full bg-secondary"></span> Đang sử dụng</p>
+                </div>
+                <button onclick="closeOccupiedInfo()" class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6 bg-surface">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="flex items-center gap-2 bg-white px-4 py-3 rounded-xl shadow-sm border border-stone-100 flex-1">
+                        <span class="material-symbols-outlined text-primary text-xl">group</span>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-stone-400">Số người</p>
+                            <p class="font-black text-primary leading-none" id="occ-table-capacity">4</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white px-4 py-3 rounded-xl shadow-sm border border-stone-100 flex-1">
+                        <span class="material-symbols-outlined text-primary text-xl">receipt_long</span>
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-stone-400">Tổng tiền</p>
+                            <p class="font-black text-primary leading-none" id="occ-table-total">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <h3 class="font-bold text-lg text-primary mb-4">Các món đang dùng</h3>
+                <div id="occ-order-items" class="flex flex-col gap-3">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            
+            <div class="p-6 bg-white border-t border-stone-100 pb-10">
+                <button onclick="window.location.href='../kitchen_queue/code.html'" class="w-full py-4 rounded-xl bg-primary text-white font-black text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">XEM TAI BẾP / KITCHEN</button>
             </div>
         </div>
     </div>
@@ -243,7 +289,7 @@
         function tableClick(tableId) {
             const table = tables.find(t => t.id === tableId);
             if (table.status === 'occupied') {
-                alert('Bàn này đang được sử dụng!');
+                showOccupiedInfo(tableId);
                 return;
             }
             if (selectedTableId === tableId) selectedTableId = null;
@@ -292,6 +338,54 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        /* --- OCCUPIED TABLE INFO LOGIC --- */
+        function showOccupiedInfo(tableId) {
+            const table = tables.find(t => t.id === tableId);
+            if (!table) return;
+
+            document.getElementById('occ-table-name').innerText = table.table_number;
+            document.getElementById('occ-table-capacity').innerText = table.capacity || 4;
+
+            const order = activeOrders.find(o => o.table_id === tableId && ['pending', 'preparing', 'ready'].includes(o.status));
+            
+            const itemsContainer = document.getElementById('occ-order-items');
+            if(order && order.order_items && order.order_items.length > 0) {
+                document.getElementById('occ-table-total').innerText = `$${order.total_amount?.toFixed(2) || '0.00'}`;
+                
+                itemsContainer.innerHTML = order.order_items.map(i => `
+                    <div class="bg-white p-4 rounded-xl flex items-center justify-between border border-stone-100 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 text-primary font-black flex items-center justify-center text-sm">${i.quantity}x</div>
+                            <div>
+                                <p class="font-bold text-primary">${i.menu_items?.name || 'Món'}</p>
+                                ${i.special_instructions ? `<p class="text-xs text-stone-500 italic mt-0.5">${i.special_instructions}</p>` : ''}
+                            </div>
+                        </div>
+                        <div class="font-black text-primary">$${i.total_price?.toFixed(2) || '0.00'}</div>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('occ-table-total').innerText = `$0.00`;
+                itemsContainer.innerHTML = `<div class="p-4 text-center text-stone-400 bg-white rounded-xl border border-stone-100">Đang tải chưa xong hoặc không tìm thấy món.</div>`;
+            }
+
+            const modal = document.getElementById('occupied-info-modal');
+            const content = document.getElementById('occupied-info-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeOccupiedInfo() {
+            const modal = document.getElementById('occupied-info-modal');
+            const content = document.getElementById('occupied-info-content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
         }
 
         /* --- TABLE MANAGEMENT LOGIC --- */
@@ -362,9 +456,13 @@
                             <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Khu vực / Lầu</label>
                             <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-sm font-bold uppercase" value="${t.floor_zone}" id="edit-floor-${t.id}">
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-none w-20">
                             <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Tên Bàn</label>
                             <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-base font-black text-primary" value="${t.table_number}" id="edit-name-${t.id}">
+                        </div>
+                        <div class="flex-none w-16">
+                            <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block text-center">Người</label>
+                            <input type="number" min="1" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-2 py-2 transition-all text-base font-black text-primary text-center" value="${t.capacity || 4}" id="edit-capacity-${t.id}">
                         </div>
                     </div>
                     
@@ -380,8 +478,10 @@
             const nameInput = document.getElementById('new-table-name');
             const select = document.getElementById('new-table-floor');
             const customInput = document.getElementById('new-table-floor-custom');
+            const capInput = document.getElementById('new-table-capacity');
             
             const name = nameInput.value.trim();
+            const capacity = parseInt(capInput.value) || 4;
             let floor = select.value === '_new_' ? customInput.value.trim() : select.value;
             
             if (!name) {
@@ -397,9 +497,10 @@
             floor = floor.toLowerCase().replace(/\s+/g, '_');
 
             try {
-                const newTable = await window.api.addTable({ table_number: name, floor_zone: floor });
+                const newTable = await window.api.addTable({ table_number: name, floor_zone: floor, capacity: capacity });
                 tables.push(newTable);
                 nameInput.value = '';
+                capInput.value = '4';
                 updateFloorSelectOptions();
                 renderManageTables();
                 renderFloorTabs();
@@ -417,8 +518,10 @@
         async function saveManagedTable(id) {
             const floorInput = document.getElementById(`edit-floor-${id}`);
             const nameInput = document.getElementById(`edit-name-${id}`);
+            const capInput = document.getElementById(`edit-capacity-${id}`);
             const newFloor = floorInput.value.trim().toLowerCase().replace(/\s+/g, '_');
             const newName = nameInput.value.trim();
+            const newCapacity = parseInt(capInput.value) || 4;
             
             if (!newName || !newFloor) {
                 alert('Tên lầu và Tên bàn không được để trống!');
@@ -426,7 +529,7 @@
             }
             
             try {
-                const updatedTable = await window.api.updateTable(id, { table_number: newName, floor_zone: newFloor });
+                const updatedTable = await window.api.updateTable(id, { table_number: newName, floor_zone: newFloor, capacity: newCapacity });
                 const index = tables.findIndex(t => t.id === id);
                 if(index !== -1) tables[index] = updatedTable;
                 renderFloorTabs();
