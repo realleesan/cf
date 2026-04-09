@@ -136,7 +136,7 @@
         const totalRevenue = todayOrders.reduce((sum, o) => sum + parseFloat(o.total_amount || 0), 0);
         const totalOrders = todayOrders.length;
         
-        document.getElementById('today-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+        document.getElementById('today-revenue').textContent = formatVN(totalRevenue);
         document.getElementById('today-orders').textContent = totalOrders;
     }
 
@@ -192,7 +192,7 @@
                     </div>
                     <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
                         <span class="text-lg font-extrabold">Total</span>
-                        <span class="text-xl font-black text-primary">$${parseFloat(order.total_amount || 0).toFixed(2)}</span>
+                        <span class="text-xl font-black text-primary">${formatVN(order.total_amount || 0)}</span>
                     </div>
                 </div>
             `;
@@ -215,6 +215,13 @@
     function formatTime(dateString) {
         const date = new Date(dateString);
         return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Format currency VN
+    function formatVN(price) {
+        let p = parseFloat(price) || 0;
+        if (p >= 1000) p = p / 1000;
+        return p.toLocaleString('vi-VN', {maximumFractionDigits: 1}) + 'k VNĐ';
     }
 
     // Set filter
@@ -275,7 +282,7 @@
         <span class="material-symbols-outlined text-secondary">payments</span>
         <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Today's Revenue</span>
     </div>
-    <p id="today-revenue" class="text-3xl font-black text-primary">$0.00</p>
+    <p id="today-revenue" class="text-3xl font-black text-primary">0k VNĐ</p>
 </div>
 <div class="bg-surface-container-low rounded-2xl p-5">
     <div class="flex items-center gap-3 mb-2">
