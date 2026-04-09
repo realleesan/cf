@@ -134,21 +134,9 @@
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-6 bg-surface">
-                <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-stone-100">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-surface-container-low text-on-surface-variant text-sm border-b border-stone-200">
-                                <th class="p-4 font-bold uppercase tracking-wider">Mã (ID)</th>
-                                <th class="p-4 font-bold uppercase tracking-wider">Khu vực / Lầu</th>
-                                <th class="p-4 font-bold uppercase tracking-wider">Tên Bàn</th>
-                                <th class="p-4 font-bold uppercase tracking-wider text-right">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manage-tables-list" class="divide-y divide-stone-100">
-                            <!-- Populated dynamically -->
-                        </tbody>
-                    </table>
+            <div class="flex-1 overflow-y-auto px-6 pb-6 bg-surface">
+                <div id="manage-tables-list" class="flex flex-col gap-3">
+                    <!-- Populated dynamically -->
                 </div>
             </div>
         </div>
@@ -357,26 +345,34 @@
         function renderManageTables() {
             const list = document.getElementById('manage-tables-list');
             if(tables.length === 0) {
-                list.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-stone-400 font-medium">Chưa có bàn nào. Hãy thêm bàn mới.</td></tr>`;
+                list.innerHTML = `<div class="p-8 text-center text-stone-400 font-medium bg-surface-container-low rounded-2xl">Chưa có bàn nào. Hãy thêm bàn mới.</div>`;
                 return;
             }
 
             const sortedTables = [...tables].sort((a,b) => a.floor_zone.localeCompare(b.floor_zone) || a.table_number.localeCompare(b.table_number));
             
             list.innerHTML = sortedTables.map(t => `
-                <tr class="hover:bg-surface-container-low transition-colors" id="row-${t.id}">
-                    <td class="p-4 text-xs font-mono text-stone-400 align-middle max-w-[80px] truncate" title="${t.id}">${t.id.substring(0,8)}...</td>
-                    <td class="p-4 align-middle">
-                        <input type="text" class="w-full bg-transparent border border-transparent hover:border-stone-200 focus:border-primary focus:bg-white rounded px-2 py-1 transition-all text-sm font-medium uppercase" value="${t.floor_zone}" id="edit-floor-${t.id}">
-                    </td>
-                    <td class="p-4 align-middle">
-                        <input type="text" class="w-full bg-transparent border border-transparent hover:border-stone-200 focus:border-primary focus:bg-white rounded px-2 py-1 transition-all text-base font-bold text-primary" value="${t.table_number}" id="edit-name-${t.id}">
-                    </td>
-                    <td class="p-4 align-middle text-right whitespace-nowrap">
-                        <button onclick="saveManagedTable('${t.id}')" class="px-3 py-1.5 rounded-lg bg-[#ccebc7] text-secondary font-bold text-xs hover:bg-[#b0dfa8] transition-colors mr-2">LƯU</button>
-                        <button onclick="deleteManagedTable('${t.id}')" class="px-3 py-1.5 rounded-lg bg-red-100 text-red-700 font-bold text-xs hover:bg-red-200 transition-colors">XOÁ</button>
-                    </td>
-                </tr>
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 relative flex flex-col gap-3 transform transition-all" id="row-${t.id}">
+                    <div class="flex items-center justify-between border-b border-stone-50 pb-2">
+                        <span class="text-[10px] font-mono text-stone-400 uppercase tracking-widest bg-surface-container-low px-2 py-1 rounded-md max-w-[80px] truncate" title="${t.id}">ID: ${t.id.substring(0,6)}..</span>
+                    </div>
+                    
+                    <div class="flex flex-col gap-3 md:flex-row">
+                        <div class="flex-1">
+                            <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Khu vực / Lầu</label>
+                            <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-sm font-bold uppercase" value="${t.floor_zone}" id="edit-floor-${t.id}">
+                        </div>
+                        <div class="flex-1">
+                            <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Tên Bàn</label>
+                            <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-base font-black text-primary" value="${t.table_number}" id="edit-name-${t.id}">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 justify-end mt-1 pt-3 border-t border-stone-50">
+                        <button onclick="saveManagedTable('${t.id}')" class="px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-black text-sm hover:bg-secondary/20 transition-colors">LƯU</button>
+                        <button onclick="deleteManagedTable('${t.id}')" class="px-5 py-2 rounded-xl bg-red-50 text-red-600 font-black text-sm hover:bg-red-100 transition-colors">XOÁ</button>
+                    </div>
+                </div>
             `).join('');
         }
 
