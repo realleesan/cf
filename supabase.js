@@ -87,7 +87,7 @@
             },
             async getOrderHistory() {
                 // Return all orders to track the journey
-                const { data, error } = await supabase.from('orders').select('*, order_items(*, menu_items(*)), tables(*)').order('created_at', { ascending: false });
+                const { data, error } = await supabase.from('orders').select('*, order_items(*, menu_items(*, menu_categories(name))), tables(*)').order('created_at', { ascending: false });
                 if (error) throw error;
                 return data;
             },

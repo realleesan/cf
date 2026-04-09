@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>M Coffee - Lịch sử chi tiết</title>
+    <title>M Coffee - Lịch sử hoạt động chi tiết</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="../supabase.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -36,57 +36,53 @@
                 <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">history</span>
             </div>
             <div>
-                <h1 class="font-headline font-black tracking-tight text-lg text-primary">Lịch sử</h1>
+                <h1 class="font-headline font-black tracking-tight text-lg text-primary">Nhật ký hoạt động</h1>
                 <p id="current-date-label" class="text-[10px] font-bold text-stone-400 uppercase tracking-widest">Hôm nay</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <div class="relative">
-                <input type="date" id="filter-date" onchange="handleDateChange()" class="bg-white border-none rounded-2xl px-4 py-2 text-xs font-black text-primary shadow-sm outline-none focus:ring-2 focus:ring-primary/20">
-            </div>
+            <input type="date" id="filter-date" onchange="handleDateChange()" class="bg-white border-none rounded-2xl px-4 py-2 text-xs font-black text-primary shadow-sm outline-none focus:ring-2 focus:ring-primary/20">
             <span id="refresh-indicator" class="material-symbols-outlined text-on-surface-variant animate-spin hidden">sync</span>
         </div>
     </header>
 
     <main class="pt-24 px-6 pb-40 max-w-5xl mx-auto">
-        <!-- Stats Summary -->
-        <section class="grid grid-cols-2 gap-4 mb-8">
-            <div class="bg-secondary p-5 rounded-[2rem] text-white shadow-xl shadow-secondary/10">
-                <div class="flex items-center gap-2 mb-2 opacity-60">
-                    <span class="material-symbols-outlined text-sm">payments</span>
-                    <p class="text-[9px] font-black uppercase tracking-widest">Doanh thu</p>
+        <!-- Dashboard Summary -->
+        <section class="grid grid-cols-2 gap-4 mb-10">
+            <div class="bg-primary p-6 rounded-[2.5rem] text-white shadow-2xl shadow-primary/20">
+                <div class="flex items-center gap-2 mb-3 opacity-60">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em]">Tổng doanh thu</p>
                 </div>
-                <p id="total-revenue" class="text-2xl font-black">0k VNĐ</p>
-                <p class="text-[8px] font-bold opacity-40 uppercase mt-1 italic">* Chỉ tính đơn đã xong</p>
+                <p id="total-revenue" class="text-3xl font-black">0k VNĐ</p>
+                <div class="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+                    <p id="order-count" class="text-[10px] font-bold opacity-60">0 đơn hàng</p>
+                    <span class="material-symbols-outlined text-sm opacity-60">trending_up</span>
+                </div>
             </div>
-            <div class="bg-white p-5 rounded-[2rem] border border-stone-100 shadow-sm relative overflow-hidden">
-                <div class="flex items-center gap-2 mb-2 text-stone-400">
-                    <span class="material-symbols-outlined text-sm">receipt_long</span>
-                    <p class="text-[9px] font-black uppercase tracking-widest">Tổng đơn</p>
+            <div class="bg-white p-6 rounded-[2.5rem] border border-stone-100 shadow-sm">
+                <div class="flex items-center gap-2 mb-3 text-stone-400">
+                    <p class="text-[10px] font-black uppercase tracking-[0.2em]">Hiệu suất</p>
                 </div>
-                <p id="total-orders" class="text-2xl font-black text-primary">0</p>
-                <div class="absolute top-0 right-0 w-12 h-12 bg-primary/5 rounded-bl-[2rem] flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary/20">analytics</span>
+                <div class="flex items-end gap-1">
+                    <p id="completed-rate" class="text-3xl font-black text-primary">0%</p>
+                    <p class="text-[10px] font-bold text-stone-400 pb-1">hoàn tất</p>
+                </div>
+                <div class="mt-4 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-secondary transition-all duration-1000" style="width: 0%"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Status Filter -->
-        <section class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-2">
-            <button onclick="setFilter('all')" class="filter-btn shrink-0 px-5 py-2.5 rounded-full bg-primary text-white font-black text-[9px] uppercase tracking-widest transition-all" data-filter="all">Tất cả</button>
-            <button onclick="setFilter('pending')" class="filter-btn shrink-0 px-5 py-2.5 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[9px] uppercase tracking-widest hover:border-primary transition-all" data-filter="pending">Đang đợi</button>
-            <button onclick="setFilter('preparing')" class="filter-btn shrink-0 px-5 py-2.5 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[9px] uppercase tracking-widest hover:border-primary transition-all" data-filter="preparing">Đang làm</button>
-            <button onclick="setFilter('ready')" class="filter-btn shrink-0 px-5 py-2.5 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[9px] uppercase tracking-widest hover:border-primary transition-all" data-filter="ready">Chờ trả</button>
-            <button onclick="setFilter('completed')" class="filter-btn shrink-0 px-5 py-2.5 rounded-full bg-white border border-stone-100 text-on-surface-variant font-black text-[9px] uppercase tracking-widest hover:border-primary transition-all" data-filter="completed">Hoàn tất</button>
-        </section>
+        <!-- Status Filter Tabs -->
+        <div class="flex gap-2 mb-8 overflow-x-auto hide-scrollbar">
+            <button onclick="setFilter('all')" class="filter-btn shrink-0 px-6 py-3 rounded-2xl bg-primary text-white font-black text-[10px] uppercase tracking-widest transition-all" data-filter="all">Tất cả</button>
+            <button onclick="setFilter('completed')" class="filter-btn shrink-0 px-6 py-3 rounded-2xl bg-white border border-stone-100 text-on-surface-variant font-black text-[10px] uppercase tracking-widest transition-all" data-filter="completed">Đã thanh toán</button>
+            <button onclick="setFilter('pending')" class="filter-btn shrink-0 px-6 py-3 rounded-2xl bg-white border border-stone-100 text-on-surface-variant font-black text-[10px] uppercase tracking-widest transition-all" data-filter="pending">Chưa xử lý</button>
+        </div>
 
-        <!-- Orders List -->
-        <div id="orders-list" class="space-y-6">
-            <!-- Shimmer effect for loading -->
-            <div class="animate-pulse space-y-4">
-                <div class="h-40 bg-stone-100 rounded-[2rem]"></div>
-                <div class="h-40 bg-stone-100 rounded-[2rem]"></div>
-            </div>
+        <!-- Timeline Section -->
+        <div id="orders-list" class="space-y-8">
+            <!-- Orders populated here -->
         </div>
     </main>
 
@@ -125,6 +121,13 @@
         let currentFilter = 'all';
         let staff = [];
 
+        const floorMap = {
+            'ground_floor': 'Tầng trệt',
+            'floor_1': 'Tầng 1',
+            'floor_2': 'Tầng 2',
+            'outdoor': 'Sân vườn'
+        };
+
         document.addEventListener('DOMContentLoaded', async () => {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('filter-date').value = today;
@@ -134,17 +137,13 @@
 
         async function initialize() {
             if (!window.api) return setTimeout(initialize, 500);
-            
-            const indicator = document.getElementById('refresh-indicator');
-            indicator.classList.remove('hidden');
-            
+            document.getElementById('refresh-indicator').classList.remove('hidden');
             try {
                 orders = await window.api.getOrderHistory();
                 staff = await window.api.getStaff();
                 render();
             } catch (err) { console.error(err); }
-            
-            indicator.classList.add('hidden');
+            document.getElementById('refresh-indicator').classList.add('hidden');
         }
 
         function handleDateChange() {
@@ -167,12 +166,8 @@
         }
 
         function formatCurrency(val) {
-            // Check if val is likely in "k" units already
             const num = parseFloat(val) || 0;
-            return num.toLocaleString('vi-VN', { 
-                minimumFractionDigits: 0, 
-                maximumFractionDigits: 1 
-            }) + 'k VNĐ';
+            return num.toLocaleString('vi-VN', { minimumFractionDigits: 0, maximumFractionDigits: 1 }) + 'k';
         }
 
         function render() {
@@ -183,94 +178,135 @@
                 new Date(o.created_at).toISOString().split('T')[0] === selectedDate
             );
 
-            const totalRevenue = filteredByDate
-                .filter(o => o.status === 'completed')
-                .reduce((sum, o) => sum + (parseFloat(o.total_amount) || 0), 0);
+            const completedOrders = filteredByDate.filter(o => o.status === 'completed');
+            const totalRevenue = completedOrders.reduce((sum, o) => sum + (parseFloat(o.total_amount) || 0), 0);
+            const rate = filteredByDate.length ? Math.round((completedOrders.length / filteredByDate.length) * 100) : 0;
 
-            document.getElementById('total-orders').textContent = filteredByDate.length;
-            document.getElementById('total-revenue').textContent = formatCurrency(totalRevenue);
+            document.getElementById('order-count').textContent = `${filteredByDate.length} đơn hàng`;
+            document.getElementById('total-revenue').textContent = formatCurrency(totalRevenue) + ' VNĐ';
+            document.getElementById('completed-rate').textContent = `${rate}%`;
+            document.getElementById('progress-bar').style.width = `${rate}%`;
 
             const finalDisplayList = currentFilter === 'all' 
                 ? filteredByDate 
                 : filteredByDate.filter(o => o.status === currentFilter);
 
             if (finalDisplayList.length === 0) {
-                list.innerHTML = `
-                    <div class="py-20 text-center">
-                        <div class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <span class="material-symbols-outlined text-stone-300 text-3xl">inbox</span>
-                        </div>
-                        <p class="text-stone-400 font-bold text-sm">Không thấy dữ liệu nào cho ngày này</p>
-                    </div>
-                `;
+                list.innerHTML = `<div class="py-20 text-center text-stone-300 font-bold">Không có dữ liệu cho ngày này.</div>`;
                 return;
             }
 
             list.innerHTML = finalDisplayList.map(o => {
-                const time = new Date(o.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const tableNum = o.tables?.table_number || 'Takeaway';
+                const dateObj = new Date(o.created_at);
+                const fullDateTime = `${dateObj.toLocaleDateString('vi-VN')} - ${dateObj.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+                const tableInfo = o.tables ? `${o.tables.table_number} (${floorMap[o.tables.floor_zone] || 'Khu vực khác'})` : 'Mang về (Takeaway)';
                 const responsibleStaff = staff.find(s => s.id === o.staff_id);
                 
-                let statusInfo = { text: 'Chờ nhận', color: 'bg-stone-100 text-stone-600', fill: 0 };
-                if (o.status === 'preparing') statusInfo = { text: 'Đang làm', color: 'bg-blue-100 text-blue-600', fill: 1 };
-                if (o.status === 'ready') statusInfo = { text: 'Chờ trả', color: 'bg-orange-100 text-orange-600', fill: 1 };
-                if (o.status === 'completed') statusInfo = { text: 'Đã xong', color: 'bg-green-100 text-green-600', fill: 1 };
+                let subtotal = o.subtotal || 0;
+                let vat = o.tax_amount || 0;
+                let total = o.total_amount || 0;
+
+                // If subtotal is missing, calculate from items
+                if (!subtotal) {
+                    subtotal = o.order_items?.reduce((sum, i) => sum + (parseFloat(i.total_price) || 0), 0) || 0;
+                }
 
                 return `
-                    <div class="bg-white rounded-[2.5rem] border border-stone-100 shadow-sm overflow-hidden flex flex-col group transition-all">
-                        <!-- Top Bar -->
-                        <div class="p-6 bg-stone-50/50 flex justify-between items-start">
-                            <div class="flex gap-4">
-                                <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center font-black text-xl text-primary border border-stone-100">
-                                    ${tableNum.replace('Bàn ', '')}
+                    <div class="bg-white rounded-[2.5rem] border border-stone-100 shadow-sm overflow-hidden flex flex-col group hover:shadow-xl hover:shadow-primary/5 transition-all">
+                        <!-- Card Header -->
+                        <div class="px-8 py-6 bg-stone-50/50 flex justify-between items-start border-b border-stone-50">
+                            <div class="flex gap-5">
+                                <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex flex-col items-center justify-center border border-stone-100">
+                                    <span class="text-[10px] font-black text-stone-300 uppercase leading-none mb-1">Bàn</span>
+                                    <span class="font-black text-primary text-xl leading-none">${o.tables?.table_number.replace('Bàn ', '') || 'TA'}</span>
                                 </div>
                                 <div>
                                     <div class="flex items-center gap-2 mb-1">
-                                        <h3 class="font-black text-primary">#${o.order_number}</h3>
-                                        <span class="${statusInfo.color} text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">
-                                            ${statusInfo.text}
+                                        <h3 class="font-black text-primary text-lg">Order #${o.order_number}</h3>
+                                        <span class="px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter ${o.status === 'completed' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600'}">
+                                            ${o.status === 'completed' ? 'Đã thanh toán' : 'Đang xử lý'}
                                         </span>
                                     </div>
                                     <p class="text-[10px] text-stone-400 font-bold flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[12px]">schedule</span> ${time}
+                                        <span class="material-symbols-outlined text-[12px]">location_on</span> ${tableInfo}
+                                    </p>
+                                    <p class="text-[10px] text-stone-400 font-bold flex items-center gap-1 mt-0.5">
+                                        <span class="material-symbols-outlined text-[12px]">calendar_today</span> ${fullDateTime}
                                     </p>
                                 </div>
                             </div>
-                            <button onclick="handleDeleteOrder('${o.id}', '${o.table_id}')" class="w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 text-stone-300 flex items-center justify-center transition-colors">
+                            <button onclick="handleDeleteOrder('${o.id}', '${o.table_id}')" class="w-10 h-10 rounded-full hover:bg-red-50 hover:text-red-500 text-stone-200 flex items-center justify-center transition-colors">
                                 <span class="material-symbols-outlined text-lg">delete</span>
                             </button>
                         </div>
 
-                        <!-- Content -->
-                        <div class="p-6 space-y-4">
-                            <div class="space-y-3">
+                        <!-- Card Body: Items -->
+                        <div class="p-8">
+                            <div class="space-y-4">
+                                <p class="text-[10px] font-black text-stone-300 uppercase tracking-[0.2em] mb-4">Chi tiết đơn hàng</p>
                                 ${o.order_items?.map(i => `
-                                    <div class="flex justify-between items-center text-sm">
-                                        <div class="flex items-center gap-3">
-                                            <span class="w-5 h-5 rounded bg-primary/5 text-primary flex items-center justify-center text-[10px] font-black">${i.quantity}</span>
-                                            <span class="font-bold text-on-surface-variant">${i.menu_items?.name}</span>
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex gap-4">
+                                            <div class="w-8 h-8 rounded-xl bg-stone-50 flex items-center justify-center text-[10px] font-black text-primary border border-stone-100">
+                                                ${i.quantity}x
+                                            </div>
+                                            <div>
+                                                <p class="font-black text-on-surface-variant leading-tight">${i.menu_items?.name}</p>
+                                                <p class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-0.5">${i.menu_items?.menu_categories?.name || 'Món chính'}</p>
+                                            </div>
                                         </div>
-                                        <span class="text-stone-400 font-medium">${formatCurrency(i.unit_price)}</span>
+                                        <p class="font-bold text-primary">${formatCurrency(i.unit_price)} / <span class="text-stone-300 text-[10px]">món</span></p>
                                     </div>
-                                `).join('') || '<p class="text-xs italic text-stone-300">Không có dữ liệu món</p>'}
+                                `).join('')}
                             </div>
 
-                            <div class="pt-4 border-t border-dashed border-stone-200 flex justify-between items-end">
-                                <div>
-                                    <p class="text-[9px] text-stone-400 font-black uppercase tracking-widest mb-1">Tổng tiền thanh toán</p>
-                                    <p class="text-2xl font-black text-primary">${formatCurrency(o.total_amount)}</p>
-                                </div>
-                                ${responsibleStaff ? `
-                                    <div class="text-right">
-                                        <p class="text-[9px] text-stone-400 font-black uppercase tracking-widest mb-1">Thu ngân</p>
-                                        <div class="flex items-center gap-2 bg-stone-100 pl-1 pr-3 py-1 rounded-full">
-                                            <div class="w-6 h-6 rounded-full bg-white overflow-hidden border border-stone-200">
-                                                ${responsibleStaff.photo_url ? `<img src="${responsibleStaff.photo_url}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-[16px] text-primary/40 flex items-center justify-center h-full">person</span>`}
-                                            </div>
-                                            <span class="text-[10px] font-black text-primary">${responsibleStaff.full_name}</span>
-                                        </div>
+                            <!-- Special Notes -->
+                            ${o.special_instructions ? `
+                                <div class="mt-6 p-4 bg-orange-50/30 rounded-2xl border border-orange-100/50 flex gap-3">
+                                    <span class="material-symbols-outlined text-orange-400 text-sm">sticky_note_2</span>
+                                    <div>
+                                        <p class="text-[9px] font-black text-orange-400 uppercase tracking-widest leading-none mb-1">Ghi chú đặc biệt</p>
+                                        <p class="text-xs font-medium text-orange-800/70">"${o.special_instructions}"</p>
                                     </div>
-                                ` : ''}
+                                </div>
+                            ` : ''}
+
+                            <!-- Financial Breakdown -->
+                            <div class="mt-8 pt-6 border-t border-dashed border-stone-100 grid grid-cols-2 gap-8">
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center text-[10px] font-bold text-stone-400">
+                                        <span>Tạm tính</span>
+                                        <span>${formatCurrency(subtotal)}đ</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[10px] font-bold text-stone-300">
+                                        <span>VAT (8%)</span>
+                                        <span>${formatCurrency(vat)}đ</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-sm font-black text-primary pt-2">
+                                        <span>Tổng cộng</span>
+                                        <span>${formatCurrency(total)}đ</span>
+                                    </div>
+                                </div>
+
+                                <!-- Staff Info -->
+                                <div class="flex flex-col items-end justify-center">
+                                    ${responsibleStaff ? `
+                                        <p class="text-[9px] font-black text-stone-300 uppercase tracking-widest mb-2">Người xử lý</p>
+                                        <div class="flex items-center gap-3 text-right">
+                                            <div>
+                                                <p class="text-[11px] font-black text-primary leading-none mb-1">${responsibleStaff.full_name}</p>
+                                                <p class="text-[9px] font-bold text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full inline-block uppercase tracking-tighter">${responsibleStaff.role}</p>
+                                            </div>
+                                            <div class="w-10 h-10 rounded-2xl bg-stone-50 border border-stone-100 overflow-hidden">
+                                                ${responsibleStaff.photo_url ? `<img src="${responsibleStaff.photo_url}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-xl text-primary/20 flex items-center justify-center h-full">person</span>`}
+                                            </div>
+                                        </div>
+                                    ` : `
+                                        <div class="w-full h-full bg-stone-50 rounded-2xl flex items-center justify-center border border-dashed border-stone-100 italic text-[10px] text-stone-300 font-bold">
+                                            Chưa ghi nhận thu ngân
+                                        </div>
+                                    `}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -279,7 +315,7 @@
         }
 
         async function handleDeleteOrder(orderId, tableId) {
-            if (!confirm('Hành động này sẽ xóa vĩnh viễn dữ liệu đơn hàng và giải phóng bàn. Bạn chắc chắn chứ?')) return;
+            if (!confirm('Hành động này sẽ xóa vĩnh viễn dữ liệu đơn hàng. Thông tin này rất quan trọng cho việc thống kê doanh thu. Bạn chắc chắn chứ?')) return;
             try {
                 await window.api.deleteOrder(orderId, tableId);
                 await initialize();
