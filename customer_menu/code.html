@@ -146,7 +146,7 @@
             
             // Render first category items if selectedCategory is not set
             if (categories.length > 0) {
-                if (!selectedCategory || !categories.find(c => c.id === selectedCategory)) {
+                if (!selectedCategory || !categories.find(c => c.id == selectedCategory)) {
                     selectCategory(categories[0].id);
                 } else {
                     selectCategory(selectedCategory);
@@ -187,7 +187,7 @@
         });
         
         // Render items for category
-        const items = menuData.items.filter(item => item.category_id === categoryId);
+        const items = menuData.items.filter(item => item.category_id == categoryId);
         renderMenuItems(items);
     }
 
@@ -196,7 +196,7 @@
         const container = document.getElementById('menu-content');
         if (!container) return;
         
-        const category = menuData.categories.find(c => c.id === selectedCategory);
+        const category = menuData.categories.find(c => c.id == selectedCategory);
         
         // Check if category has secondary color
         const isSecondary = category && ['NƯỚC ÉP', 'TRÀ TRÁI CÂY', 'SINH TỐ', 'SỮA TƯƠI'].includes(category.name);
@@ -516,13 +516,13 @@
         }
 
         const sortedItems = [...manageItems].sort((a,b) => {
-            const catA = manageCategories.find(c => c.id === a.category_id)?.name || '';
-            const catB = manageCategories.find(c => c.id === b.category_id)?.name || '';
+            const catA = manageCategories.find(c => c.id == a.category_id)?.name || '';
+            const catB = manageCategories.find(c => c.id == b.category_id)?.name || '';
             return catA.localeCompare(catB) || a.name.localeCompare(b.name);
         });
         
         list.innerHTML = sortedItems.map(item => {
-            const catOptions = manageCategories.map(c => `<option value="${c.id}" ${c.id === item.category_id ? 'selected' : ''}>${c.name}</option>`).join('');
+            const catOptions = manageCategories.map(c => `<option value="${c.id}" ${c.id == item.category_id ? 'selected' : ''}>${c.name}</option>`).join('');
             
             return `
             <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 relative flex flex-col gap-3 transform transition-all" id="mi-row-${item.id}">
@@ -632,7 +632,7 @@
                 image_url: newImage
             });
             
-            const index = manageItems.findIndex(i => i.id === id);
+            const index = manageItems.findIndex(i => i.id == id);
             if(index !== -1) {
                 if (updatedItem) {
                     manageItems[index] = updatedItem;
@@ -661,7 +661,7 @@
         if(!confirm('Bạn có chắc chắn muốn xoá món này không? Không thể hoàn tác.')) return;
         try {
             await window.api.deleteMenuItem(id);
-            manageItems = manageItems.filter(i => i.id !== id);
+            manageItems = manageItems.filter(i => i.id != id);
             renderManageItems();
             await loadMenu(); // Refresh main menu UI
         } catch (err) {
