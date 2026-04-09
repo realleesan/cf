@@ -112,7 +112,7 @@
                 return true;
             },
             async getStaff() {
-                const { data, error } = await supabase.from('staff').select('*').order('name');
+                const { data, error } = await supabase.from('staff').select('*').order('full_name');
                 if (error) throw error;
                 return data;
             },
