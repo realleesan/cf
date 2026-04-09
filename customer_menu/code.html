@@ -635,7 +635,17 @@
                 image_url: newImage
             });
             
+            if (!updatedItem) {
+                alert("GỠ LỖI (DEBUG): Supabase báo không tìm thấy dòng dữ liệu hoặc bạn đang thiếu quyền RLS 'UPDATE' cho bảng menu_items trong Database! (Máy chủ trả về null). Xin hãy kiểm tra lại Supabase RLS !");
+                return;
+            }
+
             const index = manageItems.findIndex(i => i.id == id);
+            if (index === -1) {
+                alert("GỠ LỖI (DEBUG): Thất bại khi tìm index ID: " + id);
+                return;
+            }
+            
             if(index !== -1 && updatedItem) manageItems[index] = updatedItem;
             
             const mdIndex = menuData.items.findIndex(i => i.id == id);
