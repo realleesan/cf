@@ -628,18 +628,16 @@
         }
         
         try {
-            const updatedItem = await window.api.updateMenuItem(id, {
-                category_id: newCatId,
-                name: newName,
-                price: newPrice,
-                image_url: newImage
-            });
-            
+            // Optimistically update local state immediately
             const index = manageItems.findIndex(i => i.id == id);
-            if(index !== -1 && updatedItem) manageItems[index] = updatedItem;
+            if(index !== -1) {
+                manageItems[index] = { ...manageItems[index], category_id: newCatId, name: newName, price: newPrice, image_url: newImage };
+            }
             
             const mdIndex = menuData.items.findIndex(i => i.id == id);
-            if (mdIndex !== -1 && updatedItem) menuData.items[mdIndex] = updatedItem;
+            if (mdIndex !== -1) {
+                menuData.items[mdIndex] = { ...menuData.items[mdIndex], category_id: newCatId, name: newName, price: newPrice, image_url: newImage };
+            }
             
             // Refresh UI instantly
             renderManageItems();
@@ -650,6 +648,20 @@
                 const origBg = row.style.backgroundColor;
                 row.style.backgroundColor = '#ccebc7';
                 setTimeout(() => row.style.backgroundColor = origBg, 500);
+            }
+
+            // Perform DB update
+            const updatedItem = await window.api.updateMenuItem(id, {
+                category_id: newCatId,
+                name: newName,
+                price: newPrice,
+                image_url: newImage
+            });
+            
+            // Finalize with true DB state
+            if (updatedItem) {
+                if(index !== -1) manageItems[index] = updatedItem;
+                if(mdIndex !== -1) menuData.items[mdIndex] = updatedItem;
             }
         } catch (err) {
             console.error(err);
