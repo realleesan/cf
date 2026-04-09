@@ -128,6 +128,60 @@
                 const { error } = await supabase.from('tables').delete().eq('id', id);
                 if (error) throw error;
                 return true;
+            },
+            async addCategory(categoryData) {
+                const { data, error } = await supabase.from('menu_categories').insert([{
+                    name: categoryData.name,
+                    icon: categoryData.icon || 'star',
+                    display_order: categoryData.display_order || 0,
+                    is_active: categoryData.is_active !== undefined ? categoryData.is_active : true
+                }]).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async updateCategory(id, categoryData) {
+                const { data, error } = await supabase.from('menu_categories').update({
+                    name: categoryData.name,
+                    icon: categoryData.icon,
+                    display_order: categoryData.display_order,
+                    is_active: categoryData.is_active
+                }).eq('id', id).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async deleteCategory(id) {
+                const { error } = await supabase.from('menu_categories').delete().eq('id', id);
+                if (error) throw error;
+                return true;
+            },
+            async addMenuItem(itemData) {
+                const { data, error } = await supabase.from('menu_items').insert([{
+                    category_id: itemData.category_id,
+                    name: itemData.name,
+                    price: itemData.price,
+                    image_url: itemData.image_url,
+                    description: itemData.description || '',
+                    is_available: itemData.is_available !== undefined ? itemData.is_available : true
+                }]).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async updateMenuItem(id, itemData) {
+                const { data, error } = await supabase.from('menu_items').update({
+                    category_id: itemData.category_id,
+                    name: itemData.name,
+                    price: itemData.price,
+                    image_url: itemData.image_url,
+                    description: itemData.description,
+                    is_available: itemData.is_available
+                }).eq('id', id).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async deleteMenuItem(id) {
+                const { error } = await supabase.from('menu_items').delete().eq('id', id);
+                if (error) throw error;
+                return true;
             }
         };
     }

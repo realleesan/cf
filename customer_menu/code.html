@@ -339,6 +339,9 @@
 <h1 class="text-[#553722] dark:text-[#f4f4f3] font-plus-jakarta text-2xl font-bold tracking-tight text-[#553722] dark:text-[#f4f4f3] font-black italic">The Artisanal</h1>
 </div>
 <div class="flex items-center gap-4">
+<button onclick="openMenuManager()" class="p-2 text-[#a1a1a1] hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] transition-colors rounded-full">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
 <button class="p-2 text-[#a1a1a1] hover:bg-[#f4f4f3] dark:hover:bg-[#2a2c2c] transition-colors rounded-full">
 <span class="material-symbols-outlined" data-icon="search">search</span>
 </button>
@@ -394,4 +397,264 @@
 <span class="font-manrope text-[10px] uppercase tracking-[0.05em] font-bold">History</span>
 </div>
 </nav>
+
+<!-- Menu Management Modal -->
+<div id="menu-manager-modal" class="fixed inset-0 z-[100] hidden">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeMenuManager()"></div>
+    <div class="absolute bottom-0 left-0 w-full h-[85vh] bg-surface rounded-t-[2rem] shadow-2xl flex flex-col transform transition-transform translate-y-full" id="menu-manager-content">
+        <div class="flex justify-between items-center p-6 border-b border-stone-200">
+            <h2 class="text-2xl font-black text-primary">Quản lý Menu</h2>
+            <button onclick="closeMenuManager()" class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        
+        <div class="p-6 bg-white border-b border-stone-200 flex flex-col gap-4">
+            <h3 class="font-bold text-lg text-primary">Thêm Món / Loại Mới</h3>
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Loại đồ</label>
+                    <select id="new-item-category" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium" onchange="handleCategorySelectChange(this)">
+                        <!-- Options generated dynamically -->
+                    </select>
+                    <input type="text" id="new-item-category-custom" placeholder="Nhập tên loại đồ mới" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium mt-2 hidden">
+                </div>
+                <div class="flex-[1.5]">
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Tên đồ</label>
+                    <input type="text" id="new-item-name" placeholder="Vd: Cafe Sữa Đá" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                </div>
+                <div class="flex-none basis-[20%]">
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Giá</label>
+                    <input type="number" id="new-item-price" placeholder="Vd: 35000" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Link Ảnh</label>
+                    <input type="text" id="new-item-image" placeholder="URL ảnh (tuỳ chọn)" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                </div>
+                <div class="flex items-end flex-none">
+                    <button onclick="addNewMenuItem()" class="h-[48px] px-6 rounded-xl bg-primary text-white font-bold hover:bg-[#6f4e37] transition-colors w-full md:w-auto">THÊM</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-6 pb-6 bg-surface">
+            <div id="manage-items-list" class="flex flex-col gap-3 mt-6">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* --- MENU MANAGEMENT LOGIC --- */
+    let manageCategories = [];
+    let manageItems = [];
+
+    async function openMenuManager() {
+        const modal = document.getElementById('menu-manager-modal');
+        const content = document.getElementById('menu-manager-content');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            content.classList.remove('translate-y-full');
+        }, 10);
+        await loadManageMenuData();
+    }
+
+    function closeMenuManager() {
+        const modal = document.getElementById('menu-manager-modal');
+        const content = document.getElementById('menu-manager-content');
+        content.classList.add('translate-y-full');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    async function loadManageMenuData() {
+        try {
+            manageCategories = await window.api.getCategories() || [];
+            manageItems = await window.api.getMenuItems() || [];
+            updateCategorySelectOptions();
+            renderManageItems();
+        } catch (err) {
+            console.error('Lỗi khi tải dữ liệu menu', err);
+        }
+    }
+
+    function handleCategorySelectChange(selectElem) {
+        const customInput = document.getElementById('new-item-category-custom');
+        if (selectElem.value === '_new_') {
+            customInput.classList.remove('hidden');
+            customInput.focus();
+        } else {
+            customInput.classList.add('hidden');
+            customInput.value = '';
+        }
+    }
+
+    function updateCategorySelectOptions() {
+        const select = document.getElementById('new-item-category');
+        select.innerHTML = manageCategories.map(c => `<option value="${c.id}">${c.name}</option>`).join('') +
+                           `<option value="_new_">+ Thêm loại mới...</option>`;
+        
+        const customInput = document.getElementById('new-item-category-custom');
+        customInput.classList.add('hidden');
+        customInput.value = '';
+        
+        if(manageCategories.length === 0) {
+            select.value = '_new_';
+            handleCategorySelectChange(select);
+        }
+    }
+
+    function renderManageItems() {
+        const list = document.getElementById('manage-items-list');
+        if(manageItems.length === 0) {
+            list.innerHTML = `<div class="p-8 text-center text-stone-400 font-medium bg-surface-container-low rounded-2xl">Chưa có món nào. Hãy thêm món mới.</div>`;
+            return;
+        }
+
+        const sortedItems = [...manageItems].sort((a,b) => {
+            const catA = manageCategories.find(c => c.id === a.category_id)?.name || '';
+            const catB = manageCategories.find(c => c.id === b.category_id)?.name || '';
+            return catA.localeCompare(catB) || a.name.localeCompare(b.name);
+        });
+        
+        list.innerHTML = sortedItems.map(item => {
+            const catOptions = manageCategories.map(c => `<option value="${c.id}" ${c.id === item.category_id ? 'selected' : ''}>${c.name}</option>`).join('');
+            
+            return \`
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-100 p-4 relative flex flex-col gap-3 transform transition-all" id="mi-row-\${item.id}">
+                <div class="flex flex-col gap-3 md:flex-row">
+                    <div class="flex-[1]">
+                        <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Loại đồ</label>
+                        <select class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all block text-sm focus:outline-none focus:ring-2 focus:ring-primary/20" id="edit-mi-cat-\${item.id}">
+                            \${catOptions}
+                        </select>
+                    </div>
+                    <div class="flex-[1.5]">
+                        <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Tên đồ</label>
+                        <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-base font-black text-primary block focus:outline-none focus:ring-2 focus:ring-primary/20" value="\${item.name}" id="edit-mi-name-\${item.id}">
+                    </div>
+                    <div class="flex-[0.5]">
+                        <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block text-center">Giá</label>
+                        <input type="number" min="0" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-2 py-2 transition-all text-base font-black text-primary text-center block focus:outline-none focus:ring-2 focus:ring-primary/20" value="\${item.price || 0}" id="edit-mi-price-\${item.id}">
+                    </div>
+                    <div class="flex-[1]">
+                        <label class="text-[10px] font-bold text-stone-400 uppercase tracking-wider pl-1 mb-1 block">Link Ảnh</label>
+                        <input type="text" class="w-full bg-surface-container-low border border-transparent focus:border-primary focus:bg-white rounded-xl px-3 py-2 transition-all text-sm truncate block focus:outline-none focus:ring-2 focus:ring-primary/20" value="\${item.image_url || ''}" id="edit-mi-image-\${item.id}" placeholder="URL">
+                    </div>
+                </div>
+                
+                <div class="flex gap-2 justify-end mt-1 pt-3 border-t border-stone-50">
+                    <button onclick="saveManagedMenuItem('\${item.id}')" class="px-5 py-2 rounded-xl bg-secondary/10 text-secondary font-black text-sm hover:bg-secondary/20 transition-colors">LƯU</button>
+                    <button onclick="deleteManagedMenuItem('\${item.id}')" class="px-5 py-2 rounded-xl bg-red-50 text-red-600 font-black text-sm hover:bg-red-100 transition-colors">XOÁ</button>
+                </div>
+            </div>
+        \`}).join('');
+    }
+
+    async function addNewMenuItem() {
+        const nameInput = document.getElementById('new-item-name');
+        const priceInput = document.getElementById('new-item-price');
+        const imageInput = document.getElementById('new-item-image');
+        const select = document.getElementById('new-item-category');
+        const customInput = document.getElementById('new-item-category-custom');
+        
+        const name = nameInput.value.trim();
+        const price = parseFloat(priceInput.value) || 0;
+        const imageUrl = imageInput.value.trim();
+        let categoryId = select.value;
+        
+        if (!name) {
+            alert('Vui lòng nhập tên món!');
+            return;
+        }
+        if (categoryId === '_new_' && !customInput.value.trim()) {
+            alert('Vui lòng nhập tên loại đồ mới!');
+            return;
+        }
+        
+        try {
+            if (categoryId === '_new_') {
+                const newCatName = customInput.value.trim();
+                const newCat = await window.api.addCategory({ name: newCatName, is_active: true });
+                manageCategories.push(newCat);
+                categoryId = newCat.id;
+            }
+            
+            const newItem = await window.api.addMenuItem({
+                category_id: categoryId,
+                name: name,
+                price: price,
+                image_url: imageUrl,
+                is_available: true
+            });
+            
+            manageItems.push(newItem);
+            
+            // Clear form
+            nameInput.value = '';
+            priceInput.value = '';
+            imageInput.value = '';
+            
+            // Refresh data
+            await loadManageMenuData();
+            await loadMenu(); // Refresh main menu UI
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra khi thêm món mới!');
+        }
+    }
+
+    async function saveManagedMenuItem(id) {
+        const catInput = document.getElementById(\`edit-mi-cat-\${id}\`);
+        const nameInput = document.getElementById(\`edit-mi-name-\${id}\`);
+        const priceInput = document.getElementById(\`edit-mi-price-\${id}\`);
+        const imageInput = document.getElementById(\`edit-mi-image-\${id}\`);
+        
+        const newCatId = catInput.value;
+        const newName = nameInput.value.trim();
+        const newPrice = parseFloat(priceInput.value) || 0;
+        const newImage = imageInput.value.trim();
+        
+        if (!newName) {
+            alert('Tên đồ không được để trống!');
+            return;
+        }
+        
+        try {
+            const updatedItem = await window.api.updateMenuItem(id, {
+                category_id: newCatId,
+                name: newName,
+                price: newPrice,
+                image_url: newImage
+            });
+            
+            const index = manageItems.findIndex(i => i.id === id);
+            if(index !== -1) manageItems[index] = updatedItem;
+            
+            renderManageItems();
+            await loadMenu(); // Refresh main menu UI
+            
+            const row = document.getElementById(\`mi-row-\${id}\`);
+            const origBg = row.style.backgroundColor;
+            row.style.backgroundColor = '#ccebc7';
+            setTimeout(() => row.style.backgroundColor = origBg, 500);
+        } catch (err) {
+            console.error(err);
+            alert('Có lỗi xảy ra khi lưu thay đổi!');
+        }
+    }
+
+    async function deleteManagedMenuItem(id) {
+        if(!confirm('Bạn có chắc chắn muốn xoá món này không? Không thể hoàn tác.')) return;
+        try {
+            await window.api.deleteMenuItem(id);
+            manageItems = manageItems.filter(i => i.id !== id);
+            renderManageItems();
+            await loadMenu(); // Refresh main menu UI
+        } catch (err) {
+            console.error(err);
+            alert('Không thể xoá món này (có thể do món đã có trong hoá đơn trc đó). Vui lòng ẩn món thay vì xoá!');
+        }
+    }
+</script>
 </body></html>
