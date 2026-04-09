@@ -40,6 +40,7 @@
             <h1 class="font-headline font-black tracking-tight text-2xl text-primary">M Coffee</h1>
         </div>
         <div class="flex items-center gap-4">
+            <button onclick="openTableManager()" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container hover:bg-[#e0e0e0] transition-colors"><span class="material-symbols-outlined text-on-surface-variant text-[20px]">tune</span></button>
             <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
             <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="User">
         </div>
@@ -51,10 +52,8 @@
             <h2 class="text-5xl font-black text-primary mb-2">Floor<br>Plan</h2>
             <div class="flex justify-between items-center mt-4">
                 <p class="text-on-surface-variant font-medium">Floor Selection</p>
-                <div class="flex gap-2 p-1 bg-surface-container rounded-full overflow-x-auto no-scrollbar">
-                    <button onclick="setFloor('ground')" id="btn-ground" class="floor-tab px-6 py-2 rounded-full bg-primary text-white font-bold transition-all">GROUND</button>
-                    <button onclick="setFloor('hallway')" id="btn-hallway" class="floor-tab px-6 py-2 rounded-full text-on-surface-variant font-medium transition-all hover:bg-surface-container-high">HALLWAY</button>
-                    <button onclick="setFloor('upstairs')" id="btn-upstairs" class="floor-tab px-6 py-2 rounded-full text-on-surface-variant font-medium transition-all hover:bg-surface-container-high">UPSTAIRS</button>
+                <div id="floor-tabs-container" class="flex gap-2 p-1 bg-surface-container rounded-full overflow-x-auto no-scrollbar">
+                    <!-- Floor tabs dynamically generated here -->
                 </div>
             </div>
         </section>
@@ -106,6 +105,55 @@
         </div>
     </nav>
 
+    <!-- Table Management Modal -->
+    <div id="table-manager-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm" onclick="closeTableManager()"></div>
+        <div class="absolute bottom-0 left-0 w-full h-[85vh] bg-surface rounded-t-[2rem] shadow-2xl flex flex-col transform transition-transform translate-y-full" id="table-manager-content">
+            <div class="flex justify-between items-center p-6 border-b border-stone-200">
+                <h2 class="text-2xl font-black text-primary">Quản lý Bàn & Lầu</h2>
+                <button onclick="closeTableManager()" class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            
+            <div class="p-6 bg-white border-b border-stone-200 flex flex-col gap-4">
+                <h3 class="font-bold text-lg text-primary">Thêm Bàn Mới</h3>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Khu vực / Lầu</label>
+                        <select id="new-table-floor" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium" onchange="handleFloorSelectChange(this)">
+                            <!-- Options generated dynamically -->
+                        </select>
+                        <input type="text" id="new-table-floor-custom" placeholder="Nhập tên lầu mới" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium mt-2 hidden">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Tên Bàn</label>
+                        <input type="text" id="new-table-name" placeholder="Ví dụ: Bàn 12" class="w-full bg-surface-container rounded-xl px-4 py-3 border-none focus:ring-2 focus:ring-primary font-medium">
+                    </div>
+                    <div class="flex items-end">
+                        <button onclick="addNewTable()" class="h-12 px-6 rounded-xl bg-primary text-white font-bold hover:bg-[#6f4e37] transition-colors w-full md:w-auto">THÊM</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 bg-surface">
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-stone-100">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-surface-container-low text-on-surface-variant text-sm border-b border-stone-200">
+                                <th class="p-4 font-bold uppercase tracking-wider">Mã (ID)</th>
+                                <th class="p-4 font-bold uppercase tracking-wider">Khu vực / Lầu</th>
+                                <th class="p-4 font-bold uppercase tracking-wider">Tên Bàn</th>
+                                <th class="p-4 font-bold uppercase tracking-wider text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manage-tables-list" class="divide-y divide-stone-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script shadow>
         let tables = [];
         let activeOrders = [];
@@ -125,6 +173,12 @@
             if (!window.api) return;
             try {
                 tables = await window.api.getTables();
+                if(tables.length > 0 && !tables.some(t => t.floor_zone === currentFloor)) {
+                    currentFloor = tables[0].floor_zone;
+                } else if(tables.length === 0) {
+                    currentFloor = 'ground';
+                }
+                renderFloorTabs();
                 renderVisualLayout();
                 await loadActiveOrders();
             } catch (err) { console.error(err); }
@@ -138,17 +192,24 @@
             } catch (err) { console.error(err); }
         }
 
+        function renderFloorTabs() {
+            const container = document.getElementById('floor-tabs-container');
+            const floors = [...new Set(tables.map(t => t.floor_zone))].filter(Boolean);
+            if(floors.length === 0) floors.push('ground'); // default fallback
+
+            container.innerHTML = floors.map(floor => {
+                const isActive = floor === currentFloor;
+                const formattedFloor = floor.replace(/_/g, ' ').toUpperCase();
+                return `<button onclick="setFloor('${floor}')" data-floor="${floor}" class="floor-tab px-6 py-2 rounded-full ${isActive ? 'bg-primary text-white font-bold' : 'text-on-surface-variant font-medium hover:bg-surface-container-high'} transition-all">${formattedFloor}</button>`;
+            }).join('');
+        }
+
         function setFloor(floor) {
             currentFloor = floor;
             selectedTableId = null;
             updateFAB();
+            renderFloorTabs();
             renderVisualLayout();
-            document.querySelectorAll('.floor-tab').forEach(btn => {
-                const isActive = btn.id === `btn-${floor}`;
-                btn.className = isActive ? 
-                    'floor-tab px-6 py-2 rounded-full bg-primary text-white font-bold transition-all' : 
-                    'floor-tab px-6 py-2 rounded-full text-on-surface-variant font-medium transition-all hover:bg-surface-container-high';
-            });
         }
 
         function renderVisualLayout() {
@@ -243,6 +304,175 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        /* --- TABLE MANAGEMENT LOGIC --- */
+        function openTableManager() {
+            const modal = document.getElementById('table-manager-modal');
+            const content = document.getElementById('table-manager-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+            renderManageTables();
+            updateFloorSelectOptions();
+        }
+
+        function closeTableManager() {
+            const modal = document.getElementById('table-manager-modal');
+            const content = document.getElementById('table-manager-content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function handleFloorSelectChange(selectElem) {
+            const customInput = document.getElementById('new-table-floor-custom');
+            if (selectElem.value === '_new_') {
+                customInput.classList.remove('hidden');
+                customInput.focus();
+            } else {
+                customInput.classList.add('hidden');
+                customInput.value = '';
+            }
+        }
+
+        function updateFloorSelectOptions() {
+            const select = document.getElementById('new-table-floor');
+            const floors = [...new Set(tables.map(t => t.floor_zone))].filter(Boolean);
+            select.innerHTML = floors.map(f => `<option value="${f}">${f.replace(/_/g, ' ').toUpperCase()}</option>`).join('') +
+                               `<option value="_new_">+ Thêm lầu mới...</option>`;
+            
+            const customInput = document.getElementById('new-table-floor-custom');
+            customInput.classList.add('hidden');
+            customInput.value = '';
+            
+            if(floors.length === 0) {
+                select.value = '_new_';
+                handleFloorSelectChange(select);
+            }
+        }
+
+        function renderManageTables() {
+            const list = document.getElementById('manage-tables-list');
+            if(tables.length === 0) {
+                list.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-stone-400 font-medium">Chưa có bàn nào. Hãy thêm bàn mới.</td></tr>`;
+                return;
+            }
+
+            const sortedTables = [...tables].sort((a,b) => a.floor_zone.localeCompare(b.floor_zone) || a.table_number.localeCompare(b.table_number));
+            
+            list.innerHTML = sortedTables.map(t => `
+                <tr class="hover:bg-surface-container-low transition-colors" id="row-${t.id}">
+                    <td class="p-4 text-xs font-mono text-stone-400 align-middle max-w-[80px] truncate" title="${t.id}">${t.id.substring(0,8)}...</td>
+                    <td class="p-4 align-middle">
+                        <input type="text" class="w-full bg-transparent border border-transparent hover:border-stone-200 focus:border-primary focus:bg-white rounded px-2 py-1 transition-all text-sm font-medium uppercase" value="${t.floor_zone}" id="edit-floor-${t.id}">
+                    </td>
+                    <td class="p-4 align-middle">
+                        <input type="text" class="w-full bg-transparent border border-transparent hover:border-stone-200 focus:border-primary focus:bg-white rounded px-2 py-1 transition-all text-base font-bold text-primary" value="${t.table_number}" id="edit-name-${t.id}">
+                    </td>
+                    <td class="p-4 align-middle text-right whitespace-nowrap">
+                        <button onclick="saveManagedTable('${t.id}')" class="px-3 py-1.5 rounded-lg bg-[#ccebc7] text-secondary font-bold text-xs hover:bg-[#b0dfa8] transition-colors mr-2">LƯU</button>
+                        <button onclick="deleteManagedTable('${t.id}')" class="px-3 py-1.5 rounded-lg bg-red-100 text-red-700 font-bold text-xs hover:bg-red-200 transition-colors">XOÁ</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function addNewTable() {
+            const nameInput = document.getElementById('new-table-name');
+            const select = document.getElementById('new-table-floor');
+            const customInput = document.getElementById('new-table-floor-custom');
+            
+            const name = nameInput.value.trim();
+            let floor = select.value === '_new_' ? customInput.value.trim() : select.value;
+            
+            if (!name) {
+                alert('Vui lòng nhập tên bàn!');
+                return;
+            }
+            if (!floor) {
+                alert('Vui lòng chọn hoặc nhập tên lầu!');
+                return;
+            }
+            
+            // Generate a slug-like floor zone for consistency
+            floor = floor.toLowerCase().replace(/\s+/g, '_');
+
+            try {
+                const newTable = await window.api.addTable({ table_number: name, floor_zone: floor });
+                tables.push(newTable);
+                nameInput.value = '';
+                updateFloorSelectOptions();
+                renderManageTables();
+                renderFloorTabs();
+                renderVisualLayout();
+            } catch (err) {
+                console.error(err);
+                if(err.message?.includes('duplicate key') || err.code === '23505') {
+                    alert('Tên bàn này đã tồn tại, vui lòng chọn tên khác!');
+                } else {
+                    alert('Có lỗi xảy ra khi thêm bàn.');
+                }
+            }
+        }
+
+        async function saveManagedTable(id) {
+            const floorInput = document.getElementById(`edit-floor-${id}`);
+            const nameInput = document.getElementById(`edit-name-${id}`);
+            const newFloor = floorInput.value.trim().toLowerCase().replace(/\s+/g, '_');
+            const newName = nameInput.value.trim();
+            
+            if (!newName || !newFloor) {
+                alert('Tên lầu và Tên bàn không được để trống!');
+                return;
+            }
+            
+            try {
+                const updatedTable = await window.api.updateTable(id, { table_number: newName, floor_zone: newFloor });
+                const index = tables.findIndex(t => t.id === id);
+                if(index !== -1) tables[index] = updatedTable;
+                renderFloorTabs();
+                renderVisualLayout();
+                updateFloorSelectOptions();
+                renderManageTables();
+                // small visual feedback
+                const row = document.getElementById(`row-${id}`);
+                const origBg = row.style.backgroundColor;
+                row.style.backgroundColor = '#ccebc7';
+                setTimeout(() => row.style.backgroundColor = origBg, 500);
+            } catch (err) {
+                console.error(err);
+                if(err.message?.includes('duplicate key') || err.code === '23505') {
+                    alert('Tên bàn này đã tồn tại!');
+                } else {
+                    alert('Có lỗi xảy ra khi lưu thay đổi.');
+                }
+            }
+        }
+
+        async function deleteManagedTable(id) {
+            if(!confirm('Bạn có chắc chắn muốn xoá bàn này không? Không thể hoàn tác.')) return;
+            try {
+                await window.api.deleteTable(id);
+                tables = tables.filter(t => t.id !== id);
+                
+                // If we deleted the last table on the current floor, switch floor
+                if(tables.length > 0 && !tables.some(t => t.floor_zone === currentFloor)) {
+                    currentFloor = tables[0].floor_zone;
+                } else if(tables.length === 0) {
+                    currentFloor = 'ground';
+                }
+                
+                renderFloorTabs();
+                renderVisualLayout();
+                updateFloorSelectOptions();
+                renderManageTables();
+            } catch (err) {
+                console.error(err);
+                alert('Không thể xoá bàn này (có thể bàn đang có đơn đặt hàng liên quan).');
+            }
         }
     </script>
 </body>

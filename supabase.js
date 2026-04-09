@@ -96,6 +96,29 @@
                 const { data, error } = await supabase.from('staff').select('*').order('name');
                 if (error) throw error;
                 return data;
+            },
+            async addTable(tableData) {
+                const { data, error } = await supabase.from('tables').insert([{
+                    table_number: tableData.table_number,
+                    floor_zone: tableData.floor_zone || 'ground',
+                    capacity: 4,
+                    status: 'available'
+                }]).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async updateTable(id, tableData) {
+                const { data, error } = await supabase.from('tables').update({
+                    table_number: tableData.table_number,
+                    floor_zone: tableData.floor_zone
+                }).eq('id', id).select();
+                if (error) throw error;
+                return data[0];
+            },
+            async deleteTable(id) {
+                const { error } = await supabase.from('tables').delete().eq('id', id);
+                if (error) throw error;
+                return true;
             }
         };
     }
