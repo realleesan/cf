@@ -144,9 +144,13 @@
             // Render categories
             renderCategories(categories);
             
-            // Render first category items
+            // Render first category items if selectedCategory is not set
             if (categories.length > 0) {
-                selectCategory(categories[0].id);
+                if (!selectedCategory || !categories.find(c => c.id === selectedCategory)) {
+                    selectCategory(categories[0].id);
+                } else {
+                    selectCategory(selectedCategory);
+                }
             }
         } catch (err) {
             console.error('Failed to load menu:', err);
