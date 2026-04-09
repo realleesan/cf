@@ -194,7 +194,7 @@
 
             container.innerHTML = staff.map(s => {
                 const earnings = calculateEarnings(s.id, selectedDate);
-                const avatar = s.avatar_url ? `<img src="${s.avatar_url}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-primary/40 text-2xl">person</span>`;
+                const avatar = s.photo_url ? `<img src="${s.photo_url}" class="w-full h-full object-cover">` : `<span class="material-symbols-outlined text-primary/40 text-2xl">person</span>`;
                 
                 return `
                     <div onclick="openStaffModal('edit', '${s.id}')" class="bg-white rounded-[2rem] p-6 border border-stone-100 shadow-sm flex items-center justify-between hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]">
@@ -254,9 +254,9 @@
                     document.getElementById('staff-role').value = s.role;
                     document.getElementById('staff-phone').value = s.phone || '';
                     document.getElementById('staff-eid').value = s.employee_id || '';
-                    document.getElementById('staff-avatar-url').value = s.avatar_url || '';
-                    if (s.avatar_url) {
-                        preview.innerHTML = `<img src="${s.avatar_url}" class="w-full h-full object-cover">`;
+                    document.getElementById('staff-avatar-url').value = s.photo_url || '';
+                    if (s.photo_url) {
+                        preview.innerHTML = `<img src="${s.photo_url}" class="w-full h-full object-cover">`;
                     }
                     deleteBtn.classList.remove('hidden');
                 }
@@ -297,7 +297,7 @@
                     role: document.getElementById('staff-role').value,
                     phone: document.getElementById('staff-phone').value,
                     employee_id: document.getElementById('staff-eid').value,
-                    avatar_url: avatarUrl
+                    photo_url: avatarUrl
                 };
 
                 if (selectedStaffId) {

@@ -121,7 +121,7 @@
                     full_name: staffData.full_name,
                     role: staffData.role,
                     phone: staffData.phone,
-                    avatar_url: staffData.avatar_url
+                    photo_url: staffData.photo_url
                 }]).select();
                 if (error) throw error;
                 return data[0];
@@ -131,7 +131,7 @@
                     full_name: staffData.full_name,
                     role: staffData.role,
                     phone: staffData.phone,
-                    avatar_url: staffData.avatar_url
+                    photo_url: staffData.photo_url
                 }).eq('id', id).select();
                 if (error) throw error;
                 return data[0];
