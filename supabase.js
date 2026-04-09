@@ -167,16 +167,17 @@
                 return data[0];
             },
             async updateMenuItem(id, itemData) {
-                const { data, error } = await supabase.from('menu_items').update({
-                    category_id: itemData.category_id,
-                    name: itemData.name,
-                    price: itemData.price,
-                    image_url: itemData.image_url,
-                    description: itemData.description,
-                    is_available: itemData.is_available
-                }).eq('id', id).select();
+                const updatePayload = {};
+                if (itemData.category_id !== undefined) updatePayload.category_id = itemData.category_id;
+                if (itemData.name !== undefined) updatePayload.name = itemData.name;
+                if (itemData.price !== undefined) updatePayload.price = itemData.price;
+                if (itemData.image_url !== undefined) updatePayload.image_url = itemData.image_url;
+                if (itemData.description !== undefined) updatePayload.description = itemData.description;
+                if (itemData.is_available !== undefined) updatePayload.is_available = itemData.is_available;
+
+                const { data, error } = await supabase.from('menu_items').update(updatePayload).eq('id', id).select();
                 if (error) throw error;
-                return data[0];
+                return data && data.length > 0 ? data[0] : null;
             },
             async deleteMenuItem(id) {
                 const { error } = await supabase.from('menu_items').delete().eq('id', id);
