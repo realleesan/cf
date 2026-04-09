@@ -161,53 +161,71 @@
         }
         
         container.innerHTML = filteredOrders.map(order => {
-            const statusColor = getStatusColor(order.status);
+            const statusInfo = getStatusInfo(order.status);
             const time = formatTime(order.updated_at || order.created_at || new Date());
             
             return `
-                <div class="glass-card bg-white/70 dark:bg-stone-900/70 rounded-3xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all">
+                <div class="glass-card bg-white/70 dark:bg-stone-900/70 rounded-3xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all relative overflow-hidden">
+                    ${order.status !== 'completed' && order.status !== 'cancelled' ? `<div class="absolute top-0 left-0 w-1 h-full ${statusInfo.border}"></div>` : ''}
                     <div class="flex justify-between items-start mb-4">
                         <div>
                             <span class="text-xs font-bold text-on-surface-variant/60 uppercase tracking-widest">Order</span>
                             <h3 class="font-headline text-2xl font-black text-primary">#${order.order_number}</h3>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold ${statusColor}">${order.status.toUpperCase()}</span>
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusInfo.color}">${statusInfo.label}</span>
+                            <button onclick="deleteOrder('${order.id}', '${order.table_id}')" class="text-red-300 hover:text-red-500 transition-colors">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="space-y-2 mb-4">
                         <div class="flex justify-between">
-                            <span class="text-sm text-on-surface-variant">Table</span>
-                            <span class="text-sm font-bold">${order.order_type === 'takeaway' ? 'Takeaway' : `Table ${order.tables?.table_number || '?'}`}</span>
+                            <span class="text-sm text-on-surface-variant font-medium">Table</span>
+                            <span class="text-sm font-black text-primary">${order.order_type === 'takeaway' ? 'Takeaway' : `Bàn ${order.tables?.table_number || '?'}`}</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-sm text-on-surface-variant">Served by</span>
-                            <span class="text-sm font-bold">${order.staff?.full_name || 'Staff'}</span>
-                        </div>
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center">
                             <span class="text-sm text-on-surface-variant">Time</span>
-                            <span class="text-sm font-bold">${time}</span>
+                            <span class="text-xs font-black bg-stone-100 px-2 py-1 rounded-md">${time}</span>
                         </div>
                     </div>
-                    <div class="mt-2 space-y-2 border-t border-outline-variant/10 pt-2 text-sm text-on-surface">
-                        ${order.order_items ? order.order_items.map(i => `<div class="flex justify-between"><span class="font-bold">${i.quantity}x ${i.menu_items?.name || ''}</span></div>`).join('') : ''}
+                    <div class="mt-2 space-y-2 border-t border-stone-100 pt-3 text-sm text-on-surface">
+                        ${order.order_items ? order.order_items.map(i => `<div class="flex justify-between items-center"><span class="font-bold">${i.quantity}x ${i.menu_items?.name || ''}</span> <span class="text-[10px] text-stone-400">${formatVN(i.total_price)}</span></div>`).join('') : ''}
                     </div>
-                    <div class="pt-4 border-t border-outline-variant/20 flex justify-between items-center">
-                        <span class="text-lg font-extrabold">Total</span>
-                        <span class="text-xl font-black text-primary">${formatVN(order.total_amount || 0)}</span>
+                    <div class="pt-4 border-t border-stone-100 mt-4 flex justify-between items-center">
+                        <span class="text-base font-black text-stone-400 uppercase tracking-widest">Tổng cộng</span>
+                        <span class="text-2xl font-black text-primary">${formatVN(order.total_amount || 0)}</span>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
-    // Get status color
-    function getStatusColor(status) {
+    async function deleteOrder(id, tableId) {
+        if (!confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) return;
+        try {
+            await window.api.deleteOrder(id, tableId);
+            await loadOrders();
+        } catch (err) {
+            alert('Lỗi khi xóa: ' + err.message);
+        }
+    }
+
+    // Get status info
+    function getStatusInfo(status) {
         switch(status) {
+            case 'pending':
+                return { label: 'Mới đặt', color: 'bg-orange-100 text-orange-700', border: 'bg-orange-400' };
+            case 'preparing':
+                return { label: 'Đang làm', color: 'bg-primary/10 text-primary', border: 'bg-primary' };
+            case 'ready':
+                return { label: 'Chờ thanh toán', color: 'bg-blue-100 text-blue-700', border: 'bg-blue-400' };
             case 'completed':
-                return 'bg-secondary-container text-on-secondary-container';
+                return { label: 'Hoàn tất', color: 'bg-green-100 text-green-700', border: 'bg-green-400' };
             case 'cancelled':
-                return 'bg-error-container text-on-error-container';
+                return { label: 'Đã hủy', color: 'bg-red-100 text-red-700', border: 'bg-red-400' };
             default:
-                return 'bg-surface-container-high text-on-surface-variant';
+                return { label: status, color: 'bg-stone-100 text-stone-500', border: 'bg-stone-300' };
         }
     }
 
@@ -227,12 +245,14 @@
     // Set filter
     function setFilter(filter) {
         currentFilter = filter;
-        
-        document.querySelectorAll('.filter-btn').forEach(btn => {
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => {
             if (btn.dataset.filter === filter) {
-                btn.className = 'filter-btn px-4 py-2 rounded-full bg-primary text-white font-bold text-xs transition-all';
+                btn.classList.add('bg-primary', 'text-white');
+                btn.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
             } else {
-                btn.className = 'filter-btn px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-all';
+                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.add('bg-surface-container-low', 'text-on-surface-variant');
             }
         });
         
@@ -293,10 +313,12 @@
 </div>
 </section>
 <!-- Filter Row -->
-<section class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar">
-<button onclick="setFilter('all')" class="filter-btn px-4 py-2 rounded-full bg-primary text-white font-bold text-xs transition-all" data-filter="all">All</button>
-<button onclick="setFilter('completed')" class="filter-btn px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-all" data-filter="completed">Completed</button>
-<button onclick="setFilter('cancelled')" class="filter-btn px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-bold text-xs hover:bg-surface-container-high transition-all" data-filter="cancelled">Cancelled</button>
+<section class="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-2">
+<button onclick="setFilter('all')" class="filter-btn px-6 py-2 rounded-full bg-primary text-white font-black text-[10px] uppercase tracking-widest transition-all" data-filter="all">Tất cả</button>
+<button onclick="setFilter('pending')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="pending">Đang đợi</button>
+<button onclick="setFilter('preparing')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="preparing">Đang làm</button>
+<button onclick="setFilter('ready')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="ready">Chờ trả</button>
+<button onclick="setFilter('completed')" class="filter-btn px-6 py-2 rounded-full bg-surface-container-low text-on-surface-variant font-black text-[10px] uppercase tracking-widest hover:bg-surface-container-high transition-all" data-filter="completed">Đã Xong</button>
 </section>
 <!-- Orders Grid -->
 <div id="orders-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

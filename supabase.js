@@ -72,6 +72,12 @@
                 }));
                 const { error: itemsErr } = await supabase.from('order_items').insert(items);
                 if (itemsErr) throw itemsErr;
+
+                // Mark table as occupied
+                if (orderData.table_id) {
+                    await this.updateTableStatus(orderData.table_id, 'occupied');
+                }
+
                 return order[0];
             },
             async getActiveOrders() {
@@ -80,7 +86,8 @@
                 return data;
             },
             async getOrderHistory() {
-                const { data, error } = await supabase.from('orders').select('*, order_items(*, menu_items(*)), tables(*)').in('status', ['completed', 'cancelled']).order('created_at', { ascending: false });
+                // Return all orders to track the journey
+                const { data, error } = await supabase.from('orders').select('*, order_items(*, menu_items(*)), tables(*)').order('created_at', { ascending: false });
                 if (error) throw error;
                 return data;
             },
